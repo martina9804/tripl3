@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#080D18">
-<title>TRIPL3 — Basketball, redefined.</title>
+<title>TRIPL3 — Basketball</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -30,7 +30,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .section-head{display:flex;justify-content:space-between;align-items:center;margin:27px 0 13px;gap:12px}
 .section-head h2{font-size:21px;letter-spacing:-.7px;margin:0}
 .muted{color:var(--muted)}.small{font-size:12px}
-.hero{position:relative;min-height:340px;border-radius:22px;overflow:hidden;background:linear-gradient(130deg,#26334B,#111725)}
+.hero{position:relative;min-height:340px;border-radius:22px;overflow:hidden;background:linear-gradient(130deg,#26334B,#111725);cursor:pointer}
 .hero-img{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 20%;opacity:.8}
 .hero-shade{position:absolute;inset:0;background:linear-gradient(0deg,#080D18 0%,#080D18A0 32%,transparent 80%)}
 .hero-content{position:absolute;bottom:23px;left:22px;right:22px}
@@ -43,18 +43,18 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 .dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 1.5s infinite}
 @keyframes pulse{50%{opacity:.3}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:11px}
-.story{display:flex;gap:14px;align-items:center}
+.story{display:flex;gap:14px;align-items:center;cursor:pointer}
 .story-art{width:93px;height:94px;border-radius:13px;background:linear-gradient(140deg,#34415D,#75414A);flex-shrink:0;display:grid;place-items:center;overflow:hidden}
 .story-art img{width:100%;height:100%;object-fit:cover}
 .story h3{font-size:16px;line-height:1.3;margin:5px 0;font-weight:850}
 .story p{font-size:12px;color:var(--muted);margin:5px 0;line-height:1.45}
 .story-stat{color:var(--accent);font-size:12px;font-weight:850}
 .game-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:7px;scroll-snap-type:x mandatory}
-.mini-game{min-width:220px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px}
+.mini-game{min-width:220px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px;cursor:pointer}
 .mini-game .scoreline{font-size:20px;font-weight:900;margin:13px 0}
 .mini-game .names{font-size:12px;color:var(--muted)}
 .mini-game .names div{margin:5px 0}
-.game-card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:17px;margin:11px 0}
+.game-card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:17px;margin:11px 0;cursor:pointer}
 .game-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);margin-bottom:16px}
 .game-main{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
 .game-team{display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;font-size:12px;font-weight:750}
@@ -93,13 +93,38 @@ td:not(:first-child),th:not(:first-child){text-align:right}
 .bottomnav button.active{color:var(--accent)}
 .bottomnav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
-.league-tile{display:flex;align-items:center;gap:13px}
-.league-tile img{width:40px;height:40px;object-fit:contain}
+
+/* NEW: GAME DETAIL */
+body.modal-open{overflow:hidden}
+.game-modal{position:fixed;inset:0;background:#000B;z-index:30;display:none;align-items:flex-end;justify-content:center}
+.game-modal.open{display:flex}
+.game-sheet{background:var(--bg);width:100%;max-width:750px;height:min(92dvh,920px);border-radius:23px 23px 0 0;border:1px solid var(--line);overflow-y:auto;overscroll-behavior:contain;padding:18px 17px 40px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-close{background:var(--panel2);border:1px solid var(--line);border-radius:50%;width:37px;height:37px;color:white;font-size:22px}
+.detail-scoreboard{background:linear-gradient(145deg,#202D43,#101827);border:1px solid var(--line);border-radius:20px;padding:25px 15px}
+.detail-scoreboard .game-team img{width:65px;height:65px}
+.detail-scoreboard .game-score{font-size:clamp(26px,7vw,39px)}
+.detail-top{text-align:center;margin-bottom:22px}
+.detail-top .kicker{margin-bottom:9px}
+.detail-top .muted{font-size:12px}
+.detail-stars{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.star-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.star-photo{height:130px;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(140deg,#33405A,#743E48)}
+.star-photo img{max-height:130px;max-width:100%;object-fit:contain}
+.star-info{padding:12px}
+.star-info strong{display:block;font-size:13px;overflow-wrap:anywhere}
+.star-info small{display:block;margin-top:5px;color:var(--accent);font-size:11px;font-weight:850}
+.stats-table td:first-child{min-width:120px}
+.stats-table tr.highlight td{color:var(--accent)}
+.detail-meta{color:var(--muted);font-size:12px;text-align:center;margin:14px 0}
 @media(min-width:700px){
  .hero{min-height:460px}
  .player-grid{grid-template-columns:repeat(4,1fr)}
  .story-art{width:120px;height:105px}
  .bottomnav{left:50%;transform:translateX(-50%);max-width:650px;border:1px solid var(--line);border-radius:18px 18px 0 0}
+ .game-modal{align-items:center}
+ .game-sheet{border-radius:23px;height:min(88dvh,850px)}
+ .detail-stars{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 </style>
 </head>
@@ -176,7 +201,6 @@ td:not(:first-child),th:not(:first-child){text-align:right}
 <section class="page" id="profile">
  <div class="kicker">MY TRIPL3</div>
  <h1 class="title" data-es="Perfil" data-en="Profile">Perfil</h1>
-
  <div class="card">
   <h3 data-es="Mi cuenta" data-en="My account">Mi cuenta</h3>
   <p class="status-note" id="authStatus"></p>
@@ -191,7 +215,6 @@ td:not(:first-child),th:not(:first-child){text-align:right}
   <button class="secondary" id="logoutButton" onclick="logout()" style="display:none" data-es="Cerrar sesión" data-en="Sign out">Cerrar sesión</button>
   <p class="status-note" id="authMessage"></p>
  </div>
-
  <div class="card">
   <h3 data-es="Preferencias" data-en="Preferences">Preferencias</h3>
   <div class="field">
@@ -215,6 +238,17 @@ td:not(:first-child),th:not(:first-child){text-align:right}
 </section>
 
 </main>
+
+<!-- NEW: INTERACTIVE GAME DETAIL -->
+<div class="game-modal" id="gameModal" role="dialog" aria-modal="true" aria-label="Game details">
+ <div class="game-sheet">
+  <div class="modal-head">
+   <div class="kicker">TRIPL3 / GAME DETAIL</div>
+   <button class="modal-close" onclick="closeGame()" aria-label="Close">×</button>
+  </div>
+  <div id="gameDetail"></div>
+ </div>
+</div>
 
 <nav class="bottomnav">
  <button class="active" data-page="home" onclick="go('home')">
@@ -284,6 +318,8 @@ let feedRequest=0;
 let dayRequest=0;
 let favoritesBusy=false;
 let favoritesQueued=false;
+let activeGame=null;
+let detailRequest=0;
 
 function tr(es,en){return state.lang==="es"?es:en}
 function persist(){localStorage.setItem("tripl3_premium",JSON.stringify(state))}
@@ -333,6 +369,7 @@ function translate(){
  $("timezoneSelect").value=state.timezone;
 }
 function go(id){
+ closeGame();
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
  document.querySelectorAll(".bottomnav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
  window.scrollTo(0,0);
@@ -366,23 +403,25 @@ function gameState(g){
  g.status==="cancelled"?tr("CANCELADO","CANCELLED"):"—";
 }
 function miniGame(g){
- return `<div class="mini-game">
+ return `<div class="mini-game" data-game-id="${esc(g.provider_game_id)}" role="button" tabindex="0">
   <div class="kicker">${esc(leagues[g.league_id]||g.league_id)} · ${gameState(g)}</div>
   <div class="scoreline">${gameScore(g)}</div>
   <div class="names"><div>${esc(g.home_team)}</div><div>${esc(g.away_team)}</div></div>
  </div>`;
 }
-function fullGame(g){
- const team=(name,logo)=>`<div class="game-team">
+function teamMarkup(name,logo){
+ return `<div class="game-team">
   ${/^https:\/\//i.test(logo||"")?`<img src="${esc(logo)}" alt="" loading="lazy">`:""}
   <span>${esc(name)}</span></div>`;
- return `<div class="game-card">
+}
+function fullGame(g){
+ return `<div class="game-card" data-game-id="${esc(g.provider_game_id)}" role="button" tabindex="0">
   <div class="game-top"><span>${esc(leagues[g.league_id]||"")}</span>
    <span>${g.status==="live"?'<span class="dot"></span> ':""}${gameState(g)}</span></div>
   <div class="game-main">
-   ${team(g.home_team,g.home_team_logo)}
+   ${teamMarkup(g.home_team,g.home_team_logo)}
    <div class="game-score">${gameScore(g)}</div>
-   ${team(g.away_team,g.away_team_logo)}
+   ${teamMarkup(g.away_team,g.away_team_logo)}
   </div>
   <div class="game-bottom">${esc(dateLabel(g.game_date))}</div>
  </div>`;
@@ -439,7 +478,7 @@ function renderBriefing(){
  }
  const story=storyData(featured);
  const image=story.stat?photo(story.stat.player_name):"";
- $("heroArea").innerHTML=`<div class="hero">
+ $("heroArea").innerHTML=`<div class="hero" data-game-id="${esc(featured.provider_game_id)}" role="button" tabindex="0">
   <div class="hero-placeholder">3</div>
   ${image?`<img class="hero-img" src="${esc(image)}" alt="" onerror="this.style.display='none'">`:""}
   <div class="hero-shade"></div>
@@ -452,7 +491,7 @@ function renderBriefing(){
  $("feedTime").textContent=dateLabel(featured.game_date);
  $("stories").innerHTML=extras.map(g=>{
   const d=storyData(g),img=d.stat?photo(d.stat.player_name):"";
-  return `<div class="card story">
+  return `<div class="card story" data-game-id="${esc(g.provider_game_id)}" role="button" tabindex="0">
    <div class="story-art">${img?`<img src="${esc(img)}" alt="" loading="lazy" onerror="this.style.display='none'">`:'<span style="font-size:35px;font-weight:900;opacity:.3">3</span>'}</div>
    <div><div class="kicker">${esc(d.label)}</div><h3>${esc(d.title)}</h3>
    <p>${esc(d.subtitle)}</p>
@@ -464,6 +503,125 @@ function renderBriefing(){
  $("scoreStrip").innerHTML=recentScores.map(miniGame).join("")||
  `<div class="empty">${tr("Sin marcadores recientes","No recent scores")}</div>`;
 }
+
+/* NEW: GAME DETAIL */
+function renderGameDetail(g,gamePlayerStats,loading=false,error=""){
+ const league=leagues[g.league_id]||g.league_id;
+ const players=[...gamePlayerStats].sort((a,b)=>playerScore(b)-playerScore(a));
+ const stars=players.slice(0,3);
+
+ const starsHtml=stars.map(s=>{
+  const img=photo(s.player_name);
+  return `<div class="star-card">
+   <div class="star-photo">
+    ${img?`<img src="${esc(img)}" alt="" onerror="this.style.display='none'">`:
+     '<span style="font-size:55px;font-weight:900;opacity:.2">3</span>'}
+   </div>
+   <div class="star-info">
+    <strong>${esc(s.player_name)}</strong>
+    <small>${statline(s)}</small>
+   </div>
+  </div>`;
+ }).join("");
+
+ const tableHtml=players.length?`<div class="card table-scroll">
+  <table class="stats-table">
+   <thead><tr>
+    <th>${tr("Jugador","Player")}</th>
+    <th>MIN</th><th>PTS</th><th>REB</th><th>AST</th><th>3PM</th>
+   </tr></thead>
+   <tbody>${players.map(s=>`
+    <tr class="${favoritePlayer(s.player_name)?"highlight":""}">
+     <td>${esc(s.player_name)}</td>
+     <td>${esc(s.minutes??"—")}</td>
+     <td>${s.points??"—"}</td>
+     <td>${s.rebounds??"—"}</td>
+     <td>${s.assists??"—"}</td>
+     <td>${s.threepoints_made??"—"}</td>
+    </tr>`).join("")}</tbody>
+  </table></div>`:
+  `<div class="card empty">${error?esc(error):loading?
+   tr("Cargando estadísticas...","Loading statistics..."):
+   tr("Todavía no hay estadísticas individuales disponibles para este partido.","Individual player statistics are not available for this game yet.")}</div>`;
+
+ $("gameDetail").innerHTML=`
+  <div class="detail-scoreboard">
+   <div class="detail-top">
+    <div class="kicker">${esc(league)} · ${gameState(g)}</div>
+    <div class="muted">${esc(dateLabel(g.game_date))}</div>
+   </div>
+   <div class="game-main">
+    ${teamMarkup(g.home_team,g.home_team_logo)}
+    <div class="game-score">${gameScore(g)}</div>
+    ${teamMarkup(g.away_team,g.away_team_logo)}
+   </div>
+  </div>
+
+  ${stars.length?`
+   <div class="section-head"><h2>${tr("Protagonistas","Top performers")}</h2></div>
+   <div class="detail-stars">${starsHtml}</div>
+  `:""}
+
+  <div class="section-head">
+   <h2>${tr("Estadísticas","Box score")}</h2>
+  </div>
+  ${tableHtml}
+
+  <div class="detail-meta">${tr(
+   "Estadísticas facilitadas por API-Sports a través de Supabase. Pueden actualizarse con retraso.",
+   "Statistics provided by API-Sports through Supabase. Updates may be delayed."
+  )}</div>
+ `;
+}
+
+async function openGame(id){
+ const g=[...allGames,...dayGames].find(x=>String(x.provider_game_id)===String(id));
+ if(!g)return;
+
+ activeGame=g;
+ const seq=++detailRequest;
+ $("gameModal").classList.add("open");
+ document.body.classList.add("modal-open");
+
+ const cached=gameStats(g);
+ renderGameDetail(g,cached,cached.length===0);
+
+ try{
+  const {data,error}=await db.from("player_game_stats")
+   .select("provider_game_id,provider_player_id,player_name,minutes,points,rebounds,assists,threepoints_made")
+   .eq("provider","api-sports")
+   .eq("provider_game_id",g.provider_game_id)
+   .limit(500);
+
+  if(error)throw error;
+  if(seq!==detailRequest||!activeGame)return;
+  renderGameDetail(g,data||[]);
+ }catch(e){
+  if(seq!==detailRequest||!activeGame)return;
+  renderGameDetail(g,cached,false,e.message||String(e));
+ }
+}
+
+function closeGame(){
+ ++detailRequest;
+ activeGame=null;
+ $("gameModal").classList.remove("open");
+ document.body.classList.remove("modal-open");
+}
+$("gameModal").addEventListener("click",e=>{
+ if(e.target===$("gameModal"))closeGame();
+});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")closeGame();
+ if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-game-id]")){
+  e.preventDefault();
+  openGame(e.target.dataset.gameId);
+ }
+});
+document.addEventListener("click",e=>{
+ const card=e.target.closest("[data-game-id]");
+ if(card)openGame(card.dataset.gameId);
+});
 
 function renderStandings(){
  const map=new Map();
@@ -494,7 +652,10 @@ function selectLeague(l){selectedLeague=l;renderGames()}
 function changeDate(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return;selectedDay=v;loadDay()}
 function changeDay(delta){const d=new Date(selectedDay+"T12:00:00Z");d.setUTCDate(d.getUTCDate()+delta);selectedDay=d.toISOString().slice(0,10);loadDay()}
 function today(){selectedDay=currentDay();loadDay()}
-function toggleSpoilers(){state.hideScores=!state.hideScores;persist();renderGames();renderBriefing()}
+function toggleSpoilers(){
+ state.hideScores=!state.hideScores;persist();renderGames();renderBriefing();
+ if(activeGame)renderGameDetail(activeGame,gameStats(activeGame));
+}
 
 function optionButtons(id,items,key){
  $(id).innerHTML=items.map(item=>`<button class="fav-chip ${state[key].includes(item)?"on":""}"
@@ -514,10 +675,11 @@ function renderFavorites(){
 }
 function render(){
  translate();renderPlayers();renderBriefing();renderGames();renderFavorites();updateAuth();
+ if(activeGame)renderGameDetail(activeGame,gameStats(activeGame));
 }
 
 const gameFields="provider_game_id,league_id,home_team,away_team,home_team_logo,away_team_logo,home_score,away_score,game_date,status";
-const statFields="provider_game_id,provider_player_id,player_name,points,rebounds,assists,threepoints_made,updated_at";
+const statFields="provider_game_id,provider_player_id,player_name,minutes,points,rebounds,assists,threepoints_made,updated_at";
 
 async function loadFeed(){
  const seq=++feedRequest;
@@ -539,6 +701,7 @@ async function loadFeed(){
   if(seq!==feedRequest)return;
   allGames=data||[];stats=found;feedError="";feedLoaded=true;
   renderBriefing();renderStandings();
+  if(activeGame)renderGameDetail(activeGame,gameStats(activeGame));
  }catch(e){
   if(seq!==feedRequest)return;
   feedError=e.message||String(e);feedLoaded=true;
@@ -565,7 +728,6 @@ async function loadDay(){
 }
 async function refreshAll(){await Promise.all([loadFeed(),loadDay()])}
 
-/* AUTH */
 function updateAuth(){
  $("authForm").style.display=user?"none":"block";
  $("logoutButton").style.display=user?"block":"none";
