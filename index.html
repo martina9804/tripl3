@@ -3,14 +3,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#080D18">
-<meta name="description" content="TRIPL3 — Your basketball world. Live scores, player stats and personalized basketball stories.">
+<meta name="description" content="TRIPL3 — Live basketball scores, stats and personalized stories.">
 <title>TRIPL3 — Your Basketball World</title>
 
 <link rel="preconnect" href="https://cdn.nba.com">
 <link rel="preconnect" href="https://images.unsplash.com">
-<link rel="preconnect" href="https://v1.basketball.api-sports.io">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -24,13 +23,10 @@
  --muted:#96A2B7;
  --accent:#FF6545;
  --green:#56D9A2;
- --gold:#FFCA76;
 }
 
 *{box-sizing:border-box}
-
 html{scroll-behavior:smooth}
-
 body{
  margin:0;
  background:var(--bg);
@@ -38,15 +34,13 @@ body{
  font-family:Inter,Arial,sans-serif;
  -webkit-font-smoothing:antialiased;
 }
-
 button,input,select{font:inherit}
 button{cursor:pointer}
+img{max-width:100%}
 button:focus-visible,input:focus-visible{
  outline:2px solid var(--accent);
  outline-offset:2px;
 }
-
-img{max-width:100%}
 
 .topbar{
  height:65px;
@@ -61,17 +55,13 @@ img{max-width:100%}
  top:0;
  z-index:10;
 }
-
 .logo{
  font-size:27px;
  font-weight:950;
  letter-spacing:-1.5px;
 }
-
 .logo span{color:var(--accent)}
-
 .topright{display:flex;gap:9px}
-
 .roundbtn{
  background:var(--panel);
  border:1px solid var(--line);
@@ -79,16 +69,13 @@ img{max-width:100%}
  color:white;
  padding:9px 12px;
 }
-
 .shell{
  max-width:1050px;
  margin:auto;
  padding:22px 17px 105px;
 }
-
 .page{display:none}
 .page.active{display:block}
-
 .kicker{
  font-size:10px;
  font-weight:850;
@@ -96,14 +83,12 @@ img{max-width:100%}
  color:var(--accent);
  text-transform:uppercase;
 }
-
 .title{
  font-size:32px;
  letter-spacing:-1.4px;
  font-weight:900;
  margin:9px 0 18px;
 }
-
 .section-head{
  display:flex;
  justify-content:space-between;
@@ -111,16 +96,13 @@ img{max-width:100%}
  margin:27px 0 13px;
  gap:12px;
 }
-
 .section-head h2{
  font-size:21px;
  letter-spacing:-.7px;
  margin:0;
 }
-
 .muted{color:var(--muted)}
 .small{font-size:12px}
-
 .pill{
  display:inline-flex;
  align-items:center;
@@ -134,7 +116,6 @@ img{max-width:100%}
  font-weight:850;
  letter-spacing:1px;
 }
-
 .dot{
  width:7px;
  height:7px;
@@ -143,46 +124,7 @@ img{max-width:100%}
  display:inline-block;
  animation:pulse 1.5s infinite;
 }
-
 @keyframes pulse{50%{opacity:.3}}
-
-/* IMAGE SYSTEM */
-
-.image-cover{
- width:100%;
- height:100%;
- object-fit:cover;
- display:block;
-}
-
-.image-contain{
- width:100%;
- height:100%;
- object-fit:contain;
- display:block;
-}
-
-.image-fallback{
- background:
-  radial-gradient(circle at 75% 25%,#FF654535,transparent 38%),
-  linear-gradient(145deg,#263650,#101827);
-}
-
-.image-fallback:before{
- content:"3";
- position:absolute;
- font-size:clamp(65px,13vw,150px);
- font-weight:950;
- color:#FFFFFF0B;
- right:10%;
- top:10%;
-}
-
-.photo-credit{
- font-size:10px;
- color:var(--muted);
- margin-top:8px;
-}
 
 /* HERO */
 
@@ -195,17 +137,14 @@ img{max-width:100%}
  cursor:pointer;
  isolation:isolate;
 }
-
 .hero-img{
  position:absolute;
  inset:0;
  width:100%;
  height:100%;
  object-fit:cover;
- object-position:center 30%;
  z-index:-2;
 }
-
 .hero-player{
  position:absolute;
  right:-8%;
@@ -217,7 +156,6 @@ img{max-width:100%}
  z-index:-1;
  filter:drop-shadow(0 15px 25px #0007);
 }
-
 .hero-shade{
  position:absolute;
  inset:0;
@@ -230,14 +168,12 @@ img{max-width:100%}
  );
  z-index:-1;
 }
-
 .hero-content{
  position:absolute;
  bottom:23px;
  left:22px;
  right:22px;
 }
-
 .hero h1{
  font-size:clamp(30px,7vw,53px);
  font-weight:950;
@@ -247,13 +183,11 @@ img{max-width:100%}
  max-width:680px;
  text-shadow:0 2px 20px #0008;
 }
-
 .hero p{
  font-size:14px;
  color:#E5EAF1;
  margin:9px 0;
 }
-
 .hero-stats{
  color:var(--accent);
  font-weight:900;
@@ -261,7 +195,7 @@ img{max-width:100%}
  margin-top:15px;
 }
 
-/* LEAGUE BANNERS */
+/* LEAGUES */
 
 .league-visuals{
  display:grid;
@@ -269,7 +203,6 @@ img{max-width:100%}
  gap:10px;
  margin:18px 0;
 }
-
 .league-visual{
  position:relative;
  height:125px;
@@ -279,7 +212,6 @@ img{max-width:100%}
  border:1px solid var(--line);
  cursor:pointer;
 }
-
 .league-visual img{
  width:100%;
  height:100%;
@@ -287,16 +219,13 @@ img{max-width:100%}
  filter:brightness(.7);
  transition:transform .3s;
 }
-
 .league-visual:hover img{transform:scale(1.06)}
-
 .league-visual:after{
  content:"";
  position:absolute;
  inset:0;
  background:linear-gradient(0deg,#080D18E8,transparent 85%);
 }
-
 .league-visual strong{
  position:absolute;
  bottom:13px;
@@ -306,7 +235,6 @@ img{max-width:100%}
  font-size:13px;
  font-weight:900;
 }
-
 .league-visual small{
  position:absolute;
  top:12px;
@@ -327,17 +255,13 @@ img{max-width:100%}
  padding:16px;
  margin-bottom:11px;
 }
-
 .story{
  display:flex;
  gap:14px;
  align-items:center;
  cursor:pointer;
- transition:border-color .2s;
 }
-
 .story:hover{border-color:#FF654580}
-
 .story-art{
  width:104px;
  height:108px;
@@ -347,34 +271,30 @@ img{max-width:100%}
  position:relative;
  overflow:hidden;
 }
-
 .story-art img{
  width:100%;
  height:100%;
  object-fit:cover;
 }
-
 .story h3{
  font-size:16px;
  line-height:1.3;
  margin:5px 0;
  font-weight:850;
 }
-
 .story p{
  font-size:12px;
  color:var(--muted);
  margin:5px 0;
  line-height:1.45;
 }
-
 .story-stat{
  color:var(--accent);
  font-size:12px;
  font-weight:850;
 }
 
-/* GAME STRIP */
+/* SCORES */
 
 .game-strip{
  display:flex;
@@ -383,7 +303,6 @@ img{max-width:100%}
  padding-bottom:7px;
  scroll-snap-type:x mandatory;
 }
-
 .mini-game{
  min-width:235px;
  scroll-snap-align:start;
@@ -393,25 +312,21 @@ img{max-width:100%}
  padding:15px;
  cursor:pointer;
 }
-
 .mini-logos{
  display:flex;
  align-items:center;
  justify-content:space-between;
  margin:12px 0;
 }
-
 .mini-logos img{
  width:38px;
  height:38px;
  object-fit:contain;
 }
-
 .mini-score{
  font-size:20px;
  font-weight:950;
 }
-
 .mini-game .names{
  font-size:12px;
  color:var(--muted);
@@ -419,14 +334,10 @@ img{max-width:100%}
  justify-content:space-between;
  gap:10px;
 }
-
 .mini-game .names span{
  max-width:48%;
  overflow-wrap:anywhere;
 }
-
-/* GAMES */
-
 .game-card{
  background:var(--panel);
  border:1px solid var(--line);
@@ -435,7 +346,6 @@ img{max-width:100%}
  margin:11px 0;
  cursor:pointer;
 }
-
 .game-top{
  display:flex;
  justify-content:space-between;
@@ -444,14 +354,12 @@ img{max-width:100%}
  color:var(--muted);
  margin-bottom:16px;
 }
-
 .game-main{
  display:grid;
  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
  align-items:center;
  gap:8px;
 }
-
 .game-team{
  display:flex;
  flex-direction:column;
@@ -462,36 +370,30 @@ img{max-width:100%}
  font-weight:750;
  min-width:0;
 }
-
 .game-team img{
  width:52px;
  height:52px;
  object-fit:contain;
 }
-
 .game-team span{overflow-wrap:anywhere}
-
 .game-score{
  font-size:25px;
  font-weight:950;
  white-space:nowrap;
  letter-spacing:-1px;
 }
-
 .game-bottom{
  text-align:center;
  font-size:11px;
  color:var(--muted);
  margin-top:15px;
 }
-
 .filters{
  display:flex;
  gap:8px;
  overflow-x:auto;
  padding:5px 0 14px;
 }
-
 .filter{
  white-space:nowrap;
  background:var(--panel);
@@ -502,22 +404,18 @@ img{max-width:100%}
  font-size:12px;
  font-weight:750;
 }
-
 .filter.active{
  background:var(--accent);
  border-color:var(--accent);
  color:white;
 }
-
 .datebar{
  display:flex;
  align-items:center;
  gap:9px;
  margin:15px 0;
 }
-
 .datebar input{flex:1;min-width:0}
-
 input,select{
  background:var(--panel2);
  border:1px solid var(--line);
@@ -527,7 +425,6 @@ input,select{
  width:100%;
  color-scheme:dark;
 }
-
 .primary{
  background:var(--accent);
  color:white;
@@ -536,7 +433,6 @@ input,select{
  padding:13px 17px;
  font-weight:850;
 }
-
 .secondary{
  background:var(--panel2);
  border:1px solid var(--line);
@@ -545,22 +441,19 @@ input,select{
  padding:12px 15px;
 }
 
-/* PLAYER PORTRAITS */
+/* PLAYERS */
 
 .player-grid{
  display:grid;
  grid-template-columns:repeat(2,minmax(0,1fr));
  gap:11px;
 }
-
 .player-card{
  border-radius:17px;
  overflow:hidden;
  background:var(--panel);
  border:1px solid var(--line);
- position:relative;
 }
-
 .player-photo{
  height:180px;
  position:relative;
@@ -572,7 +465,6 @@ input,select{
  align-items:flex-end;
  overflow:hidden;
 }
-
 .player-photo img{
  height:100%;
  max-width:100%;
@@ -580,7 +472,6 @@ input,select{
  object-position:bottom;
  z-index:1;
 }
-
 .player-photo:before{
  content:"TRIPL3";
  position:absolute;
@@ -589,22 +480,17 @@ input,select{
  color:#FFFFFF18;
  font-weight:950;
  font-size:25px;
- letter-spacing:-1px;
 }
-
 .player-label{padding:12px}
-
 .player-label strong{
  display:block;
  font-size:14px;
  overflow-wrap:anywhere;
 }
-
 .player-label small{
  color:var(--muted);
  font-size:11px;
 }
-
 .player-stat{
  margin-top:7px;
  color:var(--accent);
@@ -620,7 +506,6 @@ input,select{
  gap:8px;
  margin:12px 0;
 }
-
 .fav-chip{
  border:1px solid var(--line);
  background:var(--panel2);
@@ -629,23 +514,21 @@ input,select{
  padding:10px 12px;
  font-size:12px;
 }
-
 .fav-chip.on{
  border-color:var(--accent);
  color:white;
  background:#FF654525;
 }
-
-.team-favorite{
- display:flex;
- align-items:center;
- gap:9px;
+.status-note{
+ font-size:12px;
+ color:var(--muted);
+ line-height:1.6;
 }
-
-.team-favorite img{
- width:24px;
- height:24px;
- object-fit:contain;
+.empty{
+ padding:25px;
+ text-align:center;
+ color:var(--muted);
+ font-size:13px;
 }
 
 /* PROFILE */
@@ -657,14 +540,12 @@ input,select{
  overflow:hidden;
  margin-bottom:18px;
 }
-
 .profile-banner img{
  width:100%;
  height:100%;
  object-fit:cover;
  filter:brightness(.55);
 }
-
 .profile-banner div{
  position:absolute;
  bottom:19px;
@@ -673,16 +554,13 @@ input,select{
  font-weight:950;
  letter-spacing:-1px;
 }
-
 .field{margin:15px 0}
-
 .field label{
  display:block;
  font-size:12px;
  color:var(--muted);
  margin-bottom:8px;
 }
-
 .actions{
  display:flex;
  gap:9px;
@@ -690,39 +568,24 @@ input,select{
  margin-top:14px;
 }
 
-.status-note{
- font-size:12px;
- color:var(--muted);
- line-height:1.6;
-}
+/* TABLES */
 
 table{
  width:100%;
  border-collapse:collapse;
  font-size:12px;
 }
-
 th,td{
  padding:11px 7px;
  border-bottom:1px solid var(--line);
  text-align:left;
 }
-
 th{color:var(--muted)}
-
 td:not(:first-child),
 th:not(:first-child){text-align:right}
-
 .table-scroll{overflow-x:auto}
 
-.empty{
- padding:25px;
- text-align:center;
- color:var(--muted);
- font-size:13px;
-}
-
-/* NAVIGATION */
+/* BOTTOM NAV */
 
 .bottomnav{
  position:fixed;
@@ -737,7 +600,6 @@ th:not(:first-child){text-align:right}
  padding:11px 4px max(13px,env(safe-area-inset-bottom));
  z-index:15;
 }
-
 .bottomnav button{
  background:none;
  border:0;
@@ -748,9 +610,7 @@ th:not(:first-child){text-align:right}
  align-items:center;
  gap:5px;
 }
-
 .bottomnav button.active{color:var(--accent)}
-
 .bottomnav svg{
  width:22px;
  height:22px;
@@ -761,10 +621,9 @@ th:not(:first-child){text-align:right}
  stroke-linejoin:round;
 }
 
-/* GAME DETAILS */
+/* MODAL */
 
 body.modal-open{overflow:hidden}
-
 .game-modal{
  position:fixed;
  inset:0;
@@ -774,9 +633,7 @@ body.modal-open{overflow:hidden}
  align-items:flex-end;
  justify-content:center;
 }
-
 .game-modal.open{display:flex}
-
 .game-sheet{
  background:var(--bg);
  width:100%;
@@ -788,14 +645,12 @@ body.modal-open{overflow:hidden}
  overscroll-behavior:contain;
  padding:18px 17px 40px;
 }
-
 .modal-head{
  display:flex;
  justify-content:space-between;
  align-items:center;
  margin-bottom:20px;
 }
-
 .modal-close{
  background:var(--panel2);
  border:1px solid var(--line);
@@ -805,7 +660,6 @@ body.modal-open{overflow:hidden}
  color:white;
  font-size:22px;
 }
-
 .detail-scoreboard{
  position:relative;
  overflow:hidden;
@@ -815,7 +669,6 @@ body.modal-open{overflow:hidden}
  padding:25px 15px;
  isolation:isolate;
 }
-
 .detail-bg{
  position:absolute;
  inset:0;
@@ -825,7 +678,6 @@ body.modal-open{overflow:hidden}
  opacity:.22;
  z-index:-2;
 }
-
 .detail-scoreboard:before{
  content:"";
  position:absolute;
@@ -833,39 +685,32 @@ body.modal-open{overflow:hidden}
  background:linear-gradient(90deg,#101827D9,#10182788);
  z-index:-1;
 }
-
 .detail-scoreboard .game-team img{
  width:65px;
  height:65px;
 }
-
 .detail-scoreboard .game-score{
  font-size:clamp(26px,7vw,39px);
 }
-
 .detail-top{
  text-align:center;
  margin-bottom:22px;
 }
-
 .detail-top .muted{
  font-size:12px;
  margin-top:8px;
 }
-
 .detail-stars{
  display:grid;
  grid-template-columns:repeat(2,minmax(0,1fr));
  gap:11px;
 }
-
 .star-card{
  background:var(--panel);
  border:1px solid var(--line);
  border-radius:16px;
  overflow:hidden;
 }
-
 .star-photo{
  height:150px;
  display:flex;
@@ -875,7 +720,6 @@ body.modal-open{overflow:hidden}
  background:linear-gradient(140deg,#33405A,#743E48);
  overflow:hidden;
 }
-
 .star-photo:before{
  content:"3";
  position:absolute;
@@ -883,22 +727,18 @@ body.modal-open{overflow:hidden}
  font-weight:950;
  color:#FFFFFF0B;
 }
-
 .star-photo img{
  max-height:150px;
  max-width:100%;
  object-fit:contain;
  position:relative;
 }
-
 .star-info{padding:12px}
-
 .star-info strong{
  display:block;
  font-size:13px;
  overflow-wrap:anywhere;
 }
-
 .star-info small{
  display:block;
  margin-top:5px;
@@ -906,24 +746,20 @@ body.modal-open{overflow:hidden}
  font-size:11px;
  font-weight:850;
 }
-
 .stats-table td:first-child{min-width:115px}
 .stats-table tr.highlight td{color:var(--accent)}
-
 .detail-meta{
  color:var(--muted);
  font-size:12px;
  text-align:center;
  margin:14px 0;
 }
-
 .team-tabs{
  display:flex;
  gap:9px;
  margin:15px 0;
  overflow-x:auto;
 }
-
 .team-tab{
  flex:1;
  min-width:0;
@@ -939,72 +775,91 @@ body.modal-open{overflow:hidden}
  justify-content:center;
  gap:8px;
 }
-
 .team-tab.active{
  border-color:var(--accent);
  background:#FF65451C;
  color:white;
 }
-
 .team-tab img{
  width:25px;
  height:25px;
  object-fit:contain;
 }
-
 .team-tab span{overflow-wrap:anywhere}
-
 .team-title{
  display:flex;
  align-items:center;
  gap:12px;
  margin:24px 0 12px;
 }
-
 .team-title img{
  width:39px;
  height:39px;
  object-fit:contain;
 }
-
 .team-title h3{font-size:17px;margin:0}
-
 .team-title p{
  font-size:11px;
  color:var(--muted);
  margin:5px 0 0;
 }
-
 .stat-summary{
  display:grid;
  grid-template-columns:repeat(3,1fr);
  gap:9px;
  margin:12px 0;
 }
-
 .stat-summary>div{
  background:var(--panel2);
  border-radius:13px;
  padding:14px 8px;
  text-align:center;
 }
-
 .stat-summary strong{
  display:block;
  font-size:23px;
 }
-
 .stat-summary small{
  display:block;
  font-size:10px;
  color:var(--muted);
  margin-top:5px;
 }
-
 .team-unverified{
  font-size:11px;
  color:var(--muted);
  margin:10px 0;
+}
+.box-player{
+ display:flex;
+ align-items:center;
+ gap:8px;
+ min-width:130px;
+}
+.box-avatar{
+ width:30px;
+ height:30px;
+ flex-shrink:0;
+ border-radius:50%;
+ overflow:hidden;
+ background:linear-gradient(135deg,#364760,#763F49);
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ position:relative;
+}
+.box-avatar img{
+ width:100%;
+ height:100%;
+ object-fit:cover;
+ position:relative;
+ z-index:1;
+}
+.box-avatar span{
+ font-size:11px;
+ font-weight:900;
+ color:#FFFFFF80;
+ position:absolute;
 }
 
 @media(min-width:700px){
@@ -1044,8 +899,6 @@ body.modal-open{overflow:hidden}
 
 <main class="shell">
 
-<!-- HOME -->
-
 <section class="page active" id="home">
  <div class="kicker">YOUR DAILY BASKETBALL</div>
 
@@ -1066,11 +919,13 @@ body.modal-open{overflow:hidden}
    <small>THE LEAGUE</small>
    <strong>NBA</strong>
   </div>
+
   <div class="league-visual" onclick="openLeague('EuroLeague')">
    <img src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=700&q=85" alt="Basketball arena" loading="lazy">
    <small>EUROPE</small>
    <strong>EuroLeague</strong>
   </div>
+
   <div class="league-visual" onclick="openLeague('ACB')">
    <img src="https://images.unsplash.com/photo-1519861531473-9200262188bf?w=700&q=85" alt="Basketball" loading="lazy">
    <small>SPAIN</small>
@@ -1097,8 +952,6 @@ body.modal-open{overflow:hidden}
 
  <div class="player-grid" id="homePlayers"></div>
 </section>
-
-<!-- GAMES -->
 
 <section class="page" id="games">
  <div class="kicker">GAME CENTER</div>
@@ -1131,8 +984,6 @@ body.modal-open{overflow:hidden}
  <div class="card table-scroll" id="standings"></div>
 </section>
 
-<!-- FAVORITES -->
-
 <section class="page" id="favorites">
  <div class="kicker">PERSONALIZED</div>
  <h1 class="title" data-es="Mis favoritos" data-en="My favorites">Mis favoritos</h1>
@@ -1158,8 +1009,6 @@ body.modal-open{overflow:hidden}
 
  <p class="status-note" id="favoriteMessage"></p>
 </section>
-
-<!-- PROFILE -->
 
 <section class="page" id="profile">
  <div class="kicker">MY TRIPL3</div>
@@ -1226,8 +1075,6 @@ body.modal-open{overflow:hidden}
 
 </main>
 
-<!-- GAME MODAL -->
-
 <div class="game-modal" id="gameModal" role="dialog" aria-modal="true" aria-label="Game details">
  <div class="game-sheet">
   <div class="modal-head">
@@ -1237,8 +1084,6 @@ body.modal-open{overflow:hidden}
   <div id="gameDetail"></div>
  </div>
 </div>
-
-<!-- NAVIGATION -->
 
 <nav class="bottomnav">
  <button class="active" data-page="home" onclick="go('home')">
@@ -1274,9 +1119,9 @@ body.modal-open{overflow:hidden}
 </nav>
 
 <script>
-/* ==========================================
-   TRIPL3 CONFIGURATION
-========================================== */
+/* ========================================
+   CONFIGURATION
+======================================== */
 
 const URL_SUPABASE =
  "https://xqzbvjbmospjkdaupjhv.supabase.co";
@@ -1297,28 +1142,19 @@ const leagues={
  acb:"ACB"
 };
 
-const leagueList=["NBA","EuroLeague","ACB"];
-
-/* ==========================================
-   IMAGE LIBRARY
-
-   Official NBA headshots where verified.
-   Unsplash photos are basketball-themed
-   editorial imagery, not game-specific.
-========================================== */
+const leagueList=[
+ "NBA",
+ "EuroLeague",
+ "ACB"
+];
 
 const IMAGES={
  court:
   "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1400&q=85",
-
  arena:
   "https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=1400&q=85",
-
  basketball:
-  "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=1400&q=85",
-
- courtDetail:
-  "https://images.unsplash.com/photo-1546519638-68e109498ffc?w=900&q=80"
+  "https://images.unsplash.com/photo-1519861531473-9200262188bf?w=1400&q=85"
 };
 
 const leagueImages={
@@ -1326,6 +1162,9 @@ const leagueImages={
  euroleague:IMAGES.arena,
  acb:IMAGES.basketball
 };
+
+/* Verified NBA fallback identities.
+   Supabase player_images takes priority. */
 
 const playerCatalog=[
  {
@@ -1372,9 +1211,9 @@ const teamAliases={
  Olympiacos:["olympiacos"]
 };
 
-/* ==========================================
+/* ========================================
    STATE
-========================================== */
+======================================== */
 
 const defaultState={
  lang:"es",
@@ -1418,7 +1257,6 @@ let selectedDay="";
 
 let feedError="";
 let gamesError="";
-
 let feedLoaded=false;
 let dayLoaded=false;
 
@@ -1433,9 +1271,74 @@ let activeGame=null;
 let activeDetailStats=[];
 let selectedTeamId="all";
 
-/* ==========================================
+/* ========================================
+   PLAYER IMAGE DATABASE
+
+   Key: league_id + provider_player_id
+   Only verified images are displayed.
+======================================== */
+
+let playerImages={};
+let playerImageRecords=[];
+
+async function loadPlayerImages(){
+ try{
+  const {data,error}=await db
+   .from("player_images")
+   .select(
+    "provider_player_id,league_id,player_name,image_url"
+   )
+   .eq("verified",true)
+   .limit(1000);
+
+  if(error)throw error;
+
+  const next={};
+
+  for(const p of data||[]){
+   if(
+    !p.provider_player_id||
+    !p.league_id||
+    !/^https:\/\//i.test(p.image_url||"")
+   )continue;
+
+   next[
+    `${p.league_id}:${p.provider_player_id}`
+   ]=p.image_url;
+  }
+
+  playerImages=next;
+  playerImageRecords=data||[];
+
+  return true;
+
+ }catch(e){
+  console.error(
+   "Could not load player images:",
+   e
+  );
+
+  return false;
+ }
+}
+
+function playerImageById(
+ playerId,
+ leagueId
+){
+ if(
+  playerId==null||
+  !leagueId
+ )return "";
+
+ return playerImages[
+  `${leagueId}:${playerId}`
+ ]||"";
+}
+
+/* ========================================
    HELPERS
-========================================== */
+======================================== */
 
 function tr(es,en){
  return state.lang==="es"?es:en;
@@ -1494,16 +1397,62 @@ function playerInfo(name){
  );
 }
 
-/* Verified portrait lookup.
-   Unknown players use visual fallback.
-   We never assign another player's photo. */
-
-function photo(name){
+function nbaPhoto(name){
  const p=playerInfo(name);
 
  if(!p?.nba)return "";
 
  return `https://cdn.nba.com/headshots/nba/latest/1040x760/${p.nba}.png`;
+}
+
+function findPlayerStat(name){
+ const matching=stats.filter(
+  s=>norm(s.player_name)===norm(name)
+ );
+
+ return matching.sort(
+  (a,b)=>
+   new Date(b.updated_at)-
+   new Date(a.updated_at)
+ )[0]||null;
+}
+
+function findPlayerLeague(stat){
+ if(!stat)return "";
+
+ const game=allGames.find(
+  g=>String(g.provider_game_id)===
+     String(stat.provider_game_id)
+ );
+
+ return game?.league_id||"";
+}
+
+function verifiedPlayerPhoto(stat,leagueId){
+ if(!stat)return "";
+
+ return playerImageById(
+  stat.provider_player_id,
+  leagueId
+ );
+}
+
+function photoForPlayer(
+ name,
+ playerId=null,
+ leagueId=""
+){
+ const verified=playerImageById(
+  playerId,
+  leagueId
+ );
+
+ if(verified)return verified;
+
+ /* Fallback only for four manually
+    identified NBA players. */
+
+ return nbaPhoto(name);
 }
 
 function playerFallback(name){
@@ -1517,24 +1466,36 @@ function playerFallback(name){
 
  return `<span style="
   position:absolute;
-  z-index:1;
+  z-index:0;
   font-size:44px;
   font-weight:950;
   color:#FFFFFF55;
  ">${esc(initials||"3")}</span>`;
 }
 
-function playerPortrait(name,className=""){
- const url=photo(name);
+function playerPortraitById(
+ name,
+ playerId,
+ leagueId,
+ className=""
+){
+ const url=photoForPlayer(
+  name,
+  playerId,
+  leagueId
+ );
 
  return `<div class="${className}">
   ${playerFallback(name)}
-  ${url?`<img
-   src="${esc(url)}"
-   alt="${esc(name)}"
-   loading="lazy"
-   onerror="this.style.display='none'"
-  >`:""}
+
+  ${url?`
+   <img
+    src="${esc(url)}"
+    alt="${esc(name)}"
+    loading="lazy"
+    onerror="this.style.display='none'"
+   >
+  `:""}
  </div>`;
 }
 
@@ -1594,18 +1555,23 @@ function playerScore(s){
 function leaders(g){
  return gameStats(g)
   .filter(s=>s.player_name)
-  .sort((a,b)=>playerScore(b)-playerScore(a));
+  .sort(
+   (a,b)=>playerScore(b)-playerScore(a)
+  );
 }
 
 function gameRank(g){
- let score=g.status==="live"?45:0;
+ let score=
+  g.status==="live"?45:0;
 
  if(favoriteGame(g))score+=20;
 
  if(
   g.home_score!=null&&
   g.away_score!=null&&
-  Math.abs(g.home_score-g.away_score)<=5
+  Math.abs(
+   g.home_score-g.away_score
+  )<=5
  ){
   score+=12;
  }
@@ -1622,19 +1588,25 @@ function gameRank(g){
 function zoneDay(date){
  const d=new Date(date);
 
- if(Number.isNaN(d.getTime()))return "";
+ if(Number.isNaN(d.getTime())){
+  return "";
+ }
 
- const parts=new Intl.DateTimeFormat(
-  "en-CA",
-  {
-   timeZone:state.timezone,
-   year:"numeric",
-   month:"2-digit",
-   day:"2-digit"
-  }
- ).formatToParts(d);
+ const parts=
+  new Intl.DateTimeFormat(
+   "en-CA",
+   {
+    timeZone:state.timezone,
+    year:"numeric",
+    month:"2-digit",
+    day:"2-digit"
+   }
+  ).formatToParts(d);
 
- const get=t=>parts.find(x=>x.type===t)?.value;
+ const get=t=>
+  parts.find(
+   x=>x.type===t
+  )?.value;
 
  return `${get("year")}-${get("month")}-${get("day")}`;
 }
@@ -1646,7 +1618,8 @@ function currentDay(){
 function dateLabel(value){
  try{
   return new Intl.DateTimeFormat(
-   state.lang==="es"?"es-ES":"en-GB",
+   state.lang==="es"?
+    "es-ES":"en-GB",
    {
     timeZone:state.timezone,
     day:"numeric",
@@ -1660,9 +1633,9 @@ function dateLabel(value){
  }
 }
 
-/* ==========================================
-   NAVIGATION / LANGUAGE
-========================================== */
+/* ========================================
+   NAVIGATION
+======================================== */
 
 function translate(){
  document.documentElement.lang=state.lang;
@@ -1731,51 +1704,72 @@ $("langBtn").onclick=()=>{
  );
 };
 
-/* ==========================================
+/* ========================================
    PLAYER CARDS
-========================================== */
+======================================== */
 
 function playerCard(p,stat=null){
+ const leagueId=
+  findPlayerLeague(stat);
+
+ const url=photoForPlayer(
+  p.name,
+  stat?.provider_player_id,
+  leagueId
+ );
+
  return `<div class="player-card">
-  ${playerPortrait(p.name,"player-photo")}
+  ${playerPortraitById(
+   p.name,
+   stat?.provider_player_id,
+   leagueId,
+   "player-photo"
+  )}
+
   <div class="player-label">
    <strong>${esc(p.name)}</strong>
    <small>${esc(p.team)}</small>
-   ${stat?`<div class="player-stat">
-    ${statline(stat)}
-   </div>`:""}
+
+   ${stat?`
+    <div class="player-stat">
+     ${statline(stat)}
+    </div>
+   `:""}
   </div>
  </div>`;
 }
 
 function renderPlayers(){
  const chosen=playerCatalog.filter(
-  p=>state.favoritePlayers.includes(p.name)
+  p=>state.favoritePlayers.includes(
+   p.name
+  )
  );
 
  const html=chosen.map(p=>{
-  const stat=stats
-   .filter(s=>norm(s.player_name)===norm(p.name))
-   .sort((a,b)=>new Date(b.updated_at)-new Date(a.updated_at))[0];
+  const stat=findPlayerStat(p.name);
 
   return playerCard(p,stat);
- }).join("")||`<div class="empty">
-  ${tr(
-   "Añade tus jugadores favoritos",
-   "Add your favorite players"
-  )}
- </div>`;
+ }).join("")||`
+  <div class="empty">
+   ${tr(
+    "Añade tus jugadores favoritos",
+    "Add your favorite players"
+   )}
+  </div>`;
 
  $("homePlayers").innerHTML=html;
  $("favoritePlayers").innerHTML=html;
 }
 
-/* ==========================================
+/* ========================================
    GAME CARDS
-========================================== */
+======================================== */
 
 function gameScore(g){
- if(state.hideScores)return "•• : ••";
+ if(state.hideScores){
+  return "•• : ••";
+ }
 
  if(
   g.home_score==null||
@@ -1800,26 +1794,35 @@ function gameState(g){
 
 function logoHtml(url){
  return /^https:\/\//i.test(url||"")
-  ?`<img src="${esc(url)}" alt=""
+  ?`<img
+    src="${esc(url)}"
+    alt=""
     loading="lazy"
-    onerror="this.style.display='none'">`
+    onerror="this.style.display='none'"
+   >`
   :"";
 }
 
 function miniGame(g){
- return `<div class="mini-game"
+ return `<div
+  class="mini-game"
   data-game-id="${esc(g.provider_game_id)}"
   role="button"
   tabindex="0">
 
   <div class="kicker">
-   ${esc(leagues[g.league_id]||g.league_id)}
+   ${esc(
+    leagues[g.league_id]||
+    g.league_id
+   )}
    · ${gameState(g)}
   </div>
 
   <div class="mini-logos">
    ${logoHtml(g.home_team_logo)}
-   <div class="mini-score">${gameScore(g)}</div>
+   <div class="mini-score">
+    ${gameScore(g)}
+   </div>
    ${logoHtml(g.away_team_logo)}
   </div>
 
@@ -1838,13 +1841,17 @@ function teamMarkup(name,logo){
 }
 
 function fullGame(g){
- return `<div class="game-card"
+ return `<div
+  class="game-card"
   data-game-id="${esc(g.provider_game_id)}"
   role="button"
   tabindex="0">
 
   <div class="game-top">
-   <span>${esc(leagues[g.league_id]||"")}</span>
+   <span>${esc(
+    leagues[g.league_id]||""
+   )}</span>
+
    <span>
     ${g.status==="live"?
      '<span class="dot"></span> ':""}
@@ -1853,9 +1860,19 @@ function fullGame(g){
   </div>
 
   <div class="game-main">
-   ${teamMarkup(g.home_team,g.home_team_logo)}
-   <div class="game-score">${gameScore(g)}</div>
-   ${teamMarkup(g.away_team,g.away_team_logo)}
+   ${teamMarkup(
+    g.home_team,
+    g.home_team_logo
+   )}
+
+   <div class="game-score">
+    ${gameScore(g)}
+   </div>
+
+   ${teamMarkup(
+    g.away_team,
+    g.away_team_logo
+   )}
   </div>
 
   <div class="game-bottom">
@@ -1864,9 +1881,9 @@ function fullGame(g){
  </div>`;
 }
 
-/* ==========================================
+/* ========================================
    TRIPL3 NOW
-========================================== */
+======================================== */
 
 function scoreSentence(g){
  if(
@@ -1887,8 +1904,8 @@ function scoreSentence(g){
    );
   }
 
-  const winner=h>a?
-   g.home_team:g.away_team;
+  const winner=
+   h>a?g.home_team:g.away_team;
 
   return tr(
    `${winner} lidera por ${Math.abs(h-a)} puntos.`,
@@ -1903,8 +1920,8 @@ function scoreSentence(g){
   );
  }
 
- const winner=h>a?
-  g.home_team:g.away_team;
+ const winner=
+  h>a?g.home_team:g.away_team;
 
  return tr(
   `${winner} gana ${Math.max(h,a)}-${Math.min(h,a)}.`,
@@ -1958,7 +1975,9 @@ function storyData(g){
    playerHeadline(s):
    `${g.home_team} vs ${g.away_team}`,
   subtitle:scoreSentence(g),
-  label:`${leagues[g.league_id]||""} · ${gameState(g)}`
+  label:`${
+   leagues[g.league_id]||""
+  } · ${gameState(g)}`
  };
 }
 
@@ -1971,7 +1990,9 @@ function renderBriefing(){
 
  const live=eligible
   .filter(g=>g.status==="live")
-  .sort((a,b)=>gameRank(b)-gameRank(a));
+  .sort(
+   (a,b)=>gameRank(b)-gameRank(a)
+  );
 
  const finished=eligible.filter(
   g=>g.status==="finished"&&
@@ -1980,11 +2001,15 @@ function renderBriefing(){
  );
 
  const recent=finished
-  .sort((a,b)=>
-   new Date(b.game_date)-new Date(a.game_date)
+  .sort(
+   (a,b)=>
+    new Date(b.game_date)-
+    new Date(a.game_date)
   )
   .slice(0,35)
-  .sort((a,b)=>gameRank(b)-gameRank(a));
+  .sort(
+   (a,b)=>gameRank(b)-gameRank(a)
+  );
 
  const featured=live.length?
   live[0]:recent[0];
@@ -1999,16 +2024,21 @@ function renderBriefing(){
  if(!featured){
   $("heroArea").innerHTML=`
    <div class="hero">
-    <img class="hero-img"
+    <img
+     class="hero-img"
      src="${IMAGES.court}"
      alt="Basketball court">
+
     <div class="hero-shade"></div>
+
     <div class="hero-content">
      <span class="pill">TRIPL3 NOW</span>
+
      <h1>${tr(
       "EL BASKET NO PARA",
       "BASKETBALL NEVER STOPS"
      )}</h1>
+
      <p>${feedError?
       esc(feedError):
       feedLoaded?
@@ -2024,29 +2054,36 @@ function renderBriefing(){
   $("stories").innerHTML="";
   $("scoreStrip").innerHTML="";
   $("feedTime").textContent="";
+
   return;
  }
 
  const story=storyData(featured);
- const portrait=story.stat?
-  photo(story.stat.player_name):"";
 
- const background=leaguePhoto(
-  featured.league_id
- );
+ const portrait=story.stat?
+  photoForPlayer(
+   story.stat.player_name,
+   story.stat.provider_player_id,
+   featured.league_id
+  ):"";
 
  $("heroArea").innerHTML=`
-  <div class="hero"
+  <div
+   class="hero"
    data-game-id="${esc(featured.provider_game_id)}"
    role="button"
    tabindex="0">
 
-   <img class="hero-img"
-    src="${esc(background)}"
+   <img
+    class="hero-img"
+    src="${esc(
+     leaguePhoto(featured.league_id)
+    )}"
     alt="Basketball photography">
 
    ${portrait?`
-    <img class="hero-player"
+    <img
+     class="hero-player"
      src="${esc(portrait)}"
      alt="${esc(story.stat.player_name)}"
      onerror="this.style.display='none'">
@@ -2059,10 +2096,14 @@ function renderBriefing(){
      ${featured.status==="live"?
       '<span class="dot"></span> LIVE':
       "TRIPL3 NOW"}
-     · ${esc(leagues[featured.league_id]||"")}
+
+     · ${esc(
+      leagues[featured.league_id]||""
+     )}
     </span>
 
     <h1>${esc(story.title)}</h1>
+
     <p>${esc(story.subtitle)}</p>
 
     ${story.stat?`
@@ -2078,18 +2119,28 @@ function renderBriefing(){
 
  $("stories").innerHTML=extras.map(g=>{
   const d=storyData(g);
-  const img=d.stat?
-   photo(d.stat.player_name):"";
 
-  return `<div class="card story"
+  const img=d.stat?
+   photoForPlayer(
+    d.stat.player_name,
+    d.stat.provider_player_id,
+    g.league_id
+   ):"";
+
+  return `<div
+   class="card story"
    data-game-id="${esc(g.provider_game_id)}"
    role="button"
    tabindex="0">
 
    <div class="story-art">
     <img
-     src="${esc(img||leaguePhoto(g.league_id))}"
-     alt="${esc(d.stat?.player_name||"Basketball")}"
+     src="${esc(
+      img||leaguePhoto(g.league_id)
+     )}"
+     alt="${esc(
+      d.stat?.player_name||"Basketball"
+     )}"
      loading="lazy"
      onerror="this.src='${IMAGES.basketball}'">
    </div>
@@ -2109,20 +2160,23 @@ function renderBriefing(){
     `:""}
    </div>
   </div>`;
- }).join("")||`<div class="empty">
-  ${tr(
-   "Más historias próximamente.",
-   "More stories coming soon."
-  )}
- </div>`;
+ }).join("")||`
+  <div class="empty">
+   ${tr(
+    "Más historias próximamente.",
+    "More stories coming soon."
+   )}
+  </div>`;
 
  const recentScores=[...eligible]
   .filter(g=>
    g.status==="live"||
    g.status==="finished"
   )
-  .sort((a,b)=>
-   new Date(b.game_date)-new Date(a.game_date)
+  .sort(
+   (a,b)=>
+    new Date(b.game_date)-
+    new Date(a.game_date)
   )
   .slice(0,10);
 
@@ -2136,9 +2190,9 @@ function renderBriefing(){
   </div>`;
 }
 
-/* ==========================================
-   VERIFIED TEAM BOX SCORES
-========================================== */
+/* ========================================
+   TEAM BOX SCORES
+======================================== */
 
 function teamKey(s){
  return s.provider_team_id==null?
@@ -2189,7 +2243,9 @@ function verifiedTeamName(game,teamId){
  return null;
 }
 
-function teamDisplayName(game,teamId,index){
+function teamDisplayName(
+ game,teamId,index
+){
  const name=verifiedTeamName(
   game,teamId
  );
@@ -2232,28 +2288,32 @@ function teamLogoFor(game,teamId){
 }
 
 function orderedTeamIds(game,groups){
- return [...groups.keys()].sort((a,b)=>{
-  const order=id=>{
-   if(
-    game.home_team_id!=null&&
-    String(id)===String(game.home_team_id)
-   )return 0;
+ return [...groups.keys()].sort(
+  (a,b)=>{
+   const order=id=>{
+    if(
+     game.home_team_id!=null&&
+     String(id)===
+     String(game.home_team_id)
+    )return 0;
 
-   if(
-    game.away_team_id!=null&&
-    String(id)===String(game.away_team_id)
-   )return 1;
+    if(
+     game.away_team_id!=null&&
+     String(id)===
+     String(game.away_team_id)
+    )return 1;
 
-   if(id==="unknown")return 3;
+    if(id==="unknown")return 3;
 
-   return 2;
-  };
+    return 2;
+   };
 
-  return order(a)-order(b);
- });
+   return order(a)-order(b);
+  }
+ );
 }
 
-function playerStatsTable(rows){
+function playerStatsTable(rows,leagueId){
  const sorted=[...rows].sort(
   (a,b)=>playerScore(b)-playerScore(a)
  );
@@ -2272,19 +2332,47 @@ function playerStatsTable(rows){
    </thead>
 
    <tbody>
-    ${sorted.map(s=>`
-     <tr class="${
-      favoritePlayer(s.player_name)?
-       "highlight":""
-     }">
-      <td>${esc(s.player_name)}</td>
-      <td>${esc(s.minutes??"—")}</td>
-      <td>${s.points??"—"}</td>
-      <td>${s.rebounds??"—"}</td>
-      <td>${s.assists??"—"}</td>
-      <td>${s.threepoints_made??"—"}</td>
-     </tr>
-    `).join("")}
+    ${sorted.map(s=>{
+     const image=photoForPlayer(
+      s.player_name,
+      s.provider_player_id,
+      leagueId
+     );
+
+     return `
+      <tr class="${
+       favoritePlayer(s.player_name)?
+        "highlight":""
+      }">
+       <td>
+        <div class="box-player">
+         <div class="box-avatar">
+          <span>${esc(
+           String(s.player_name||"")
+            .charAt(0)
+          )}</span>
+
+          ${image?`
+           <img
+            src="${esc(image)}"
+            alt=""
+            loading="lazy"
+            onerror="this.style.display='none'">
+          `:""}
+         </div>
+
+         <span>${esc(s.player_name)}</span>
+        </div>
+       </td>
+
+       <td>${esc(s.minutes??"—")}</td>
+       <td>${s.points??"—"}</td>
+       <td>${s.rebounds??"—"}</td>
+       <td>${s.assists??"—"}</td>
+       <td>${s.threepoints_made??"—"}</td>
+      </tr>
+     `;
+    }).join("")}
    </tbody>
   </table>
  </div>`;
@@ -2293,7 +2381,9 @@ function playerStatsTable(rows){
 function teamSummary(rows){
  const total=key=>rows.reduce(
   (sum,s)=>
-   sum+(numberOrNull(s[key])??0),
+   sum+(
+    numberOrNull(s[key])??0
+   ),
   0
  );
 
@@ -2302,10 +2392,12 @@ function teamSummary(rows){
    <strong>${total("points")}</strong>
    <small>PTS</small>
   </div>
+
   <div>
    <strong>${total("rebounds")}</strong>
    <small>REB</small>
   </div>
+
   <div>
    <strong>${total("assists")}</strong>
    <small>AST</small>
@@ -2349,7 +2441,11 @@ function teamBoxScore(
  `:""}
 
  ${teamSummary(rows)}
- ${playerStatsTable(rows)}`;
+
+ ${playerStatsTable(
+  rows,
+  game.league_id
+ )}`;
 }
 
 function selectDetailTeam(id){
@@ -2388,8 +2484,10 @@ function renderGameDetail(
 
  const starsHtml=stars.map(s=>{
   return `<div class="star-card">
-   ${playerPortrait(
+   ${playerPortraitById(
     s.player_name,
+    s.provider_player_id,
+    game.league_id,
     "star-photo"
    )}
 
@@ -2404,7 +2502,8 @@ function renderGameDetail(
   <div class="team-tabs">
    <button
     class="team-tab ${
-     selectedTeamId==="all"?"active":""
+     selectedTeamId==="all"?
+      "active":""
     }"
     data-team-id="all">
     ${tr("Todos","All")}
@@ -2413,7 +2512,8 @@ function renderGameDetail(
    ${ids.map((id,index)=>`
     <button
      class="team-tab ${
-      selectedTeamId===id?"active":""
+      selectedTeamId===id?
+       "active":""
      }"
      data-team-id="${esc(id)}">
 
@@ -2422,7 +2522,9 @@ function renderGameDetail(
      )}
 
      <span>${esc(
-      teamDisplayName(game,id,index)
+      teamDisplayName(
+       game,id,index
+      )
      )}</span>
     </button>
    `).join("")}
@@ -2432,7 +2534,9 @@ function renderGameDetail(
  const visibleIds=
   selectedTeamId==="all"?
    ids:
-   ids.filter(id=>id===selectedTeamId);
+   ids.filter(
+    id=>id===selectedTeamId
+   );
 
  const tables=players.length?
   visibleIds.map(id=>
@@ -2460,8 +2564,11 @@ function renderGameDetail(
 
  $("gameDetail").innerHTML=`
   <div class="detail-scoreboard">
-   <img class="detail-bg"
-    src="${esc(leaguePhoto(game.league_id))}"
+   <img
+    class="detail-bg"
+    src="${esc(
+     leaguePhoto(game.league_id)
+    )}"
     alt="">
 
    <div class="detail-top">
@@ -2529,9 +2636,9 @@ function renderGameDetail(
   });
 }
 
-/* ==========================================
+/* ========================================
    GAME DETAIL LOADING
-========================================== */
+======================================== */
 
 async function openGame(id){
  const game=[
@@ -2566,7 +2673,10 @@ async function openGame(id){
     "provider_game_id,provider_team_id,provider_player_id,player_name,minutes,points,rebounds,assists,threepoints_made"
    )
    .eq("provider","api-sports")
-   .eq("provider_game_id",game.provider_game_id)
+   .eq(
+    "provider_game_id",
+    game.provider_game_id
+   )
    .limit(500);
 
   if(error)throw error;
@@ -2600,6 +2710,7 @@ async function openGame(id){
 
 function closeGame(){
  ++detailRequest;
+
  activeGame=null;
  activeDetailStats=[];
 
@@ -2628,7 +2739,10 @@ document.addEventListener(
    e.target.matches("[data-game-id]")
   ){
    e.preventDefault();
-   openGame(e.target.dataset.gameId);
+
+   openGame(
+    e.target.dataset.gameId
+   );
   }
  }
 );
@@ -2641,14 +2755,16 @@ document.addEventListener(
   );
 
   if(card){
-   openGame(card.dataset.gameId);
+   openGame(
+    card.dataset.gameId
+   );
   }
  }
 );
 
-/* ==========================================
+/* ========================================
    STANDINGS
-========================================== */
+======================================== */
 
 function renderStandings(){
  const map=new Map();
@@ -2692,8 +2808,9 @@ function renderStandings(){
  }
 
  const rows=[...map.values()]
-  .sort((a,b)=>
-   b.w-a.w||b.d-a.d
+  .sort(
+   (a,b)=>
+    b.w-a.w||b.d-a.d
   );
 
  $("standings").innerHTML=
@@ -2729,9 +2846,9 @@ function renderStandings(){
   </div>`;
 }
 
-/* ==========================================
+/* ========================================
    GAMES PAGE
-========================================== */
+======================================== */
 
 function renderGames(){
  $("gameDate").value=selectedDay;
@@ -2740,7 +2857,8 @@ function renderGames(){
   leagueList.map(l=>`
    <button
     class="filter ${
-     selectedLeague===l?"active":""
+     selectedLeague===l?
+      "active":""
     }"
     onclick="selectLeague('${l}')">
     ${l}
@@ -2749,8 +2867,10 @@ function renderGames(){
 
  const games=dayGames.filter(
   g=>
-   leagues[g.league_id]===selectedLeague&&
-   zoneDay(g.game_date)===selectedDay
+   leagues[g.league_id]===
+    selectedLeague&&
+   zoneDay(g.game_date)===
+    selectedDay
  );
 
  $("gameList").innerHTML=
@@ -2764,14 +2884,23 @@ function renderGames(){
        "No hay partidos para este día.",
        "No games on this date."
       ):
-      tr("Cargando...","Loading...")
+      tr(
+       "Cargando...",
+       "Loading..."
+      )
     }
    </div>`;
 
  $("spoilerButton").textContent=
   state.hideScores?
-   tr("Mostrar puntos","Show scores"):
-   tr("Ocultar puntos","Hide scores");
+   tr(
+    "Mostrar puntos",
+    "Show scores"
+   ):
+   tr(
+    "Ocultar puntos",
+    "Hide scores"
+   );
 
  renderStandings();
 }
@@ -2782,9 +2911,9 @@ function selectLeague(l){
 }
 
 function changeDate(v){
- if(!/^\d{4}-\d{2}-\d{2}$/.test(v)){
-  return;
- }
+ if(
+  !/^\d{4}-\d{2}-\d{2}$/.test(v)
+ )return;
 
  selectedDay=v;
  loadDay();
@@ -2811,7 +2940,9 @@ function today(){
 }
 
 function toggleSpoilers(){
- state.hideScores=!state.hideScores;
+ state.hideScores=
+  !state.hideScores;
+
  persist();
 
  renderGames();
@@ -2825,9 +2956,9 @@ function toggleSpoilers(){
  }
 }
 
-/* ==========================================
+/* ========================================
    FAVORITES
-========================================== */
+======================================== */
 
 function optionButtons(
  id,items,key
@@ -2835,11 +2966,14 @@ function optionButtons(
  $(id).innerHTML=items.map(item=>`
   <button
    class="fav-chip ${
-    state[key].includes(item)?"on":""
+    state[key].includes(item)?
+     "on":""
    }"
    data-value="${esc(item)}">
 
-   ${state[key].includes(item)?"✓ ":"+ "}
+   ${state[key].includes(item)?
+    "✓ ":"+ "}
+
    ${esc(item)}
   </button>
  `).join("");
@@ -2851,7 +2985,9 @@ function optionButtons(
 
     state[key]=
      state[key].includes(item)?
-      state[key].filter(x=>x!==item):
+      state[key].filter(
+       x=>x!==item
+      ):
       [...state[key],item];
 
     persist();
@@ -2864,7 +3000,9 @@ function optionButtons(
 function renderFavorites(){
  optionButtons(
   "playerOptions",
-  playerCatalog.map(p=>p.name),
+  playerCatalog.map(
+   p=>p.name
+  ),
   "favoritePlayers"
  );
 
@@ -2881,9 +3019,9 @@ function renderFavorites(){
  );
 }
 
-/* ==========================================
+/* ========================================
    MAIN RENDER
-========================================== */
+======================================== */
 
 function render(){
  translate();
@@ -2901,11 +3039,9 @@ function render(){
  }
 }
 
-/* ==========================================
+/* ========================================
    SUPABASE QUERIES
-
-   Team IDs are included.
-========================================== */
+======================================== */
 
 const gameFields=
  "provider_game_id,league_id,home_team,away_team,home_team_id,away_team_id,home_team_logo,away_team_logo,home_score,away_score,game_date,status";
@@ -2960,19 +3096,25 @@ async function loadFeed(){
    i<ids.length;
    i+=20
   ){
-   const {data:rows,error:e}=await db
-    .from("player_game_stats")
-    .select(statFields)
-    .eq("provider","api-sports")
-    .in(
-     "provider_game_id",
-     ids.slice(i,i+20)
-    )
-    .limit(1000);
+   const {data:rows,error:e}=
+    await db
+     .from("player_game_stats")
+     .select(statFields)
+     .eq(
+      "provider",
+      "api-sports"
+     )
+     .in(
+      "provider_game_id",
+      ids.slice(i,i+20)
+     )
+     .limit(1000);
 
    if(e)throw e;
 
-   found.push(...(rows||[]));
+   found.push(
+    ...(rows||[])
+   );
   }
 
   if(seq!==feedRequest)return;
@@ -2990,7 +3132,9 @@ async function loadFeed(){
  }catch(e){
   if(seq!==feedRequest)return;
 
-  feedError=e.message||String(e);
+  feedError=
+   e.message||String(e);
+
   feedLoaded=true;
 
   console.error(e);
@@ -3044,7 +3188,9 @@ async function loadDay(){
  }catch(e){
   if(seq!==dayRequest)return;
 
-  gamesError=e.message||String(e);
+  gamesError=
+   e.message||String(e);
+
   dayLoaded=true;
 
   console.error(e);
@@ -3060,9 +3206,9 @@ async function refreshAll(){
  ]);
 }
 
-/* ==========================================
-   AUTHENTICATION
-========================================== */
+/* ========================================
+   AUTH
+======================================== */
 
 function updateAuth(){
  $("authForm").style.display=
@@ -3134,7 +3280,10 @@ async function login(){
  $("authMessage").textContent=
   error?
    error.message:
-   tr("Conectada.","Signed in.");
+   tr(
+    "Conectada.",
+    "Signed in."
+   );
 }
 
 async function logout(){
@@ -3167,7 +3316,10 @@ async function savePreferences(){
  $("authMessage").textContent=
   error?
    error.message:
-   tr("Guardado.","Saved.");
+   tr(
+    "Guardado.",
+    "Saved."
+   );
 }
 
 async function loadUserData(){
@@ -3178,7 +3330,9 @@ async function loadUserData(){
  const {data:profile,error:pe}=
   await db
    .from("profiles")
-   .select("language,timezone")
+   .select(
+    "language,timezone"
+   )
    .eq("id",uid)
    .maybeSingle();
 
@@ -3188,14 +3342,18 @@ async function loadUserData(){
   return;
  }
 
- if(!user||user.id!==uid)return;
+ if(
+  !user||
+  user.id!==uid
+ )return;
 
  if(profile){
   state.lang=
    profile.language||"es";
 
   state.timezone=
-   profile.timezone||"Europe/Vienna";
+   profile.timezone||
+   "Europe/Vienna";
  }
 
  const {data:favs,error:fe}=
@@ -3212,7 +3370,10 @@ async function loadUserData(){
   return;
  }
 
- if(!user||user.id!==uid)return;
+ if(
+  !user||
+  user.id!==uid
+ )return;
 
  if(favs){
   state.favoriteTeams=favs
@@ -3251,7 +3412,10 @@ async function syncFavorites(){
  favoritesBusy=true;
 
  $("favoriteMessage").textContent=
-  tr("Guardando...","Saving...");
+  tr(
+   "Guardando...",
+   "Saving..."
+  );
 
  try{
   const {data:teams,error:te}=
@@ -3328,9 +3492,9 @@ async function syncFavorites(){
  }
 }
 
-/* ==========================================
+/* ========================================
    AUTH LISTENER
-========================================== */
+======================================== */
 
 db.auth.onAuthStateChange(
  (event,session)=>{
@@ -3352,12 +3516,15 @@ db.auth.onAuthStateChange(
  }
 );
 
-/* ==========================================
+/* ========================================
    INITIALIZATION
-========================================== */
+======================================== */
 
 async function init(){
  selectedDay=currentDay();
+
+ /* Load verified player images first. */
+ await loadPlayerImages();
 
  render();
 
@@ -3371,7 +3538,8 @@ async function init(){
    error.message;
  }
 
- user=data?.session?.user||null;
+ user=
+  data?.session?.user||null;
 
  updateAuth();
 
@@ -3382,9 +3550,14 @@ async function init(){
 
 init();
 
-setInterval(()=>{
+setInterval(async()=>{
  if(!document.hidden){
-  refreshAll();
+  await Promise.all([
+   loadPlayerImages(),
+   refreshAll()
+  ]);
+
+  render();
  }
 },30000);
 
