@@ -17,7 +17,7 @@
 body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
 button,input,select{font:inherit}
 button{cursor:pointer}
-button:focus-visible,input:focus-visible{outline:2px solid var(--accent)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .topbar{height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line);background:#080D18F5;position:sticky;top:0;z-index:10}
 .logo{font-size:27px;font-weight:950;letter-spacing:-1.5px}
 .logo span{color:var(--accent)}
@@ -116,12 +116,11 @@ body.modal-open{overflow:hidden}
 .stats-table td:first-child{min-width:115px}
 .stats-table tr.highlight td{color:var(--accent)}
 .detail-meta{color:var(--muted);font-size:12px;text-align:center;margin:14px 0}
-
-/* NEW: TEAM BOX SCORES */
 .team-tabs{display:flex;gap:9px;margin:15px 0;overflow-x:auto}
 .team-tab{flex:1;min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 8px;color:var(--muted);font-size:12px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:8px}
 .team-tab.active{border-color:var(--accent);background:#FF65451C;color:white}
 .team-tab img{width:25px;height:25px;object-fit:contain}
+.team-tab span{overflow-wrap:anywhere}
 .team-title{display:flex;align-items:center;gap:12px;margin:24px 0 12px}
 .team-title img{width:39px;height:39px;object-fit:contain}
 .team-title h3{font-size:17px;margin:0}
@@ -292,6 +291,7 @@ const teamAliases={
  "Real Madrid":["real madrid"],"Barça":["barcelona","barca"],
  "Valencia Basket":["valencia"],Olympiacos:["olympiacos"]
 };
+
 let state;
 try{
  state={
@@ -308,13 +308,13 @@ try{
 for(const key of ["favoritePlayers","favoriteTeams","favoriteLeagues"]){
  if(!Array.isArray(state[key]))state[key]=[];
 }
+
 let user=null,allGames=[],stats=[],dayGames=[];
 let selectedLeague="NBA",selectedDay="";
 let feedError="",gamesError="",feedLoaded=false,dayLoaded=false;
 let feedRequest=0,dayRequest=0,detailRequest=0;
 let favoritesBusy=false,favoritesQueued=false;
 let activeGame=null,activeDetailStats=[],selectedTeamId="all";
-let verifiedTeamNames=new Map();
 
 function tr(es,en){return state.lang==="es"?es:en}
 function persist(){localStorage.setItem("tripl3_premium",JSON.stringify(state))}
@@ -490,7 +490,7 @@ function renderBriefing(){
  `<div class="empty">${tr("Sin marcadores recientes","No recent scores")}</div>`;
 }
 
-/* NEW TEAM-BASED BOX SCORE */
+/* BOX SCORE WITH VERIFIED TEAM IDS */
 
 function teamKey(s){
  return s.provider_team_id==null?"unknown":String(s.provider_team_id);
@@ -505,7 +505,15 @@ function groupPlayers(rows){
  return groups;
 }
 function verifiedTeamName(game,teamId){
- return verifiedTeamNames.get(`${game.league_id}:${teamId}`)||null;
+ if(teamId==null||teamId==="unknown")return null;
+ const id=String(teamId);
+ if(game.home_team_id!=null&&String(game.home_team_id)===id){
+  return game.home_team;
+ }
+ if(game.away_team_id!=null&&String(game.away_team_id)===id){
+  return game.away_team;
+ }
+ return null;
 }
 function teamDisplayName(game,teamId,index){
  const name=verifiedTeamName(game,teamId);
@@ -514,11 +522,26 @@ function teamDisplayName(game,teamId,index){
  return tr(`Equipo ${index+1}`,`Team ${index+1}`);
 }
 function teamLogoFor(game,teamId){
- const name=verifiedTeamName(game,teamId);
- if(!name)return "";
- if(norm(name)===norm(game.home_team))return game.home_team_logo||"";
- if(norm(name)===norm(game.away_team))return game.away_team_logo||"";
+ if(teamId==null)return "";
+ const id=String(teamId);
+ if(game.home_team_id!=null&&String(game.home_team_id)===id){
+  return game.home_team_logo||"";
+ }
+ if(game.away_team_id!=null&&String(game.away_team_id)===id){
+  return game.away_team_logo||"";
+ }
  return "";
+}
+function orderedTeamIds(game,groups){
+ return [...groups.keys()].sort((a,b)=>{
+  const order=id=>{
+   if(game.home_team_id!=null&&String(id)===String(game.home_team_id))return 0;
+   if(game.away_team_id!=null&&String(id)===String(game.away_team_id))return 1;
+   if(id==="unknown")return 3;
+   return 2;
+  };
+  return order(a)-order(b);
+ });
 }
 function logoHtml(url){
  return /^https:\/\//i.test(url||"")?`<img src="${esc(url)}" alt="" onerror="this.style.display='none'">`:"";
@@ -570,7 +593,7 @@ function renderGameDetail(game,rows,loading=false,error=""){
  const players=[...rows].sort((a,b)=>playerScore(b)-playerScore(a));
  const stars=players.slice(0,3);
  const groups=groupPlayers(players);
- const ids=[...groups.keys()].sort((a,b)=>a==="unknown"?1:b==="unknown"?-1:Number(a)-Number(b));
+ const ids=orderedTeamIds(game,groups);
  if(selectedTeamId!=="all"&&!groups.has(selectedTeamId))selectedTeamId="all";
 
  const starsHtml=stars.map(s=>{
@@ -625,7 +648,7 @@ function renderGameDetail(game,rows,loading=false,error=""){
  });
 }
 async function openGame(id){
- const game=[...allGames,...dayGames].find(x=>String(x.provider_game_id)===String(id));
+ const game=[...dayGames,...allGames].find(x=>String(x.provider_game_id)===String(id));
  if(!game)return;
  activeGame=game;
  activeDetailStats=gameStats(game);
@@ -721,7 +744,9 @@ function render(){
  translate();renderPlayers();renderBriefing();renderGames();renderFavorites();updateAuth();
  if(activeGame)renderGameDetail(activeGame,activeDetailStats);
 }
-const gameFields="provider_game_id,league_id,home_team,away_team,home_team_logo,away_team_logo,home_score,away_score,game_date,status";
+
+/* UPDATED: INCLUDE OFFICIAL TEAM IDS */
+const gameFields="provider_game_id,league_id,home_team,away_team,home_team_id,away_team_id,home_team_logo,away_team_logo,home_score,away_score,game_date,status";
 const statFields="provider_game_id,provider_team_id,provider_player_id,player_name,minutes,points,rebounds,assists,threepoints_made,updated_at";
 
 async function loadFeed(){
