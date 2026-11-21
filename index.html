@@ -1132,6 +1132,13 @@ async function init() {
 }
 
 init();
+
+// Consultar los resultados de Supabase cada 10 segundos
+setInterval(() => {
+  if (!document.hidden) {
+    loadGames();
+  }
+}, 10000);
 </script>
 
 </body>
