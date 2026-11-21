@@ -3,2360 +3,653 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0B1020">
-<title>TRIPL3 | Basketball</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080D18">
+<title>TRIPL3 — Basketball, redefined.</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
-:root {
-  --bg:#0B1020;
-  --card:#182235;
-  --card2:#222E42;
-  --coral:#FF5A36;
-  --white:#F5F3EE;
-  --muted:#A7B1C2;
-  --border:#344052;
+:root{
+ --bg:#080D18;--panel:#141D2D;--panel2:#1B2739;
+ --line:#29364A;--text:#F6F7FA;--muted:#8E9AAF;
+ --accent:#FF6545;--green:#56D9A2;
 }
-
-* { box-sizing:border-box; }
-
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--white);
-  font-family:Arial,Helvetica,sans-serif;
-}
-
-button,input,select { font:inherit; }
-button { cursor:pointer; }
-
-header {
-  position:sticky;
-  top:0;
-  z-index:10;
-  background:#0B1020F5;
-  border-bottom:1px solid var(--border);
-  padding:15px 18px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.brand {
-  font-size:27px;
-  font-weight:900;
-  letter-spacing:-1.5px;
-}
-.brand span { color:var(--coral); }
-
-.header-actions { display:flex;gap:10px; }
-
-.iconbtn {
-  background:var(--card);
-  border:1px solid var(--border);
-  color:white;
-  border-radius:12px;
-  padding:9px 12px;
-}
-
-main {
-  max-width:900px;
-  margin:auto;
-  padding:18px 16px 110px;
-}
-
-.page { display:none; }
-.page.active { display:block; }
-
-.eyebrow {
-  color:var(--coral);
-  font-size:11px;
-  font-weight:bold;
-  letter-spacing:2px;
-  margin-bottom:10px;
-}
-
-h1 {
-  font-size:32px;
-  letter-spacing:-1px;
-  margin:6px 0;
-}
-
-h2 { font-size:21px;margin:26px 0 12px; }
-h3 { margin:5px 0; }
-p { line-height:1.6; }
-
-.muted { color:var(--muted); }
-.small { font-size:12px; }
-
-.hero {
-  border-radius:24px;
-  background:linear-gradient(135deg,#30334B,#7B3840,#FF5A36);
-  min-height:230px;
-  padding:26px;
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  justify-content:end;
-}
-
-.hero:before {
-  content:"3";
-  position:absolute;
-  right:-15px;
-  top:-65px;
-  font-size:300px;
-  font-weight:900;
-  opacity:.13;
-}
-
-.hero h1 {
-  font-size:36px;
-  max-width:450px;
-  position:relative;
-}
-.hero p { position:relative; }
-
-.pill {
-  background:#FFFFFF25;
-  border:1px solid #FFFFFF50;
-  padding:7px 12px;
-  border-radius:50px;
-  font-size:11px;
-  width:max-content;
-  position:relative;
-}
-
-.card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:17px;
-  margin:12px 0;
-}
-
-.row {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.btn {
-  background:var(--coral);
-  color:white;
-  border:0;
-  border-radius:12px;
-  padding:13px 17px;
-  font-weight:bold;
-}
-
-.btn.secondary {
-  background:var(--card2);
-  border:1px solid var(--border);
-}
-
-.quick {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:9px;
-  margin:15px 0;
-}
-
-.quick button {
-  padding:15px 5px;
-  background:var(--card);
-  color:white;
-  border:1px solid var(--border);
-  border-radius:14px;
-}
-
-.grid {
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
-}
-
-.player {
-  background:var(--card);
-  border-radius:17px;
-  overflow:hidden;
-  border:1px solid var(--border);
-}
-
-.player-art {
-  height:145px;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  background:linear-gradient(140deg,#3B415F,#994B50);
-}
-
-.player-art img {
-  max-height:145px;
-  max-width:100%;
-  object-fit:contain;
-}
-
-.player-info { padding:13px; }
-.player-info strong { display:block; }
-.player-info small { color:var(--muted); }
-
-.score {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.points {
-  color:var(--coral);
-  white-space:nowrap;
-  font-size:17px;
-}
-
-.tag {
-  font-size:11px;
-  color:var(--coral);
-  font-weight:bold;
-  letter-spacing:1px;
-}
-
-.chips {
-  display:flex;
-  flex-wrap:wrap;
-  gap:9px;
-  margin:13px 0;
-}
-
-.chip {
-  border:1px solid var(--border);
-  background:var(--card);
-  color:white;
-  border-radius:30px;
-  padding:10px 14px;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-}
-
-.chip.selected {
-  background:var(--coral);
-  border-color:var(--coral);
-}
-
-label {
-  display:block;
-  margin:13px 0 6px;
-  font-weight:bold;
-  font-size:13px;
-}
-
-input,select {
-  width:100%;
-  padding:13px;
-  background:var(--card2);
-  color:white;
-  border:1px solid var(--border);
-  border-radius:11px;
-}
-
-.actions {
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-top:15px;
-}
-
-.notice {
-  background:#293144;
-  border-left:3px solid var(--coral);
-  border-radius:8px;
-  padding:13px;
-  margin:18px 0;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
-}
-
-.teamline {
-  display:flex;
-  align-items:center;
-  gap:9px;
-  margin:7px 0;
-}
-
-.teamline img {
-  width:27px;
-  height:27px;
-  object-fit:contain;
-}
-
-.game-meta {
-  margin-top:10px;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.datebar {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  margin:16px 0;
-}
-.datebar input { min-width:0;flex:1; }
-.datebar button { padding:12px; }
-
-.stat-scroll { overflow-x:auto; }
-
-.stat-table {
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-.stat-table th,
-.stat-table td {
-  padding:10px 7px;
-  border-bottom:1px solid var(--border);
-  text-align:left;
-}
-
-.stat-table th { color:var(--muted); }
-
-.stat-table td:not(:first-child),
-.stat-table th:not(:first-child) {
-  text-align:right;
-}
-
-.live-dot {
-  display:inline-block;
-  width:8px;
-  height:8px;
-  background:var(--coral);
-  border-radius:50%;
-  margin-right:6px;
-  animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  50% { opacity:.25; }
-}
-
-.section-heading {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-/* TRIPL3 NOW */
-.now-panel {
-  background:linear-gradient(145deg,#1D2A40,#182235);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px;
-  margin-top:15px;
-}
-
-.brief-headline {
-  font-size:25px;
-  line-height:1.25;
-  letter-spacing:-.5px;
-  margin:14px 0;
-}
-
-.brief-body {
-  font-size:15px;
-  line-height:1.8;
-}
-
-.brief-story {
-  padding:16px 0;
-  border-top:1px solid var(--border);
-}
-
-.brief-story h3 {
-  font-size:17px;
-  margin:9px 0;
-  line-height:1.4;
-}
-
-.brief-story p {
-  color:var(--muted);
-  font-size:14px;
-  margin:7px 0;
-}
-
-.brief-footer {
-  color:var(--muted);
-  font-size:11px;
-  margin-top:16px;
-}
-
-.brief-player {
-  display:flex;
-  gap:12px;
-  align-items:center;
-  padding:12px;
-  background:#FFFFFF08;
-  border:1px solid var(--border);
-  border-radius:14px;
-  margin-top:12px;
-}
-
-.brief-player-photo {
-  width:64px;
-  height:64px;
-  flex-shrink:0;
-  border-radius:12px;
-  background:linear-gradient(140deg,#343F5C,#713C4A);
-  overflow:hidden;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-}
-
-.brief-player-photo img {
-  width:100%;
-  height:100%;
-  object-fit:contain;
-}
-
-.brief-player-info { flex:1;min-width:0; }
-.brief-player-info strong { display:block; }
-.brief-player-info small { color:var(--muted); }
-
-.brief-stat {
-  color:var(--coral);
-  font-weight:bold;
-  font-size:13px;
-  margin-top:5px;
-}
-
-.league-logo {
-  width:27px;
-  height:27px;
-  object-fit:contain;
-  flex-shrink:0;
-}
-
-.league-logo.large {
-  width:54px;
-  height:54px;
-}
-
-.league-tile {
-  display:flex;
-  align-items:center;
-  gap:16px;
-}
-
-.league-icon {
-  width:65px;
-  height:65px;
-  border-radius:14px;
-  background:#FFFFFF0C;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-nav {
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#11192A;
-  border-top:1px solid var(--border);
-  display:flex;
-  justify-content:space-around;
-  padding:11px 4px max(13px,env(safe-area-inset-bottom));
-  z-index:20;
-}
-
-nav button {
-  background:none;
-  border:0;
-  color:var(--muted);
-  font-size:11px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:5px;
-}
-
-nav button.active { color:var(--coral); }
-nav .symbol { font-size:23px; }
-
-@media(min-width:700px) {
-  .grid { grid-template-columns:repeat(4,1fr); }
-  .hero { min-height:300px; }
-  .hero h1 { font-size:48px; }
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.topbar{height:65px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border-bottom:1px solid var(--line);background:#080D18F5;position:sticky;top:0;z-index:10}
+.logo{font-size:27px;font-weight:950;letter-spacing:-1.5px}
+.logo span{color:var(--accent)}
+.topright{display:flex;gap:9px;align-items:center}
+.roundbtn{background:var(--panel);border:1px solid var(--line);border-radius:11px;color:white;padding:9px 12px}
+.shell{max-width:1050px;margin:auto;padding:22px 17px 105px}
+.page{display:none}.page.active{display:block}
+.kicker{font-size:10px;font-weight:850;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
+.title{font-size:32px;letter-spacing:-1.4px;font-weight:900;margin:9px 0 18px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin:27px 0 13px;gap:12px}
+.section-head h2{font-size:21px;letter-spacing:-.7px;margin:0}
+.muted{color:var(--muted)}.small{font-size:12px}
+.hero{position:relative;min-height:340px;border-radius:22px;overflow:hidden;background:linear-gradient(130deg,#26334B,#111725)}
+.hero-img{position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 20%;opacity:.8}
+.hero-shade{position:absolute;inset:0;background:linear-gradient(0deg,#080D18 0%,#080D18A0 32%,transparent 80%)}
+.hero-content{position:absolute;bottom:23px;left:22px;right:22px}
+.hero h1{font-size:clamp(32px,7vw,53px);font-weight:950;line-height:1;letter-spacing:-2px;margin:10px 0}
+.hero p{font-size:14px;color:#E5EAF1;margin:9px 0}
+.hero-stats{display:flex;gap:16px;margin-top:15px;font-weight:900;font-size:16px;flex-wrap:wrap}
+.hero-stats span{color:var(--accent)}
+.hero-placeholder{position:absolute;inset:0;display:grid;place-items:center;font-size:120px;font-weight:950;color:#FFFFFF0B}
+.pill{display:inline-flex;align-items:center;gap:6px;background:#FF654522;color:#FF927C;border:1px solid #FF65454A;border-radius:50px;padding:7px 11px;font-size:10px;font-weight:850;letter-spacing:1px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 1.5s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:16px;margin-bottom:11px}
+.story{display:flex;gap:14px;align-items:center}
+.story-art{width:93px;height:94px;border-radius:13px;background:linear-gradient(140deg,#34415D,#75414A);flex-shrink:0;display:grid;place-items:center;overflow:hidden}
+.story-art img{width:100%;height:100%;object-fit:cover}
+.story h3{font-size:16px;line-height:1.3;margin:5px 0;font-weight:850}
+.story p{font-size:12px;color:var(--muted);margin:5px 0;line-height:1.45}
+.story-stat{color:var(--accent);font-size:12px;font-weight:850}
+.game-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:7px;scroll-snap-type:x mandatory}
+.mini-game{min-width:220px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:15px}
+.mini-game .scoreline{font-size:20px;font-weight:900;margin:13px 0}
+.mini-game .names{font-size:12px;color:var(--muted)}
+.mini-game .names div{margin:5px 0}
+.game-card{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:17px;margin:11px 0}
+.game-top{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted);margin-bottom:16px}
+.game-main{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px}
+.game-team{display:flex;flex-direction:column;align-items:center;text-align:center;gap:9px;font-size:12px;font-weight:750}
+.game-team img{width:46px;height:46px;object-fit:contain}
+.game-score{font-size:25px;font-weight:950;white-space:nowrap;letter-spacing:-1px}
+.game-bottom{text-align:center;font-size:11px;color:var(--muted);margin-top:15px}
+.filters{display:flex;gap:8px;overflow-x:auto;padding:5px 0 14px}
+.filter{white-space:nowrap;background:var(--panel);border:1px solid var(--line);border-radius:50px;padding:10px 16px;color:var(--muted);font-size:12px;font-weight:750}
+.filter.active{background:var(--accent);border-color:var(--accent);color:white}
+.datebar{display:flex;align-items:center;gap:9px;margin:15px 0}
+.datebar input{flex:1;min-width:0}
+input,select{background:var(--panel2);border:1px solid var(--line);color:white;border-radius:12px;padding:12px;width:100%;color-scheme:dark}
+.primary{background:var(--accent);color:white;border:0;border-radius:12px;padding:13px 17px;font-weight:850}
+.secondary{background:var(--panel2);border:1px solid var(--line);color:white;border-radius:12px;padding:12px 15px}
+.player-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+.player-card{border-radius:17px;overflow:hidden;background:var(--panel);border:1px solid var(--line)}
+.player-photo{height:160px;background:linear-gradient(145deg,#2D3954,#733D46);display:flex;justify-content:center;align-items:flex-end;overflow:hidden}
+.player-photo img{height:100%;max-width:100%;object-fit:contain}
+.player-label{padding:12px}
+.player-label strong{display:block;font-size:14px}
+.player-label small{color:var(--muted);font-size:11px}
+.fav-options{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.fav-chip{border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:30px;padding:10px 12px;font-size:12px}
+.fav-chip.on{border-color:var(--accent);color:white;background:#FF654525}
+.field{margin:15px 0}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
+.status-note{font-size:12px;color:var(--muted);line-height:1.6}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{padding:11px 7px;border-bottom:1px solid var(--line);text-align:left}
+th{color:var(--muted)}
+td:not(:first-child),th:not(:first-child){text-align:right}
+.table-scroll{overflow-x:auto}
+.bottomnav{position:fixed;bottom:0;left:0;right:0;background:#0D1524F7;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:11px 4px max(13px,env(safe-area-inset-bottom));z-index:15}
+.bottomnav button{background:none;border:0;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.bottomnav button.active{color:var(--accent)}
+.bottomnav svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
+.league-tile{display:flex;align-items:center;gap:13px}
+.league-tile img{width:40px;height:40px;object-fit:contain}
+@media(min-width:700px){
+ .hero{min-height:460px}
+ .player-grid{grid-template-columns:repeat(4,1fr)}
+ .story-art{width:120px;height:105px}
+ .bottomnav{left:50%;transform:translateX(-50%);max-width:650px;border:1px solid var(--line);border-radius:18px 18px 0 0}
 }
 </style>
 </head>
-
 <body>
 
-<header>
-  <div class="brand">TRIPL<span>3</span></div>
-  <div class="header-actions">
-    <button class="iconbtn" id="langBtn">EN</button>
-    <button class="iconbtn" onclick="go('profile')">⚙</button>
-  </div>
+<header class="topbar">
+ <div class="logo">TRIPL<span>3</span></div>
+ <div class="topright">
+  <button class="roundbtn" id="langBtn">EN</button>
+  <button class="roundbtn" onclick="go('profile')">⚙</button>
+ </div>
 </header>
 
-<main>
+<main class="shell">
 
-<!-- HOME -->
-<section id="home" class="page active">
-  <div class="eyebrow">TRIPL3 / BASKETBALL BRIEFING</div>
-  <h1 data-es="Tu baloncesto. Al día."
-      data-en="Your basketball. Up to date.">
-    Tu baloncesto. Al día.
-  </h1>
+<section class="page active" id="home">
+ <div class="kicker">YOUR DAILY BASKETBALL</div>
+ <div class="section-head">
+  <h2>TRIPL3 NOW <span class="dot"></span></h2>
+  <span class="muted small" id="feedTime"></span>
+ </div>
+ <div id="heroArea"></div>
 
-  <p class="muted"
-     data-es="Lo que importa, contado como una historia."
-     data-en="What matters, told as a story.">
-    Lo que importa, contado como una historia.
-  </p>
+ <div class="section-head">
+  <h2 data-es="Lo más destacado" data-en="Top stories">Lo más destacado</h2>
+ </div>
+ <div id="stories"></div>
 
-  <div class="hero">
-    <span class="pill">NBA · EUROLEAGUE · ACB</span>
-    <h1 data-es="Todo tu basket. En un solo lugar."
-        data-en="All your basketball. One place.">
-      Todo tu basket. En un solo lugar.
-    </h1>
-    <p data-es="Partidos, protagonistas y tus favoritos."
-       data-en="Games, standout players and your favorites.">
-      Partidos, protagonistas y tus favoritos.
-    </p>
-  </div>
+ <div class="section-head">
+  <h2 data-es="Marcadores" data-en="Scores">Marcadores</h2>
+  <button class="secondary" onclick="go('games')" data-es="Ver todos" data-en="See all">Ver todos</button>
+ </div>
+ <div class="game-strip" id="scoreStrip"></div>
 
-  <div class="quick">
-    <button onclick="go('games')"
-      data-es="▦ Partidos" data-en="▦ Games">▦ Partidos</button>
-    <button onclick="go('favorites')"
-      data-es="☆ Favoritos" data-en="☆ Favorites">☆ Favoritos</button>
-    <button onclick="go('leagues')"
-      data-es="◈ Ligas" data-en="◈ Leagues">◈ Ligas</button>
-  </div>
-
-  <div class="section-heading">
-    <h2>TRIPL3 NOW</h2>
-    <span class="tag" id="liveIndicator">BRIEFING</span>
-  </div>
-
-  <p class="muted"
-     data-es="Lo más interesante del baloncesto, ahora mismo."
-     data-en="The most interesting stories in basketball right now.">
-    Lo más interesante del baloncesto, ahora mismo.
-  </p>
-
-  <div class="now-panel" id="nowFeed">
-    <p class="muted">Preparando briefing...</p>
-  </div>
-
-  <h2 data-es="Para ti" data-en="For you">Para ti</h2>
-  <div id="personalFeed"></div>
-
-  <h2 data-es="Tus jugadores" data-en="Your players">
-    Tus jugadores
-  </h2>
-  <div class="grid" id="homePlayers"></div>
-
-  <h2 data-es="Últimos partidos" data-en="Latest games">
-    Últimos partidos
-  </h2>
-  <div id="homeGames"></div>
-
-  <div class="notice"
-    data-es="TRIPL3 NOW utiliza los marcadores y estadísticas disponibles en Supabase. Los datos pueden tener retraso respecto al partido real."
-    data-en="TRIPL3 NOW uses available scores and statistics from Supabase. Data may lag behind the actual game.">
-    TRIPL3 NOW utiliza los marcadores y estadísticas disponibles
-    en Supabase. Los datos pueden tener retraso.
-  </div>
+ <div class="section-head">
+  <h2 data-es="Tus jugadores" data-en="Your players">Tus jugadores</h2>
+ </div>
+ <div class="player-grid" id="homePlayers"></div>
 </section>
 
-<!-- GAMES -->
-<section id="games" class="page">
-  <div class="eyebrow">TRIPL3 / GAME CENTER</div>
-  <h1 data-es="Partidos" data-en="Games">Partidos</h1>
-
-  <p class="muted"
-    data-es="Resultados reales de NBA, EuroLeague y ACB."
-    data-en="Real NBA, EuroLeague and ACB results.">
-    Resultados reales de NBA, EuroLeague y ACB.
-  </p>
-
-  <div class="datebar">
-    <button class="btn secondary" onclick="changeDay(-1)">‹</button>
-    <input id="gameDate" type="date"
-           onchange="setGameDate(this.value)">
-    <button class="btn secondary" onclick="changeDay(1)">›</button>
-    <button class="btn secondary" onclick="goToday()"
-      data-es="Hoy" data-en="Today">Hoy</button>
-  </div>
-
-  <div class="chips" id="gameFilters"></div>
-  <p class="muted small" id="gameCount"></p>
-
-  <div class="card row">
-    <span data-es="Ocultar marcadores"
-          data-en="Hide scores">Ocultar marcadores</span>
-    <button class="btn secondary" id="spoilerBtn">OFF</button>
-  </div>
-
-  <div id="gameList"></div>
-
-  <button class="btn secondary" onclick="refreshAll()"
-    data-es="Actualizar" data-en="Refresh">Actualizar</button>
+<section class="page" id="games">
+ <div class="kicker">GAME CENTER</div>
+ <h1 class="title" data-es="Partidos" data-en="Games">Partidos</h1>
+ <div class="datebar">
+  <button class="secondary" onclick="changeDay(-1)">‹</button>
+  <input type="date" id="gameDate" onchange="changeDate(this.value)">
+  <button class="secondary" onclick="changeDay(1)">›</button>
+  <button class="secondary" onclick="today()" data-es="Hoy" data-en="Today">Hoy</button>
+ </div>
+ <div class="filters" id="leagueFilters"></div>
+ <div class="actions" style="margin:0 0 15px">
+  <button class="secondary" id="spoilerButton" onclick="toggleSpoilers()">◉</button>
+  <button class="secondary" onclick="refreshAll()">↻</button>
+ </div>
+ <div id="gameList"></div>
+ <div class="section-head"><h2 data-es="Clasificación parcial" data-en="Partial standings">Clasificación parcial</h2></div>
+ <p class="status-note" data-es="Solo partidos guardados. No es la clasificación oficial." data-en="Stored games only. Not official standings.">Solo partidos guardados. No es la clasificación oficial.</p>
+ <div class="card table-scroll" id="standings"></div>
 </section>
 
-<!-- LEAGUES -->
-<section id="leagues" class="page">
-  <div class="eyebrow">TRIPL3 / LEAGUES</div>
-  <h1 data-es="Competiciones" data-en="Leagues">
-    Competiciones
-  </h1>
-
-  <div id="leagueCards"></div>
-
-  <h2 data-es="Clasificación parcial"
-      data-en="Partial standings">
-    Clasificación parcial
-  </h2>
-
-  <p class="muted small"
-    data-es="Calculada solo con los partidos finalizados almacenados. No es una clasificación oficial."
-    data-en="Calculated only from stored finished games. Not official standings.">
-    Calculada solo con los partidos finalizados almacenados.
-    No es una clasificación oficial.
-  </p>
-
-  <div class="chips" id="standingsFilters"></div>
-  <div id="standingsTable"></div>
+<section class="page" id="favorites">
+ <div class="kicker">PERSONALIZED</div>
+ <h1 class="title" data-es="Mis favoritos" data-en="My favorites">Mis favoritos</h1>
+ <div class="section-head"><h2 data-es="Jugadores" data-en="Players">Jugadores</h2></div>
+ <div class="player-grid" id="favoritePlayers"></div>
+ <div class="fav-options" id="playerOptions"></div>
+ <div class="section-head"><h2 data-es="Equipos" data-en="Teams">Equipos</h2></div>
+ <div class="fav-options" id="teamOptions"></div>
+ <div class="section-head"><h2 data-es="Ligas" data-en="Leagues">Ligas</h2></div>
+ <div class="fav-options" id="leagueOptions"></div>
+ <p class="status-note" id="favoriteMessage"></p>
 </section>
 
-<!-- FAVORITES -->
-<section id="favorites" class="page">
-  <div class="eyebrow">TRIPL3 / PERSONALIZED</div>
-  <h1 data-es="Tus favoritos" data-en="Your favorites">
-    Tus favoritos
-  </h1>
+<section class="page" id="profile">
+ <div class="kicker">MY TRIPL3</div>
+ <h1 class="title" data-es="Perfil" data-en="Profile">Perfil</h1>
 
-  <p class="muted"
-    data-es="Elige los jugadores, equipos y ligas que quieres seguir."
-    data-en="Choose the players, teams and leagues you want to follow.">
-    Elige los jugadores, equipos y ligas que quieres seguir.
-  </p>
-
-  <div class="card">
-    <h3 data-es="Jugadores" data-en="Players">Jugadores</h3>
-    <div class="chips" id="playerChoices"></div>
+ <div class="card">
+  <h3 data-es="Mi cuenta" data-en="My account">Mi cuenta</h3>
+  <p class="status-note" id="authStatus"></p>
+  <div id="authForm">
+   <div class="field"><label>Email</label><input id="email" type="email" autocomplete="email"></div>
+   <div class="field"><label data-es="Contraseña" data-en="Password">Contraseña</label><input id="password" type="password" autocomplete="current-password"></div>
+   <div class="actions">
+    <button class="primary" onclick="login()" data-es="Entrar" data-en="Sign in">Entrar</button>
+    <button class="secondary" onclick="signup()" data-es="Registrarme" data-en="Sign up">Registrarme</button>
+   </div>
   </div>
+  <button class="secondary" id="logoutButton" onclick="logout()" style="display:none" data-es="Cerrar sesión" data-en="Sign out">Cerrar sesión</button>
+  <p class="status-note" id="authMessage"></p>
+ </div>
 
-  <div class="card">
-    <h3 data-es="Equipos" data-en="Teams">Equipos</h3>
-    <div class="chips" id="teamChoices"></div>
+ <div class="card">
+  <h3 data-es="Preferencias" data-en="Preferences">Preferencias</h3>
+  <div class="field">
+   <label data-es="Idioma" data-en="Language">Idioma</label>
+   <select id="languageSelect" onchange="setLanguage(this.value)">
+    <option value="es">Español</option><option value="en">English</option>
+   </select>
   </div>
-
-  <div class="card">
-    <h3 data-es="Ligas" data-en="Leagues">Ligas</h3>
-    <div class="chips" id="leagueChoices"></div>
+  <div class="field">
+   <label data-es="Zona horaria" data-en="Time zone">Zona horaria</label>
+   <select id="timezoneSelect" onchange="setTimezone(this.value)">
+    <option value="Europe/Madrid">Madrid</option>
+    <option value="Europe/Vienna">Viena</option>
+    <option value="Europe/London">London</option>
+    <option value="America/New_York">New York</option>
+    <option value="America/Los_Angeles">Los Angeles</option>
+   </select>
   </div>
-
-  <p class="muted small" id="syncMessage"></p>
-</section>
-
-<!-- PROFILE -->
-<section id="profile" class="page">
-  <div class="eyebrow">TRIPL3 / ACCOUNT</div>
-  <h1 data-es="Tu perfil" data-en="Your profile">Tu perfil</h1>
-
-  <div class="card">
-    <h3 data-es="Tu cuenta TRIPL3"
-        data-en="Your TRIPL3 account">Tu cuenta TRIPL3</h3>
-
-    <p id="authStatus" class="muted"></p>
-
-    <div id="authForm">
-      <label>Email</label>
-      <input id="email" type="email" autocomplete="email"
-             placeholder="tu@email.com">
-
-      <label data-es="Contraseña"
-             data-en="Password">Contraseña</label>
-      <input id="password" type="password" minlength="6"
-             autocomplete="current-password">
-
-      <div class="actions">
-        <button class="btn" onclick="login()"
-          data-es="Iniciar sesión"
-          data-en="Sign in">Iniciar sesión</button>
-
-        <button class="btn secondary" onclick="signup()"
-          data-es="Crear cuenta"
-          data-en="Create account">Crear cuenta</button>
-      </div>
-    </div>
-
-    <button class="btn secondary" id="logoutBtn"
-      onclick="logout()" style="display:none"
-      data-es="Cerrar sesión"
-      data-en="Sign out">Cerrar sesión</button>
-
-    <p id="authMessage" class="muted small"></p>
-  </div>
-
-  <div class="card">
-    <h3 data-es="Personalización"
-        data-en="Personalization">Personalización</h3>
-
-    <label data-es="Idioma" data-en="Language">Idioma</label>
-    <select id="language">
-      <option value="es">Español</option>
-      <option value="en">English</option>
-    </select>
-
-    <label data-es="Zona horaria"
-           data-en="Time zone">Zona horaria</label>
-
-    <select id="timezone">
-      <option value="Europe/Madrid">España peninsular</option>
-      <option value="Atlantic/Canary">Canarias</option>
-      <option value="Europe/Vienna">Viena</option>
-      <option value="Europe/London">Londres</option>
-      <option value="America/New_York">Nueva York</option>
-    </select>
-
-    <button class="btn" style="margin-top:15px"
-      onclick="savePreferences()"
-      data-es="Guardar preferencias"
-      data-en="Save preferences">Guardar preferencias</button>
-  </div>
-
-  <div class="card">
-    <h3 data-es="Notificaciones"
-        data-en="Notifications">Notificaciones</h3>
-    <p class="muted"
-      data-es="Próximamente: avisos personalizados."
-      data-en="Coming soon: personalized alerts.">
-      Próximamente: avisos personalizados.
-    </p>
-  </div>
+  <button class="primary" onclick="savePreferences()" data-es="Guardar" data-en="Save">Guardar</button>
+ </div>
 </section>
 
 </main>
 
-<nav>
-  <button class="active" data-page="home" onclick="go('home')">
-    <span class="symbol">⌂</span>
-    <span data-es="Inicio" data-en="Home">Inicio</span>
-  </button>
-  <button data-page="games" onclick="go('games')">
-    <span class="symbol">▦</span>
-    <span data-es="Partidos" data-en="Games">Partidos</span>
-  </button>
-  <button data-page="leagues" onclick="go('leagues')">
-    <span class="symbol">◈</span>
-    <span data-es="Ligas" data-en="Leagues">Ligas</span>
-  </button>
-  <button data-page="favorites" onclick="go('favorites')">
-    <span class="symbol">☆</span>
-    <span data-es="Favoritos" data-en="Favorites">Favoritos</span>
-  </button>
-  <button data-page="profile" onclick="go('profile')">
-    <span class="symbol">♙</span>
-    <span data-es="Perfil" data-en="Profile">Perfil</span>
-  </button>
+<nav class="bottomnav">
+ <button class="active" data-page="home" onclick="go('home')">
+  <svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3z"/><path d="M9 20v-7h6v7"/></svg>
+  <span data-es="Inicio" data-en="Home">Inicio</span>
+ </button>
+ <button data-page="games" onclick="go('games')">
+  <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+  <span data-es="Partidos" data-en="Games">Partidos</span>
+ </button>
+ <button data-page="favorites" onclick="go('favorites')">
+  <svg viewBox="0 0 24 24"><path d="m12 2 3.1 6.3 7 1-5.1 5 .9 7-5.9-3.2-5.9 3.2.9-7-5.1-5 7-1z"/></svg>
+  <span data-es="Favoritos" data-en="Favorites">Favoritos</span>
+ </button>
+ <button data-page="profile" onclick="go('profile')">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-5 3-8 8-8s8 3 8 8"/></svg>
+  <span data-es="Perfil" data-en="Profile">Perfil</span>
+ </button>
 </nav>
 
 <script>
-const SUPABASE_URL =
-  "https://xqzbvjbmospjkdaupjhv.supabase.co";
-
-const SUPABASE_KEY =
-  "sb_publishable_g4LtRSSO_AkMFHVnDa5ftQ_veppfOtX";
-
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
-
-const $ = id => document.getElementById(id);
-
-const catalog = {
-  leagues:["NBA","EuroLeague","ACB"],
-  teams:[
-    "Lakers","Celtics","Spurs","Warriors",
-    "Real Madrid","Barça","Valencia Basket","Olympiacos"
-  ],
-  players:[
-    "Luka Dončić","Victor Wembanyama",
-    "Stephen Curry","LeBron James"
-  ]
-};
-
-const playerIds = {
-  "Luka Dončić":"1629029",
-  "Victor Wembanyama":"1641705",
-  "Stephen Curry":"201939",
-  "LeBron James":"2544"
-};
-
-const playerTeams = {
-  "Luka Dončić":"Lakers",
-  "Victor Wembanyama":"Spurs",
-  "Stephen Curry":"Warriors",
-  "LeBron James":"Lakers"
-};
-
-const leagueNames = {
-  nba:"NBA",
-  euroleague:"EuroLeague",
-  acb:"ACB"
-};
-
-/*
-  Replace these URLs with local, authorized logo assets
-  if any external image stops working.
-*/
-const leagueLogos = {
-  NBA:"https://commons.wikimedia.org/wiki/Special:FilePath/National_Basketball_Association_logo.svg",
-  EuroLeague:"https://commons.wikimedia.org/wiki/Special:FilePath/EuroLeague_logo.svg",
-  ACB:"https://commons.wikimedia.org/wiki/Special:FilePath/Liga_Endesa_logo.svg"
-};
-
-const teamAliases = {
-  Lakers:["lakers","los angeles lakers"],
-  Celtics:["celtics","boston celtics"],
-  Spurs:["spurs","san antonio spurs"],
-  Warriors:["warriors","golden state warriors"],
-  "Real Madrid":["real madrid"],
-  "Barça":["barcelona","barca","fc barcelona"],
-  "Valencia Basket":["valencia"],
-  Olympiacos:["olympiacos"]
-};
-
-const initial = {
-  language:"es",
-  timezone:"Europe/Madrid",
-  hideScores:false,
-  leagues:["NBA","EuroLeague","ACB"],
-  teams:["Lakers","Real Madrid"],
-  players:["Luka Dončić"]
+const URL_SUPABASE="https://xqzbvjbmospjkdaupjhv.supabase.co";
+const PUBLIC_KEY="sb_publishable_g4LtRSSO_AkMFHVnDa5ftQ_veppfOtX";
+const db=window.supabase.createClient(URL_SUPABASE,PUBLIC_KEY);
+const $=id=>document.getElementById(id);
+const leagues={nba:"NBA",euroleague:"EuroLeague",acb:"ACB"};
+const leagueList=["NBA","EuroLeague","ACB"];
+const playerCatalog=[
+ {name:"Luka Dončić",nba:"1629029",team:"Lakers"},
+ {name:"Victor Wembanyama",nba:"1641705",team:"Spurs"},
+ {name:"Stephen Curry",nba:"201939",team:"Warriors"},
+ {name:"LeBron James",nba:"2544",team:"Lakers"}
+];
+const teamCatalog=["Lakers","Celtics","Spurs","Warriors","Real Madrid","Barça","Valencia Basket","Olympiacos"];
+const teamAliases={
+ Lakers:["lakers"],Celtics:["celtics"],Spurs:["spurs"],Warriors:["warriors"],
+ "Real Madrid":["real madrid"],"Barça":["barcelona","barca"],
+ "Valencia Basket":["valencia"],Olympiacos:["olympiacos"]
 };
 
 let state;
+try{
+ state={
+  lang:"es",timezone:"Europe/Vienna",hideScores:false,
+  favoritePlayers:["Luka Dončić"],favoriteTeams:["Lakers"],
+  favoriteLeagues:[...leagueList],
+  ...JSON.parse(localStorage.getItem("tripl3_premium")||"{}")
+ };
+}catch{
+ state={lang:"es",timezone:"Europe/Vienna",hideScores:false,
+  favoritePlayers:["Luka Dončić"],favoriteTeams:["Lakers"],
+  favoriteLeagues:[...leagueList]};
+}
+for(const key of ["favoritePlayers","favoriteTeams","favoriteLeagues"]){
+ if(!Array.isArray(state[key]))state[key]=[];
+}
 
-try {
-  state = {
-    ...initial,
-    ...JSON.parse(localStorage.getItem("tripl3_state") || "{}")
+let user=null;
+let allGames=[],stats=[],dayGames=[];
+let selectedLeague="NBA";
+let selectedDay="";
+let feedError="";
+let gamesError="";
+let feedLoaded=false;
+let dayLoaded=false;
+let feedRequest=0;
+let dayRequest=0;
+let favoritesBusy=false;
+let favoritesQueued=false;
+
+function tr(es,en){return state.lang==="es"?es:en}
+function persist(){localStorage.setItem("tripl3_premium",JSON.stringify(state))}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function norm(v){return String(v||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9 ]/g,"").trim()}
+function matchTeam(name,fav){return(teamAliases[fav]||[fav]).some(a=>norm(name).includes(norm(a)))}
+function favoriteGame(g){return state.favoriteTeams.some(t=>matchTeam(g.home_team,t)||matchTeam(g.away_team,t))}
+function favoritePlayer(name){return state.favoritePlayers.some(p=>norm(p)===norm(name))}
+function playerInfo(name){return playerCatalog.find(p=>norm(p.name)===norm(name))}
+function photo(name){const p=playerInfo(name);return p?`https://cdn.nba.com/headshots/nba/latest/1040x760/${p.nba}.png`:""}
+function gameStats(g){return stats.filter(s=>String(s.provider_game_id)===String(g.provider_game_id))}
+function points(s){return Number(s?.points||0)}
+function rebounds(s){return Number(s?.rebounds||0)}
+function assists(s){return Number(s?.assists||0)}
+function playerScore(s){
+ let score=points(s)+rebounds(s)*1.2+assists(s)*1.5;
+ if(points(s)>=30)score+=9;
+ if([points(s),rebounds(s),assists(s)].filter(n=>n>=10).length>=2)score+=8;
+ if(favoritePlayer(s.player_name))score+=5;
+ return score;
+}
+function leaders(g){return gameStats(g).filter(s=>s.player_name).sort((a,b)=>playerScore(b)-playerScore(a))}
+function gameRank(g){
+ let score=g.status==="live"?45:0;
+ if(favoriteGame(g))score+=20;
+ if(g.home_score!=null&&g.away_score!=null&&Math.abs(g.home_score-g.away_score)<=5)score+=12;
+ const leader=leaders(g)[0];if(leader)score+=playerScore(leader);
+ return score;
+}
+function zoneDay(date){
+ const d=new Date(date);if(Number.isNaN(d.getTime()))return "";
+ const parts=new Intl.DateTimeFormat("en-CA",{timeZone:state.timezone,year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(d);
+ const get=t=>parts.find(x=>x.type===t)?.value;
+ return `${get("year")}-${get("month")}-${get("day")}`;
+}
+function currentDay(){return zoneDay(new Date())}
+function dateLabel(value){
+ try{return new Intl.DateTimeFormat(state.lang==="es"?"es-ES":"en-GB",
+ {timeZone:state.timezone,day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}).format(new Date(value))}
+ catch{return ""}
+}
+function translate(){
+ document.documentElement.lang=state.lang;
+ document.querySelectorAll("[data-es][data-en]").forEach(e=>e.textContent=e.dataset[state.lang]);
+ $("langBtn").textContent=state.lang==="es"?"EN":"ES";
+ $("languageSelect").value=state.lang;
+ $("timezoneSelect").value=state.timezone;
+}
+function go(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll(".bottomnav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ window.scrollTo(0,0);
+}
+function setLanguage(v){state.lang=v;persist();render();savePreferences()}
+function setTimezone(v){state.timezone=v;selectedDay=currentDay();persist();render();loadDay();savePreferences()}
+$("langBtn").onclick=()=>setLanguage(state.lang==="es"?"en":"es");
+
+function playerCard(p){
+ return `<div class="player-card">
+  <div class="player-photo"><img src="${photo(p.name)}" alt="${esc(p.name)}" loading="lazy" onerror="this.style.display='none'"></div>
+  <div class="player-label"><strong>${esc(p.name)}</strong><small>${esc(p.team)}</small></div>
+ </div>`;
+}
+function renderPlayers(){
+ const chosen=playerCatalog.filter(p=>state.favoritePlayers.includes(p.name));
+ const html=chosen.map(playerCard).join("")||`<div class="empty">${tr("Añade tus jugadores favoritos","Add your favorite players")}</div>`;
+ $("homePlayers").innerHTML=html;
+ $("favoritePlayers").innerHTML=html;
+}
+
+function gameScore(g){
+ if(state.hideScores)return "•• : ••";
+ if(g.home_score==null||g.away_score==null)return "VS";
+ return `${g.home_score} : ${g.away_score}`;
+}
+function gameState(g){
+ return g.status==="live"?"LIVE":g.status==="finished"?"FINAL":
+ g.status==="scheduled"?tr("PRÓXIMO","UPCOMING"):
+ g.status==="postponed"?tr("APLAZADO","POSTPONED"):
+ g.status==="cancelled"?tr("CANCELADO","CANCELLED"):"—";
+}
+function miniGame(g){
+ return `<div class="mini-game">
+  <div class="kicker">${esc(leagues[g.league_id]||g.league_id)} · ${gameState(g)}</div>
+  <div class="scoreline">${gameScore(g)}</div>
+  <div class="names"><div>${esc(g.home_team)}</div><div>${esc(g.away_team)}</div></div>
+ </div>`;
+}
+function fullGame(g){
+ const team=(name,logo)=>`<div class="game-team">
+  ${/^https:\/\//i.test(logo||"")?`<img src="${esc(logo)}" alt="" loading="lazy">`:""}
+  <span>${esc(name)}</span></div>`;
+ return `<div class="game-card">
+  <div class="game-top"><span>${esc(leagues[g.league_id]||"")}</span>
+   <span>${g.status==="live"?'<span class="dot"></span> ':""}${gameState(g)}</span></div>
+  <div class="game-main">
+   ${team(g.home_team,g.home_team_logo)}
+   <div class="game-score">${gameScore(g)}</div>
+   ${team(g.away_team,g.away_team_logo)}
+  </div>
+  <div class="game-bottom">${esc(dateLabel(g.game_date))}</div>
+ </div>`;
+}
+function scoreSentence(g){
+ if(g.home_score==null||g.away_score==null)return "";
+ const h=g.home_score,a=g.away_score;
+ if(g.status==="live"){
+  if(h===a)return tr(`Empate a ${h}.`,`Tied at ${h}.`);
+  const winner=h>a?g.home_team:g.away_team;
+  return tr(`${winner} lidera por ${Math.abs(h-a)} puntos.`,`${winner} leads by ${Math.abs(h-a)}.`);
+ }
+ if(h===a)return tr("Marcador empatado en los datos.","Score tied in available data.");
+ const winner=h>a?g.home_team:g.away_team;
+ return tr(`${winner} gana ${Math.max(h,a)}-${Math.min(h,a)}.`,`${winner} wins ${Math.max(h,a)}-${Math.min(h,a)}.`);
+}
+function statline(s){return `${points(s)} PTS · ${rebounds(s)} REB · ${assists(s)} AST`}
+function playerHeadline(s){
+ if(!s)return "";
+ if(points(s)>=30)return tr(`${s.player_name} se luce con ${points(s)} puntos`,`${s.player_name} drops ${points(s)} points`);
+ if([points(s),rebounds(s),assists(s)].filter(n=>n>=10).length>=3)return `${s.player_name}: TRIPLE-DOUBLE`;
+ if([points(s),rebounds(s),assists(s)].filter(n=>n>=10).length>=2)return `${s.player_name}: DOUBLE-DOUBLE`;
+ return tr(`${s.player_name} destaca`,`${s.player_name} stands out`);
+}
+function storyData(g){
+ const s=leaders(g)[0];
+ return {
+  game:g,stat:s,
+  title:s?playerHeadline(s):`${g.home_team} vs ${g.away_team}`,
+  subtitle:scoreSentence(g),
+  label:`${leagues[g.league_id]||""} · ${gameState(g)}`
+ };
+}
+function renderBriefing(){
+ const eligible=allGames.filter(g=>state.favoriteLeagues.includes(leagues[g.league_id]));
+ const live=eligible.filter(g=>g.status==="live").sort((a,b)=>gameRank(b)-gameRank(a));
+ const finished=eligible.filter(g=>g.status==="finished"&&g.home_score!=null&&g.away_score!=null);
+ const recent=finished.sort((a,b)=>new Date(b.game_date)-new Date(a.game_date)).slice(0,35)
+  .sort((a,b)=>gameRank(b)-gameRank(a));
+ const featured=live.length?live[0]:recent[0];
+ const extras=live.length
+  ? [...live.slice(1,3),...recent.slice(0,2)]
+  : recent.slice(1,4);
+
+ if(!featured){
+  $("heroArea").innerHTML=`<div class="hero"><div class="hero-placeholder">3</div>
+   <div class="hero-content"><span class="pill">TRIPL3 NOW</span>
+   <h1>${tr("EL BASKET NO PARA","BASKETBALL NEVER STOPS")}</h1>
+   <p>${feedError?esc(feedError):feedLoaded?tr("Esperando nuevos resultados.","Waiting for new results."):tr("Cargando...","Loading...")}</p></div></div>`;
+  $("stories").innerHTML="";
+  $("scoreStrip").innerHTML="";
+  $("feedTime").textContent="";
+  return;
+ }
+ const story=storyData(featured);
+ const image=story.stat?photo(story.stat.player_name):"";
+ $("heroArea").innerHTML=`<div class="hero">
+  <div class="hero-placeholder">3</div>
+  ${image?`<img class="hero-img" src="${esc(image)}" alt="" onerror="this.style.display='none'">`:""}
+  <div class="hero-shade"></div>
+  <div class="hero-content">
+   <span class="pill">${featured.status==="live"?'<span class="dot"></span> LIVE':"TRIPL3 NOW"} · ${esc(leagues[featured.league_id]||"")}</span>
+   <h1>${esc(story.title)}</h1>
+   <p>${esc(story.subtitle)}</p>
+   ${story.stat?`<div class="hero-stats"><span>${statline(story.stat)}</span></div>`:""}
+  </div></div>`;
+ $("feedTime").textContent=dateLabel(featured.game_date);
+ $("stories").innerHTML=extras.map(g=>{
+  const d=storyData(g),img=d.stat?photo(d.stat.player_name):"";
+  return `<div class="card story">
+   <div class="story-art">${img?`<img src="${esc(img)}" alt="" loading="lazy" onerror="this.style.display='none'">`:'<span style="font-size:35px;font-weight:900;opacity:.3">3</span>'}</div>
+   <div><div class="kicker">${esc(d.label)}</div><h3>${esc(d.title)}</h3>
+   <p>${esc(d.subtitle)}</p>
+   ${d.stat?`<div class="story-stat">${statline(d.stat)}</div>`:""}
+   </div></div>`;
+ }).join("")||`<div class="empty">${tr("Más historias próximamente.","More stories coming soon.")}</div>`;
+ const recentScores=[...eligible].filter(g=>g.status==="live"||g.status==="finished")
+  .sort((a,b)=>new Date(b.game_date)-new Date(a.game_date)).slice(0,10);
+ $("scoreStrip").innerHTML=recentScores.map(miniGame).join("")||
+ `<div class="empty">${tr("Sin marcadores recientes","No recent scores")}</div>`;
+}
+
+function renderStandings(){
+ const map=new Map();
+ for(const g of allGames){
+  if(leagues[g.league_id]!==selectedLeague||g.status!=="finished")continue;
+  const h=Number(g.home_score),a=Number(g.away_score);
+  if(g.home_score==null||g.away_score==null||!Number.isFinite(h)||!Number.isFinite(a)||h===a)continue;
+  for(const [name,scored,against] of [[g.home_team,h,a],[g.away_team,a,h]]){
+   if(!map.has(name))map.set(name,{name,p:0,w:0,l:0,d:0});
+   const r=map.get(name);r.p++;r.w+=+(scored>against);r.l+=+(scored<against);r.d+=scored-against;
+  }
+ }
+ const rows=[...map.values()].sort((a,b)=>b.w-a.w||b.d-a.d);
+ $("standings").innerHTML=rows.length?`<table><thead><tr><th>${tr("Equipo","Team")}</th><th>PJ</th><th>V</th><th>D</th><th>+/-</th></tr></thead>
+ <tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.l}</td><td>${r.d}</td></tr>`).join("")}</tbody></table>`:
+ `<div class="empty">${tr("Sin datos suficientes","Not enough data")}</div>`;
+}
+function renderGames(){
+ $("gameDate").value=selectedDay;
+ $("leagueFilters").innerHTML=leagueList.map(l=>`<button class="filter ${selectedLeague===l?"active":""}" onclick="selectLeague('${l}')">${l}</button>`).join("");
+ const games=dayGames.filter(g=>leagues[g.league_id]===selectedLeague&&zoneDay(g.game_date)===selectedDay);
+ $("gameList").innerHTML=games.length?games.map(fullGame).join(""):
+ `<div class="empty">${gamesError?esc(gamesError):dayLoaded?tr("No hay partidos para este día.","No games on this date."):tr("Cargando...","Loading...")}</div>`;
+ $("spoilerButton").textContent=state.hideScores?tr("Mostrar puntos","Show scores"):tr("Ocultar puntos","Hide scores");
+ renderStandings();
+}
+function selectLeague(l){selectedLeague=l;renderGames()}
+function changeDate(v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return;selectedDay=v;loadDay()}
+function changeDay(delta){const d=new Date(selectedDay+"T12:00:00Z");d.setUTCDate(d.getUTCDate()+delta);selectedDay=d.toISOString().slice(0,10);loadDay()}
+function today(){selectedDay=currentDay();loadDay()}
+function toggleSpoilers(){state.hideScores=!state.hideScores;persist();renderGames();renderBriefing()}
+
+function optionButtons(id,items,key){
+ $(id).innerHTML=items.map(item=>`<button class="fav-chip ${state[key].includes(item)?"on":""}"
+  data-value="${esc(item)}">${state[key].includes(item)?"✓ ":"+ "}${esc(item)}</button>`).join("");
+ $(id).querySelectorAll("button").forEach(b=>{
+  b.onclick=()=>{
+   const item=b.dataset.value;
+   state[key]=state[key].includes(item)?state[key].filter(x=>x!==item):[...state[key],item];
+   persist();render();syncFavorites();
   };
-} catch {
-  state = {...initial};
+ });
+}
+function renderFavorites(){
+ optionButtons("playerOptions",playerCatalog.map(p=>p.name),"favoritePlayers");
+ optionButtons("teamOptions",teamCatalog,"favoriteTeams");
+ optionButtons("leagueOptions",leagueList,"favoriteLeagues");
+}
+function render(){
+ translate();renderPlayers();renderBriefing();renderGames();renderFavorites();updateAuth();
 }
 
-for (const key of ["leagues","teams","players"]) {
-  if (!Array.isArray(state[key])) {
-    state[key] = [...initial[key]];
+const gameFields="provider_game_id,league_id,home_team,away_team,home_team_logo,away_team_logo,home_score,away_score,game_date,status";
+const statFields="provider_game_id,provider_player_id,player_name,points,rebounds,assists,threepoints_made,updated_at";
+
+async function loadFeed(){
+ const seq=++feedRequest;
+ const since=new Date();since.setUTCDate(since.getUTCDate()-7);
+ try{
+  const {data,error}=await db.from("games").select(gameFields)
+   .gte("game_date",since.toISOString()).order("game_date",{ascending:false}).limit(500);
+  if(error)throw error;
+  if(seq!==feedRequest)return;
+  const ids=[...new Set((data||[]).filter(g=>["live","finished"].includes(g.status))
+   .map(g=>Number(g.provider_game_id)).filter(Number.isFinite))];
+  const found=[];
+  for(let i=0;i<ids.length;i+=25){
+   const {data:rows,error:e}=await db.from("player_game_stats").select(statFields)
+    .eq("provider","api-sports").in("provider_game_id",ids.slice(i,i+25)).limit(1000);
+   if(e)throw e;
+   found.push(...(rows||[]));
   }
+  if(seq!==feedRequest)return;
+  allGames=data||[];stats=found;feedError="";feedLoaded=true;
+  renderBriefing();renderStandings();
+ }catch(e){
+  if(seq!==feedRequest)return;
+  feedError=e.message||String(e);feedLoaded=true;
+  console.error(e);renderBriefing();
+ }
 }
-
-let user = null;
-let activeLeague = "NBA";
-let standingsLeague = "NBA";
-let syncing = false;
-let syncQueued = false;
-
-let realGames = [];
-let feedGames = [];
-let playerStats = [];
-
-let gamesLoading = true;
-let gamesError = "";
-let feedError = "";
-let statsError = "";
-let currentFeedLoaded = false;
-let selectedDay = "";
-
-let requestSequence = 0;
-let feedSequence = 0;
-
-function t(es,en) {
-  return state.language === "es" ? es : en;
+async function loadDay(){
+ const seq=++dayRequest;
+ const center=new Date(selectedDay+"T12:00:00Z");
+ const lower=new Date(center),upper=new Date(center);
+ lower.setUTCDate(lower.getUTCDate()-2);upper.setUTCDate(upper.getUTCDate()+2);
+ try{
+  const {data,error}=await db.from("games").select(gameFields)
+   .gte("game_date",lower.toISOString()).lt("game_date",upper.toISOString())
+   .order("game_date",{ascending:true}).limit(500);
+  if(error)throw error;
+  if(seq!==dayRequest)return;
+  dayGames=data||[];gamesError="";dayLoaded=true;
+ }catch(e){
+  if(seq!==dayRequest)return;
+  gamesError=e.message||String(e);dayLoaded=true;console.error(e);
+ }
+ renderGames();
 }
+async function refreshAll(){await Promise.all([loadFeed(),loadDay()])}
 
-function localSave() {
-  localStorage.setItem("tripl3_state",JSON.stringify(state));
+/* AUTH */
+function updateAuth(){
+ $("authForm").style.display=user?"none":"block";
+ $("logoutButton").style.display=user?"block":"none";
+ $("authStatus").textContent=user?user.email:tr("Entra para sincronizar tus favoritos.","Sign in to sync favorites.");
 }
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g,c=>({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    '"':"&quot;",
-    "'":"&#39;"
-  }[c]));
+async function signup(){
+ const email=$("email").value.trim(),password=$("password").value;
+ if(!email||password.length<6){$("authMessage").textContent=tr("Introduce email y contraseña de 6 caracteres mínimo.","Enter email and a password of at least 6 characters.");return}
+ const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:"https://martina9804.github.io/tripl3/"}});
+ $("authMessage").textContent=error?error.message:data.session?tr("Cuenta creada.","Account created."):tr("Confirma tu email.","Confirm your email.");
 }
-
-function normalize(value) {
-  return String(value || "")
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/[^a-z0-9 ]/g,"")
-    .trim();
+async function login(){
+ const {error}=await db.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
+ $("authMessage").textContent=error?error.message:tr("Conectada.","Signed in.");
 }
-
-function teamMatches(name,favorite) {
-  const target = normalize(name);
-
-  return (teamAliases[favorite] || [favorite]).some(alias=>{
-    const a = normalize(alias);
-    return target === a || target.includes(a);
-  });
+async function logout(){
+ const {error}=await db.auth.signOut();
+ if(error)$("authMessage").textContent=error.message;
 }
-
-function isFavoriteGame(game) {
-  return state.teams.some(team=>
-    teamMatches(game.home_team,team) ||
-    teamMatches(game.away_team,team)
-  );
+async function savePreferences(){
+ persist();if(!user)return;
+ const {error}=await db.from("profiles").upsert({
+  id:user.id,language:state.lang,timezone:state.timezone,updated_at:new Date().toISOString()
+ },{onConflict:"id"});
+ $("authMessage").textContent=error?error.message:tr("Guardado.","Saved.");
 }
-
-function isFavoritePlayer(name) {
-  return state.players.some(player=>
-    normalize(player) === normalize(name)
-  );
+async function loadUserData(){
+ if(!user)return;
+ const uid=user.id;
+ const {data:profile,error:pe}=await db.from("profiles").select("language,timezone").eq("id",uid).maybeSingle();
+ if(pe){$("authMessage").textContent=pe.message;return}
+ if(!user||user.id!==uid)return;
+ if(profile){state.lang=profile.language||"es";state.timezone=profile.timezone||"Europe/Vienna"}
+ const {data:favs,error:fe}=await db.from("favorites")
+  .select("team_id,player_id,teams(name),players(name)").eq("user_id",uid);
+ if(fe){$("authMessage").textContent=fe.message;return}
+ if(!user||user.id!==uid)return;
+ if(favs){
+  state.favoriteTeams=favs.filter(f=>f.teams).map(f=>f.teams.name).filter(n=>teamCatalog.includes(n));
+  state.favoritePlayers=favs.filter(f=>f.players).map(f=>f.players.name).filter(n=>playerCatalog.some(p=>p.name===n));
+ }
+ persist();selectedDay=currentDay();render();loadDay();
 }
-
-function isVisibleLeague(game) {
-  return state.leagues.includes(leagueNames[game.league_id]);
-}
-
-function leagueLogo(name,large=false) {
-  const url = leagueLogos[name];
-
-  if (!url) return "";
-
-  return `<img
-    class="league-logo${large ? " large" : ""}"
-    src="${escapeHtml(url)}"
-    alt=""
-    loading="lazy"
-    onerror="this.style.display='none'">`;
-}
-
-function go(page) {
-  document.querySelectorAll(".page").forEach(el=>{
-    el.classList.toggle("active",el.id===page);
-  });
-
-  document.querySelectorAll("nav button").forEach(el=>{
-    el.classList.toggle("active",el.dataset.page===page);
-  });
-
-  window.scrollTo(0,0);
-}
-
-function translate() {
-  document.documentElement.lang = state.language;
-
-  document.querySelectorAll("[data-es][data-en]").forEach(el=>{
-    el.textContent = el.dataset[state.language];
-  });
-
-  $("langBtn").textContent =
-    state.language==="es" ? "EN" : "ES";
-
-  $("language").value = state.language;
-  $("timezone").value = state.timezone;
-}
-
-function makeChoices(container,items,key) {
-  $(container).innerHTML = "";
-
-  items.forEach(item=>{
-    const selected = state[key].includes(item);
-    const btn = document.createElement("button");
-
-    btn.className = "chip" + (selected ? " selected" : "");
-    btn.textContent = (selected ? "✓ " : "+ ") + item;
-
-    btn.onclick = ()=>{
-      state[key] = selected
-        ? state[key].filter(x=>x!==item)
-        : [...state[key],item];
-
-      localSave();
-      render();
-      syncFavorites();
-    };
-
-    $(container).appendChild(btn);
-  });
-}
-
-function renderPlayers() {
-  const selected = catalog.players.filter(
-    p=>state.players.includes(p)
-  );
-
-  $("homePlayers").innerHTML = selected.map(name=>{
-    const id = playerIds[name];
-
-    const photo = id
-      ? `https://cdn.nba.com/headshots/nba/latest/1040x760/${id}.png`
-      : "";
-
-    return `<div class="player">
-      <div class="player-art">
-        ${photo ? `<img
-          src="${photo}"
-          alt="${escapeHtml(name)}"
-          loading="lazy"
-          onerror="this.style.display='none'">` : ""}
-      </div>
-
-      <div class="player-info">
-        <strong>${escapeHtml(name)}</strong>
-        <small>${escapeHtml(playerTeams[name] || "")}</small>
-      </div>
-    </div>`;
-  }).join("") || `<div class="card muted">
-    ${t(
-      "Selecciona jugadores en Favoritos.",
-      "Select players in Favorites."
-    )}
-  </div>`;
-}
-
-function dateInZone(date) {
-  if (Number.isNaN(date.getTime())) return "";
-
-  try {
-    const parts = new Intl.DateTimeFormat("en-CA",{
-      timeZone:state.timezone,
-      year:"numeric",
-      month:"2-digit",
-      day:"2-digit"
-    }).formatToParts(date);
-
-    const get = type =>
-      parts.find(p=>p.type===type)?.value;
-
-    return `${get("year")}-${get("month")}-${get("day")}`;
-  } catch {
-    return date.toISOString().slice(0,10);
+async function syncFavorites(){
+ if(!user)return;
+ if(favoritesBusy){favoritesQueued=true;return}
+ favoritesBusy=true;
+ $("favoriteMessage").textContent=tr("Guardando...","Saving...");
+ try{
+  const {data:teams,error:te}=await db.from("teams").select("id,name").in("name",state.favoriteTeams.length?state.favoriteTeams:["__none__"]);
+  if(te)throw te;
+  const {data:players,error:pe}=await db.from("players").select("id,name").in("name",state.favoritePlayers.length?state.favoritePlayers:["__none__"]);
+  if(pe)throw pe;
+  const records=[...(teams||[]).map(x=>({user_id:user.id,team_id:x.id})),
+   ...(players||[]).map(x=>({user_id:user.id,player_id:x.id}))];
+  const {error:de}=await db.from("favorites").delete().eq("user_id",user.id);
+  if(de)throw de;
+  if(records.length){
+   const {error:ie}=await db.from("favorites").insert(records);
+   if(ie)throw ie;
   }
+  $("favoriteMessage").textContent=tr("Favoritos guardados.","Favorites saved.");
+ }catch(e){$("favoriteMessage").textContent=e.message}
+ finally{
+  favoritesBusy=false;
+  if(favoritesQueued){favoritesQueued=false;syncFavorites()}
+ }
 }
-
-function todayDay() {
-  return dateInZone(new Date());
-}
-
-function changeDay(amount) {
-  const d = new Date(selectedDay+"T12:00:00Z");
-  d.setUTCDate(d.getUTCDate()+amount);
-  selectedDay = d.toISOString().slice(0,10);
-  loadGames();
-}
-
-function setGameDate(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return;
-  selectedDay = value;
-  loadGames();
-}
-
-function goToday() {
-  selectedDay = todayDay();
-  loadGames();
-}
-
-function formatGameDate(value) {
-  const d = new Date(value);
-
-  if (Number.isNaN(d.getTime())) return "";
-
-  try {
-    return new Intl.DateTimeFormat(
-      state.language==="es" ? "es-ES" : "en-GB",
-      {
-        day:"numeric",
-        month:"short",
-        hour:"2-digit",
-        minute:"2-digit",
-        timeZone:state.timezone
-      }
-    ).format(d);
-  } catch {
-    return d.toLocaleString();
-  }
-}
-
-function gameCard(game) {
-  const league =
-    leagueNames[game.league_id] || game.league_id || "";
-
-  const hasScore =
-    game.home_score != null &&
-    game.away_score != null;
-
-  const score = state.hideScores
-    ? "•• – ••"
-    : hasScore
-      ? `${game.home_score} – ${game.away_score}`
-      : t("Pendiente","TBD");
-
-  const statuses = {
-    scheduled:t("Programado","Scheduled"),
-    live:t("En directo","Live"),
-    finished:t("Finalizado","Final"),
-    postponed:t("Aplazado","Postponed"),
-    cancelled:t("Cancelado","Cancelled"),
-    unknown:t("Estado pendiente","Status pending")
-  };
-
-  const team = (name,logo)=>`<div class="teamline">
-    ${/^https:\/\//i.test(logo || "")
-      ? `<img src="${escapeHtml(logo)}"
-              alt="" loading="lazy">`
-      : ""}
-    <span>${escapeHtml(name)}</span>
-  </div>`;
-
-  return `<div class="card">
-    <div class="tag">
-      ${game.status==="live"
-        ? '<span class="live-dot"></span>'
-        : ""}
-      ${escapeHtml(league)} ·
-      ${escapeHtml(statuses[game.status] || statuses.unknown)}
-    </div>
-
-    <div class="score" style="margin-top:12px">
-      <div>
-        ${team(game.home_team,game.home_team_logo)}
-        ${team(game.away_team,game.away_team_logo)}
-      </div>
-
-      <strong class="points">${score}</strong>
-    </div>
-
-    <div class="game-meta">
-      ${escapeHtml(formatGameDate(game.game_date))}
-    </div>
-  </div>`;
-}
-
-function sortedRecent(games) {
-  return [...games].sort(
-    (a,b)=>new Date(b.game_date)-new Date(a.game_date)
-  );
-}
-
-/* =========================================
-   PLAYER STATISTICS
-========================================= */
-
-function statsForGame(game) {
-  return playerStats.filter(s=>
-    String(s.provider_game_id) ===
-    String(game.provider_game_id)
-  );
-}
-
-function playerImpact(stat) {
-  const points = Number(stat.points || 0);
-  const rebounds = Number(stat.rebounds || 0);
-  const assists = Number(stat.assists || 0);
-  const threes = Number(stat.threepoints_made || 0);
-
-  let impact =
-    points +
-    rebounds * 1.2 +
-    assists * 1.6 +
-    threes * 0.5;
-
-  if (points>=30) impact+=8;
-  if (points>=40) impact+=12;
-
-  if (
-    [points,rebounds,assists].filter(x=>x>=10).length>=2
-  ) impact+=8;
-
-  if (isFavoritePlayer(stat.player_name)) {
-    impact+=6;
-  }
-
-  return impact;
-}
-
-function bestPlayers(game,limit=2) {
-  return statsForGame(game)
-    .filter(s=>
-      s.player_name &&
-      (
-        Number(s.points || 0)>0 ||
-        Number(s.rebounds || 0)>0 ||
-        Number(s.assists || 0)>0
-      )
-    )
-    .sort((a,b)=>playerImpact(b)-playerImpact(a))
-    .slice(0,limit);
-}
-
-function playerDescription(stat) {
-  const name = stat.player_name;
-  const pts = Number(stat.points || 0);
-  const reb = Number(stat.rebounds || 0);
-  const ast = Number(stat.assists || 0);
-  const threes = Number(stat.threepoints_made || 0);
-
-  const doubleDigits =
-    [pts,reb,ast].filter(x=>x>=10).length;
-
-  if (doubleDigits>=3) {
-    return t(
-      `${name} está firmando un triple-doble: ${pts} puntos, ${reb} rebotes y ${ast} asistencias.`,
-      `${name} has a triple-double: ${pts} points, ${reb} rebounds and ${ast} assists.`
-    );
-  }
-
-  if (doubleDigits>=2) {
-    return t(
-      `${name} destaca con un doble-doble de ${pts} puntos, ${reb} rebotes y ${ast} asistencias.`,
-      `${name} stands out with a double-double: ${pts} points, ${reb} rebounds and ${ast} assists.`
-    );
-  }
-
-  if (pts>=30) {
-    return t(
-      `${name} está protagonizando una gran actuación ofensiva con ${pts} puntos, ${reb} rebotes y ${ast} asistencias.`,
-      `${name} is delivering an impressive offensive performance with ${pts} points, ${reb} rebounds and ${ast} assists.`
-    );
-  }
-
-  if (ast>=10) {
-    return t(
-      `${name} está destacando en la dirección del juego con ${ast} asistencias, además de ${pts} puntos.`,
-      `${name} is making an impact as a playmaker with ${ast} assists and ${pts} points.`
-    );
-  }
-
-  if (reb>=12) {
-    return t(
-      `${name} está dominando el rebote con ${reb} capturas y suma ${pts} puntos.`,
-      `${name} is dominating the glass with ${reb} rebounds and ${pts} points.`
-    );
-  }
-
-  if (threes>=5) {
-    return t(
-      `${name} está destacando desde el perímetro, con ${threes} triples anotados y ${pts} puntos.`,
-      `${name} is making an impact from deep with ${threes} three-pointers and ${pts} points.`
-    );
-  }
-
-  return t(
-    `${name} es uno de los protagonistas estadísticos con ${pts} puntos, ${reb} rebotes y ${ast} asistencias.`,
-    `${name} is one of the statistical standouts with ${pts} points, ${reb} rebounds and ${ast} assists.`
-  );
-}
-
-function playerPhoto(name) {
-  const id = Object.keys(playerIds).find(
-    key=>normalize(key)===normalize(name)
-  );
-
-  if (!id) return "";
-
-  return `https://cdn.nba.com/headshots/nba/latest/1040x760/${playerIds[id]}.png`;
-}
-
-function playerFeature(stat) {
-  const photo = playerPhoto(stat.player_name);
-
-  return `<div class="brief-player">
-    <div class="brief-player-photo">
-      ${photo ? `<img
-        src="${escapeHtml(photo)}"
-        alt="${escapeHtml(stat.player_name)}"
-        loading="lazy"
-        onerror="this.style.display='none'">` : ""}
-    </div>
-
-    <div class="brief-player-info">
-      <strong>${escapeHtml(stat.player_name)}</strong>
-      <small>${t("Jugador destacado","Standout player")}</small>
-
-      <div class="brief-stat">
-        ${Number(stat.points || 0)} PTS ·
-        ${Number(stat.rebounds || 0)} REB ·
-        ${Number(stat.assists || 0)} AST
-      </div>
-    </div>
-  </div>`;
-}
-
-/* =========================================
-   BASKETBALL BRIEFING
-========================================= */
-
-function resultSentence(game) {
-  const hs = game.home_score;
-  const as = game.away_score;
-
-  if (hs==null || as==null) return "";
-
-  if (hs===as) {
-    return t(
-      `${game.home_team} y ${game.away_team} figuran empatados ${hs}-${as} en los datos disponibles.`,
-      `${game.home_team} and ${game.away_team} are tied ${hs}-${as} in the available data.`
-    );
-  }
-
-  const winner =
-    hs>as ? game.home_team : game.away_team;
-
-  const loser =
-    hs>as ? game.away_team : game.home_team;
-
-  const winnerScore = Math.max(hs,as);
-  const loserScore = Math.min(hs,as);
-  const margin = Math.abs(hs-as);
-
-  if (margin<=5) {
-    return t(
-      `${winner} se impuso a ${loser} en un final ajustado por ${winnerScore}-${loserScore}.`,
-      `${winner} edged ${loser} in a close ${winnerScore}-${loserScore} finish.`
-    );
-  }
-
-  if (margin>=20) {
-    return t(
-      `${winner} consiguió una victoria contundente ante ${loser} por ${winnerScore}-${loserScore}.`,
-      `${winner} secured a commanding ${winnerScore}-${loserScore} victory over ${loser}.`
-    );
-  }
-
-  return t(
-    `${winner} superó a ${loser} por ${winnerScore}-${loserScore}.`,
-    `${winner} defeated ${loser} ${winnerScore}-${loserScore}.`
-  );
-}
-
-function liveSentence(game) {
-  const hs = game.home_score;
-  const as = game.away_score;
-
-  if (hs==null || as==null) {
-    return t(
-      `${game.home_team} y ${game.away_team} están disputando su encuentro. El marcador todavía no está disponible.`,
-      `${game.home_team} and ${game.away_team} are playing. The score is not available yet.`
-    );
-  }
-
-  if (hs===as) {
-    return t(
-      `${game.home_team} y ${game.away_team} están empatados ${hs}-${as}.`,
-      `${game.home_team} and ${game.away_team} are tied ${hs}-${as}.`
-    );
-  }
-
-  const leader =
-    hs>as ? game.home_team : game.away_team;
-
-  const other =
-    hs>as ? game.away_team : game.home_team;
-
-  return t(
-    `${leader} está por delante de ${other} por ${hs}-${as}, con ${Math.abs(hs-as)} puntos de ventaja.`,
-    `${leader} leads ${other} ${hs}-${as}, a margin of ${Math.abs(hs-as)} points.`
-  );
-}
-
-function storyPriority(game) {
-  let score = 0;
-
-  if (game.status==="live") score+=40;
-  if (isFavoriteGame(game)) score+=25;
-
-  if (
-    game.home_score!=null &&
-    game.away_score!=null
-  ) {
-    const margin = Math.abs(
-      game.home_score-game.away_score
-    );
-
-    if (margin<=5) score+=15;
-    if (margin>=20 && game.status==="finished") score+=5;
-  }
-
-  const leaders = bestPlayers(game,2);
-
-  if (leaders.length) {
-    score+=playerImpact(leaders[0]);
-  }
-
-  return score;
-}
-
-function gameStory(game) {
-  const live = game.status==="live";
-  const league =
-    leagueNames[game.league_id] || game.league_id;
-
-  const leaders = bestPlayers(game,2);
-
-  let title;
-  let text = live
-    ? liveSentence(game)
-    : resultSentence(game);
-
-  if (leaders.length) {
-    const top = leaders[0];
-
-    title = t(
-      `${top.player_name}, protagonista del ${game.home_team} - ${game.away_team}`,
-      `${top.player_name} stars in ${game.home_team} vs ${game.away_team}`
-    );
-
-    text += " " + playerDescription(top);
-
-    if (leaders.length>1) {
-      const second = leaders[1];
-
-      text += " " + t(
-        `También destaca ${second.player_name}, con ${Number(second.points || 0)} puntos, ${Number(second.rebounds || 0)} rebotes y ${Number(second.assists || 0)} asistencias.`,
-        `${second.player_name} is also making an impact with ${Number(second.points || 0)} points, ${Number(second.rebounds || 0)} rebounds and ${Number(second.assists || 0)} assists.`
-      );
-    }
-  } else {
-    title = live
-      ? `${game.home_team} vs ${game.away_team}`
-      : t(
-          `Así terminó el ${game.home_team} - ${game.away_team}`,
-          `${game.home_team} vs ${game.away_team}: the result`
-        );
-  }
-
-  return `<article class="brief-story">
-    <div class="tag">
-      ${escapeHtml(league)} ·
-      ${live ? "LIVE" : "FINAL"}
-      ${isFavoriteGame(game) ? " · ★" : ""}
-    </div>
-
-    <h3>${escapeHtml(title)}</h3>
-    <p>${escapeHtml(text)}</p>
-
-    ${leaders.length ? playerFeature(leaders[0]) : ""}
-
-    <p class="small">
-      ${escapeHtml(formatGameDate(game.game_date))}
-    </p>
-  </article>`;
-}
-
-function renderNowFeed() {
-  if (feedError) {
-    $("liveIndicator").textContent="ERROR";
-    $("nowFeed").innerHTML=`<p class="muted">
-      ${t(
-        "No se ha podido cargar el briefing.",
-        "Could not load the briefing."
-      )}
-    </p>`;
-    return;
-  }
-
-  if (!currentFeedLoaded) {
-    $("nowFeed").innerHTML=`<p class="muted">
-      ${t("Preparando briefing...","Preparing briefing...")}
-    </p>`;
-    return;
-  }
-
-  const games = feedGames.filter(isVisibleLeague);
-
-  const live = games
-    .filter(g=>g.status==="live")
-    .sort((a,b)=>storyPriority(b)-storyPriority(a));
-
-  const finished = sortedRecent(
-    games.filter(g=>
-      g.status==="finished" &&
-      g.home_score!=null &&
-      g.away_score!=null
-    )
-  );
-
-  const recentFinished = finished.slice(0,25)
-    .sort((a,b)=>storyPriority(b)-storyPriority(a));
-
-  let headline = "";
-  let introduction = "";
-  let stories = [];
-
-  if (live.length) {
-    $("liveIndicator").innerHTML =
-      '<span class="live-dot"></span>LIVE';
-
-    const featured = live.slice(0,3);
-    const leader = bestPlayers(featured[0],1)[0];
-
-    headline = t(
-      "Esto es lo que está pasando ahora",
-      "Here's what's happening right now"
-    );
-
-    introduction = t(
-      `Hay ${live.length} ${live.length===1
-        ? "partido en directo"
-        : "partidos en directo"} en las competiciones que seguimos. ${liveSentence(featured[0])}`,
-      `There ${live.length===1
-        ? "is one live game"
-        : `are ${live.length} live games`} in the competitions we follow. ${liveSentence(featured[0])}`
-    );
-
-    if (leader) {
-      introduction += " " + playerDescription(leader);
-    }
-
-    stories = featured.map(gameStory);
-
-    if (recentFinished.length) {
-      stories.push(`
-        <div class="tag" style="margin-top:18px">
-          ${t("ÚLTIMOS RESULTADOS","LATEST RESULTS")}
-        </div>
-      `);
-
-      stories.push(
-        ...recentFinished.slice(0,2).map(gameStory)
-      );
-    }
-
-  } else if (finished.length) {
-    $("liveIndicator").textContent =
-      t("RESUMEN","RECAP");
-
-    const featured = recentFinished.slice(0,4);
-    const first = featured[0];
-    const leader = bestPlayers(first,1)[0];
-
-    headline = t(
-      "Los protagonistas de los últimos partidos",
-      "The standouts from the latest games"
-    );
-
-    introduction = t(
-      `No hay partidos en directo entre los datos disponibles, pero los últimos encuentros han dejado historias interesantes. ${resultSentence(first)}`,
-      `No games are currently live in the available data, but recent matchups have produced some interesting stories. ${resultSentence(first)}`
-    );
-
-    if (leader) {
-      introduction += " " + playerDescription(leader);
-    }
-
-    stories = featured.map(gameStory);
-
-  } else {
-    $("liveIndicator").textContent="TRIPL3";
-
-    headline = t(
-      "Preparando las próximas historias",
-      "Getting ready for the next stories"
-    );
-
-    introduction = t(
-      "Todavía no hay partidos recientes disponibles para preparar un briefing. TRIPL3 NOW se actualizará cuando lleguen nuevos resultados y estadísticas.",
-      "There are no recent games available for a briefing yet. TRIPL3 NOW will update when new results and player statistics arrive."
-    );
-  }
-
-  $("nowFeed").innerHTML=`
-    <div class="tag">
-      TRIPL3 ·
-      ${t("TU BRIEFING DE BALONCESTO","YOUR BASKETBALL BRIEFING")}
-    </div>
-
-    <h3 class="brief-headline">
-      ${escapeHtml(headline)}
-    </h3>
-
-    <p class="brief-body">
-      ${escapeHtml(introduction)}
-    </p>
-
-    ${stories.join("")}
-
-    <div class="brief-footer">
-      ${t(
-        "Basado en resultados y estadísticas reales disponibles. No incluye todavía noticias externas.",
-        "Based on available real scores and statistics. External news is not yet included."
-      )}
-    </div>
-  `;
-}
-
-/* =========================================
-   PERSONALIZED BRIEFING
-========================================= */
-
-function renderPersonalFeed() {
-  const hasFavorites =
-    state.teams.length || state.players.length;
-
-  if (!hasFavorites) {
-    $("personalFeed").innerHTML=`
-      <div class="card">
-        <h3>${t(
-          "Personaliza tu briefing",
-          "Personalize your briefing"
-        )}</h3>
-
-        <p class="muted">${t(
-          "Añade tus equipos y jugadores favoritos para recibir un resumen más personal.",
-          "Add your favorite teams and players for a more personal briefing."
-        )}</p>
-
-        <button class="btn" onclick="go('favorites')">
-          ${t("Elegir favoritos","Choose favorites")}
-        </button>
-      </div>
-    `;
-    return;
-  }
-
-  const favoriteGames = sortedRecent(
-    feedGames.filter(isFavoriteGame)
-  );
-
-  const favoritePlayerStats = playerStats
-    .filter(s=>isFavoritePlayer(s.player_name))
-    .sort((a,b)=>playerImpact(b)-playerImpact(a));
-
-  const playerStories = favoritePlayerStats
-    .slice(0,3)
-    .map(stat=>`
-      <div class="brief-story">
-        <h3>${escapeHtml(stat.player_name)}</h3>
-        <p>${escapeHtml(playerDescription(stat))}</p>
-      </div>
-    `).join("");
-
-  const teamStories = favoriteGames
-    .slice(0,3)
-    .map(game=>`
-      <div class="brief-story">
-        <div class="tag">
-          ${escapeHtml(leagueNames[game.league_id] || "")}
-        </div>
-
-        <h3>
-          ${escapeHtml(game.home_team)}
-          vs
-          ${escapeHtml(game.away_team)}
-        </h3>
-
-        <p>${escapeHtml(
-          game.status==="live"
-            ? liveSentence(game)
-            : game.status==="finished"
-              ? resultSentence(game)
-              : t(
-                  "Próximo encuentro programado.",
-                  "Scheduled game."
-                )
-        )}</p>
-      </div>
-    `).join("");
-
-  $("personalFeed").innerHTML=`
-    <div class="card">
-      <div class="tag">
-        ★ ${t("SOBRE TUS FAVORITOS","ABOUT YOUR FAVORITES")}
-      </div>
-
-      ${playerStories}
-
-      ${teamStories}
-
-      ${!playerStories && !teamStories
-        ? `<p class="muted">${t(
-            "Todavía no hay estadísticas o partidos recientes de tus favoritos.",
-            "No recent statistics or games are available for your favorites yet."
-          )}</p>`
-        : ""}
-    </div>
-  `;
-}
-
-function renderHomeGames() {
-  const recent = sortedRecent(
-    feedGames.filter(g=>
-      isVisibleLeague(g) &&
-      (
-        g.status==="live" ||
-        g.status==="finished"
-      )
-    )
-  );
-
-  $("homeGames").innerHTML=recent.length
-    ? recent.slice(0,3).map(gameCard).join("")
-    : `<div class="card muted">${t(
-        "No hay resultados recientes disponibles.",
-        "No recent results available."
-      )}</div>`;
-}
-
-/* =========================================
-   GAMES / LEAGUES
-========================================= */
-
-function renderGames() {
-  if (!selectedDay) selectedDay=todayDay();
-
-  $("gameDate").value=selectedDay;
-  $("gameFilters").innerHTML="";
-
-  catalog.leagues.forEach(league=>{
-    const btn=document.createElement("button");
-
-    btn.className="chip" +
-      (activeLeague===league ? " selected" : "");
-
-    btn.innerHTML=leagueLogo(league) +
-      `<span>${escapeHtml(league)}</span>`;
-
-    btn.onclick=()=>{
-      activeLeague=league;
-      renderGames();
-    };
-
-    $("gameFilters").appendChild(btn);
-  });
-
-  const filtered=realGames.filter(game=>
-    leagueNames[game.league_id]===activeLeague &&
-    dateInZone(new Date(game.game_date))===selectedDay
-  );
-
-  $("gameCount").textContent=
-    `${filtered.length} ${t("partidos","games")} · ${selectedDay}`;
-
-  $("gameList").innerHTML=filtered.length
-    ? filtered.map(gameCard).join("")
-    : `<div class="card muted">${
-        gamesError
-          ? escapeHtml(gamesError)
-          : gamesLoading
-            ? t("Cargando partidos...","Loading games...")
-            : t(
-                "No hay partidos guardados para esta fecha.",
-                "No saved games for this date."
-              )
-      }</div>`;
-
-  $("spoilerBtn").textContent=
-    state.hideScores ? "ON" : "OFF";
-}
-
-function renderLeagues() {
-  $("leagueCards").innerHTML=catalog.leagues.map(league=>`
-    <div class="card league-tile">
-      <div class="league-icon">
-        ${leagueLogo(league,true)}
-      </div>
-
-      <div>
-        <h3>${escapeHtml(league)}</h3>
-        <p class="muted small">
-          ${t(
-            "Partidos y clasificación parcial",
-            "Games and partial standings"
-          )}
-        </p>
-      </div>
-    </div>
-  `).join("");
-}
-
-function renderStandings() {
-  $("standingsFilters").innerHTML="";
-
-  catalog.leagues.forEach(league=>{
-    const btn=document.createElement("button");
-
-    btn.className="chip" +
-      (standingsLeague===league ? " selected" : "");
-
-    btn.innerHTML=leagueLogo(league) +
-      `<span>${escapeHtml(league)}</span>`;
-
-    btn.onclick=()=>{
-      standingsLeague=league;
-      renderStandings();
-    };
-
-    $("standingsFilters").appendChild(btn);
-  });
-
-  const teams=new Map();
-
-  const games=feedGames.filter(game=>
-    leagueNames[game.league_id]===standingsLeague &&
-    game.status==="finished" &&
-    Number.isInteger(game.home_score) &&
-    Number.isInteger(game.away_score)
-  );
-
-  for (const game of games) {
-    if (game.home_score===game.away_score) continue;
-
-    for (const [name,scored,against] of [
-      [game.home_team,game.home_score,game.away_score],
-      [game.away_team,game.away_score,game.home_score]
-    ]) {
-      if (!teams.has(name)) {
-        teams.set(name,{
-          name,p:0,w:0,l:0,pf:0,pa:0
-        });
-      }
-
-      const row=teams.get(name);
-
-      row.p++;
-      row.w+=Number(scored>against);
-      row.l+=Number(scored<against);
-      row.pf+=scored;
-      row.pa+=against;
-    }
-  }
-
-  const sorted=[...teams.values()].sort(
-    (a,b)=>
-      b.w-a.w ||
-      (b.pf-b.pa)-(a.pf-a.pa)
-  );
-
-  $("standingsTable").innerHTML=sorted.length
-    ? `<div class="card stat-scroll">
-        <table class="stat-table">
-          <thead>
-            <tr>
-              <th>${t("Equipo","Team")}</th>
-              <th>PJ</th><th>V</th><th>D</th><th>+/-</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            ${sorted.map(row=>`
-              <tr>
-                <td>${escapeHtml(row.name)}</td>
-                <td>${row.p}</td>
-                <td>${row.w}</td>
-                <td>${row.l}</td>
-                <td>${row.pf-row.pa}</td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>`
-    : `<div class="card muted">${t(
-        "No hay suficientes partidos finalizados.",
-        "Not enough finished games."
-      )}</div>`;
-}
-
-function render() {
-  translate();
-  renderPlayers();
-  renderNowFeed();
-  renderPersonalFeed();
-  renderHomeGames();
-  renderGames();
-  renderLeagues();
-  renderStandings();
-
-  makeChoices(
-    "playerChoices",catalog.players,"players"
-  );
-  makeChoices(
-    "teamChoices",catalog.teams,"teams"
-  );
-  makeChoices(
-    "leagueChoices",catalog.leagues,"leagues"
-  );
-}
-
-/* =========================================
-   SUPABASE DATA
-========================================= */
-
-const gameFields = [
-  "provider_game_id",
-  "league_id",
-  "home_team",
-  "away_team",
-  "home_team_logo",
-  "away_team_logo",
-  "home_score",
-  "away_score",
-  "game_date",
-  "status"
-].join(",");
-
-const statsFields = [
-  "provider_game_id",
-  "provider_player_id",
-  "player_name",
-  "provider_team_id",
-  "points",
-  "rebounds",
-  "assists",
-  "threepoints_made",
-  "minutes",
-  "updated_at"
-].join(",");
-
-async function loadGames() {
-  const sequence=++requestSequence;
-
-  if (!selectedDay) selectedDay=todayDay();
-
-  const center=new Date(selectedDay+"T12:00:00Z");
-  const lower=new Date(center);
-  const upper=new Date(center);
-
-  lower.setUTCDate(lower.getUTCDate()-2);
-  upper.setUTCDate(upper.getUTCDate()+2);
-
-  try {
-    const {data,error}=await db
-      .from("games")
-      .select(gameFields)
-      .gte("game_date",lower.toISOString())
-      .lt("game_date",upper.toISOString())
-      .order("game_date",{ascending:true})
-      .limit(500);
-
-    if (error) throw error;
-    if (sequence!==requestSequence) return;
-
-    realGames=data || [];
-    gamesError="";
-  } catch(error) {
-    if (sequence!==requestSequence) return;
-
-    gamesError=error.message || String(error);
-    console.error("TRIPL3 games:",error);
-  } finally {
-    if (sequence===requestSequence) {
-      gamesLoading=false;
-      renderGames();
-    }
-  }
-}
-
-async function loadFeed() {
-  const sequence=++feedSequence;
-
-  const since=new Date();
-  since.setUTCDate(since.getUTCDate()-7);
-
-  try {
-    // 1. Load recent games
-    const {data:games,error:gamesErrorResult}=await db
-      .from("games")
-      .select(gameFields)
-      .gte("game_date",since.toISOString())
-      .order("game_date",{ascending:false})
-      .limit(500);
-
-    if (gamesErrorResult) throw gamesErrorResult;
-    if (sequence!==feedSequence) return;
-
-    // 2. Load player stats only for those games
-    const ids=[...new Set(
-      (games || [])
-        .filter(g=>
-          g.status==="live" ||
-          g.status==="finished"
-        )
-        .map(g=>Number(g.provider_game_id))
-        .filter(Number.isFinite)
-    )];
-
-    let stats=[];
-
-    if (ids.length) {
-      // Supabase/PostgREST may impose row limits.
-      // Query game IDs in batches.
-      const batchSize=30;
-
-      for (let i=0;i<ids.length;i+=batchSize) {
-        const batch=ids.slice(i,i+batchSize);
-
-        const {data,error}=await db
-          .from("player_game_stats")
-          .select(statsFields)
-          .eq("provider","api-sports")
-          .in("provider_game_id",batch)
-          .limit(1000);
-
-        if (error) throw error;
-
-        stats.push(...(data || []));
-      }
-    }
-
-    if (sequence!==feedSequence) return;
-
-    feedGames=games || [];
-    playerStats=stats;
-    feedError="";
-    statsError="";
-    currentFeedLoaded=true;
-
-    renderNowFeed();
-    renderPersonalFeed();
-    renderHomeGames();
-    renderStandings();
-
-  } catch(error) {
-    if (sequence!==feedSequence) return;
-
-    feedError=error.message || String(error);
-    console.error("TRIPL3 briefing:",error);
-    renderNowFeed();
-  }
-}
-
-async function refreshAll() {
-  await Promise.all([
-    loadGames(),
-    loadFeed()
-  ]);
-}
-
-/* =========================================
-   UI EVENTS
-========================================= */
-
-$("langBtn").onclick=()=>{
-  state.language=
-    state.language==="es" ? "en" : "es";
-
-  localSave();
-  render();
-  savePreferences();
-};
-
-$("spoilerBtn").onclick=()=>{
-  state.hideScores=!state.hideScores;
-  localSave();
-  render();
-};
-
-$("language").onchange=event=>{
-  state.language=event.target.value;
-  localSave();
-  render();
-};
-
-$("timezone").onchange=event=>{
-  state.timezone=event.target.value;
-  selectedDay=todayDay();
-
-  localSave();
-  render();
-  loadGames();
-};
-
-/* =========================================
-   AUTHENTICATION
-========================================= */
-
-function authMessage(message) {
-  $("authMessage").textContent=message;
-}
-
-function updateAuth() {
-  $("authForm").style.display=user ? "none" : "block";
-  $("logoutBtn").style.display=user ? "block" : "none";
-
-  $("authStatus").textContent=user
-    ? t("Conectada: ","Signed in: ")+user.email
-    : t(
-        "Inicia sesión para sincronizar tus favoritos.",
-        "Sign in to sync your favorites."
-      );
-}
-
-async function signup() {
-  const email=$("email").value.trim();
-  const password=$("password").value;
-
-  if (!email || password.length<6) {
-    authMessage(t(
-      "Introduce email y contraseña de al menos 6 caracteres.",
-      "Enter an email and password of at least 6 characters."
-    ));
-    return;
-  }
-
-  const {data,error}=await db.auth.signUp({
-    email,
-    password,
-    options:{
-      emailRedirectTo:
-        "https://martina9804.github.io/tripl3/"
-    }
-  });
-
-  authMessage(
-    error
-      ? error.message
-      : data.session
-        ? t("Cuenta creada.","Account created.")
-        : t(
-            "Comprueba tu correo para confirmar la cuenta.",
-            "Check your email to confirm your account."
-          )
-  );
-}
-
-async function login() {
-  const email=$("email").value.trim();
-  const password=$("password").value;
-
-  const {error}=await db.auth.signInWithPassword({
-    email,password
-  });
-
-  authMessage(
-    error
-      ? error.message
-      : t("Sesión iniciada.","Signed in.")
-  );
-}
-
-async function logout() {
-  const {error}=await db.auth.signOut();
-  if (error) authMessage(error.message);
-}
-
-async function savePreferences() {
-  localSave();
-
-  if (!user) return;
-
-  const {error}=await db
-    .from("profiles")
-    .upsert({
-      id:user.id,
-      language:state.language,
-      timezone:state.timezone,
-      updated_at:new Date().toISOString()
-    },{onConflict:"id"});
-
-  authMessage(
-    error
-      ? error.message
-      : t(
-          "Preferencias guardadas.",
-          "Preferences saved."
-        )
-  );
-}
-
-async function syncFavorites() {
-  if (!user) return;
-
-  if (syncing) {
-    syncQueued=true;
-    return;
-  }
-
-  syncing=true;
-
-  $("syncMessage").textContent=t(
-    "Guardando favoritos...",
-    "Saving favorites..."
-  );
-
-  try {
-    const {data:teams,error:te}=await db
-      .from("teams")
-      .select("id,name")
-      .in(
-        "name",
-        state.teams.length
-          ? state.teams
-          : ["__none__"]
-      );
-
-    if (te) throw te;
-
-    const {data:players,error:pe}=await db
-      .from("players")
-      .select("id,name")
-      .in(
-        "name",
-        state.players.length
-          ? state.players
-          : ["__none__"]
-      );
-
-    if (pe) throw pe;
-
-    const records=[
-      ...(teams || []).map(x=>({
-        user_id:user.id,
-        team_id:x.id
-      })),
-      ...(players || []).map(x=>({
-        user_id:user.id,
-        player_id:x.id
-      }))
-    ];
-
-    const {error:de}=await db
-      .from("favorites")
-      .delete()
-      .eq("user_id",user.id);
-
-    if (de) throw de;
-
-    if (records.length) {
-      const {error:ie}=await db
-        .from("favorites")
-        .insert(records);
-
-      if (ie) throw ie;
-    }
-
-    $("syncMessage").textContent=t(
-      "Favoritos guardados.",
-      "Favorites saved."
-    );
-
-  } catch(error) {
-    $("syncMessage").textContent=error.message;
-  } finally {
-    syncing=false;
-
-    if (syncQueued) {
-      syncQueued=false;
-      syncFavorites();
-    }
-  }
-}
-
-async function loadUserData() {
-  if (!user) return;
-
-  const uid=user.id;
-
-  const {data:profile,error:profileError}=await db
-    .from("profiles")
-    .select("language,timezone")
-    .eq("id",uid)
-    .maybeSingle();
-
-  if (profileError) {
-    authMessage(profileError.message);
-    return;
-  }
-
-  if (!user || user.id!==uid) return;
-
-  if (profile) {
-    state.language=profile.language || "es";
-    state.timezone=profile.timezone || "Europe/Madrid";
-  }
-
-  const {data:favorites,error:favoritesError}=await db
-    .from("favorites")
-    .select("team_id,player_id,teams(name),players(name)")
-    .eq("user_id",uid);
-
-  if (favoritesError) {
-    authMessage(favoritesError.message);
-    return;
-  }
-
-  if (!user || user.id!==uid) return;
-
-  if (favorites) {
-    state.teams=favorites
-      .filter(f=>f.teams)
-      .map(f=>f.teams.name)
-      .filter(n=>catalog.teams.includes(n));
-
-    state.players=favorites
-      .filter(f=>f.players)
-      .map(f=>f.players.name)
-      .filter(n=>catalog.players.includes(n));
-  }
-
-  localSave();
-  render();
-  loadGames();
-}
-
 db.auth.onAuthStateChange((event,session)=>{
-  const previous=user?.id;
-
-  user=session?.user || null;
-  updateAuth();
-
-  if (user && user.id!==previous) {
-    setTimeout(loadUserData,0);
-  }
+ const previous=user?.id;
+ user=session?.user||null;
+ updateAuth();
+ if(user&&user.id!==previous)setTimeout(loadUserData,0);
 });
-
-/* =========================================
-   INITIALIZATION
-========================================= */
-
-async function init() {
-  selectedDay=todayDay();
-
-  render();
-  await refreshAll();
-
-  const {data,error}=await db.auth.getSession();
-
-  if (error) authMessage(error.message);
-
-  user=data?.session?.user || null;
-  updateAuth();
-
-  if (user) await loadUserData();
+async function init(){
+ selectedDay=currentDay();render();
+ await refreshAll();
+ const {data,error}=await db.auth.getSession();
+ if(error)$("authMessage").textContent=error.message;
+ user=data?.session?.user||null;updateAuth();
+ if(user)await loadUserData();
 }
-
 init();
-
-// Refresh data every 30 seconds while the page is visible.
-setInterval(()=>{
-  if (!document.hidden) refreshAll();
-},30000);
-
+setInterval(()=>{if(!document.hidden)refreshAll()},30000);
 </script>
 </body>
 </html>
