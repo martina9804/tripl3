@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#0B1020">
 <title>TRIPL3 — Your Basketball. Your Way.</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,9 +22,8 @@ button,input,select{font:inherit}
 button{cursor:pointer}
 header{
   position:sticky;top:0;z-index:10;background:#0B1020F5;
-  border-bottom:1px solid var(--border);
-  padding:15px 18px;display:flex;
-  justify-content:space-between;align-items:center
+  border-bottom:1px solid var(--border);padding:15px 18px;
+  display:flex;justify-content:space-between;align-items:center
 }
 .brand{font-size:27px;font-weight:900;letter-spacing:-1.5px}
 .brand span{color:var(--coral)}
@@ -95,10 +94,12 @@ p{line-height:1.5}
   overflow:hidden;border:1px solid var(--border)
 }
 .player-art{
-  height:120px;display:flex;align-items:center;
+  height:145px;display:flex;align-items:flex-end;
   justify-content:center;
-  background:linear-gradient(140deg,#3B415F,#994B50);
-  font-size:75px;font-weight:900;color:#FFFFFF25
+  background:linear-gradient(140deg,#3B415F,#994B50)
+}
+.player-art img{
+  max-height:145px;max-width:100%;object-fit:contain
 }
 .player-info{padding:13px}
 .player-info strong{display:block}
@@ -119,7 +120,10 @@ p{line-height:1.5}
   color:white;border-radius:30px;padding:10px 14px
 }
 .chip.selected{background:var(--coral);border-color:var(--coral)}
-label{display:block;margin:13px 0 6px;font-weight:bold;font-size:13px}
+label{
+  display:block;margin:13px 0 6px;
+  font-weight:bold;font-size:13px
+}
 input,select{
   width:100%;padding:13px;background:var(--card2);
   color:white;border:1px solid var(--border);border-radius:11px
@@ -145,6 +149,29 @@ input,select{
 .stat-table th{color:var(--muted)}
 .stat-table td:not(:first-child),
 .stat-table th:not(:first-child){text-align:right}
+.live-dot{
+  display:inline-block;width:8px;height:8px;
+  background:#FF5A36;border-radius:50%;
+  margin-right:6px;animation:pulse 1.5s infinite
+}
+@keyframes pulse{
+  50%{opacity:.25}
+}
+.story{
+  border-left:3px solid var(--coral);
+  padding:3px 0 3px 14px;margin:17px 0
+}
+.story h3{font-size:16px;margin:5px 0}
+.story p{font-size:13px;color:var(--muted);margin:5px 0}
+.story .tag{font-size:10px}
+.section-heading{
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px
+}
+.section-heading button{
+  border:0;background:none;color:var(--coral);
+  font-weight:bold
+}
 nav{
   position:fixed;bottom:0;left:0;right:0;
   background:#11192A;border-top:1px solid var(--border);
@@ -179,14 +206,15 @@ nav .symbol{font-size:23px}
 <main>
 
 <section id="home" class="page active">
-  <div class="eyebrow">TRIPL3 / DAILY BRIEFING</div>
-  <h1 data-es="Buenos días." data-en="Good morning.">
-    Buenos días.
+  <div class="eyebrow">TRIPL3 / BASKETBALL NOW</div>
+  <h1 data-es="Tu baloncesto. Ahora."
+      data-en="Your basketball. Right now.">
+    Tu baloncesto. Ahora.
   </h1>
   <p class="muted"
-     data-es="Tu baloncesto, sin perder tiempo."
-     data-en="Your basketball. No wasted time.">
-    Tu baloncesto, sin perder tiempo.
+     data-es="Lo que está pasando y lo que te has perdido."
+     data-en="What's happening and what you missed.">
+    Lo que está pasando y lo que te has perdido.
   </p>
 
   <div class="hero">
@@ -210,29 +238,30 @@ nav .symbol{font-size:23px}
       data-es="◈ Ligas" data-en="◈ Leagues">◈ Ligas</button>
   </div>
 
+  <div class="section-heading">
+    <h2 data-es="Ahora en TRIPL3"
+        data-en="Now on TRIPL3">Ahora en TRIPL3</h2>
+    <span class="tag" id="liveIndicator"></span>
+  </div>
+  <div id="nowFeed"></div>
+
+  <h2 data-es="Para ti" data-en="For you">Para ti</h2>
+  <div id="personalFeed"></div>
+
   <h2 data-es="Tus jugadores" data-en="Your players">
     Tus jugadores
   </h2>
   <div class="grid" id="homePlayers"></div>
 
-  <h2 data-es="Partidos destacados"
-      data-en="Featured games">Partidos destacados</h2>
+  <h2 data-es="Últimos partidos"
+      data-en="Latest games">Últimos partidos</h2>
   <div id="homeGames"></div>
 
-  <h2 data-es="Tu Morning Show"
-      data-en="Your Morning Show">Tu Morning Show</h2>
-  <div class="card">
-    <span class="tag">TRIPL3 ORIGINAL</span>
-    <h3 data-es="Tu resumen personalizado"
-        data-en="Your personalized briefing">
-      Tu resumen personalizado
-    </h3>
-    <p class="muted"
-       data-es="Próximamente: noticias y estadísticas verificadas de tus favoritos."
-       data-en="Coming soon: verified news and stats about your favorites.">
-      Próximamente: noticias y estadísticas verificadas
-      de tus favoritos.
-    </p>
+  <div class="notice"
+    data-es="Los resúmenes se generan a partir de resultados guardados. No son noticias periodísticas ni estadísticas individuales. Las fotos de jugadores proceden del servicio público de imágenes de NBA."
+    data-en="Summaries are generated from saved results. They are not news articles or individual player statistics. Player images come from the NBA public image service.">
+    Los resúmenes se generan a partir de resultados guardados.
+    No son noticias periodísticas ni estadísticas individuales.
   </div>
 </section>
 
@@ -248,7 +277,7 @@ nav .symbol{font-size:23px}
   <div class="datebar">
     <button class="btn secondary" onclick="changeDay(-1)">‹</button>
     <input id="gameDate" type="date"
-           onchange="setGameDate(this.value)">
+      onchange="setGameDate(this.value)">
     <button class="btn secondary" onclick="changeDay(1)">›</button>
     <button class="btn secondary" onclick="goToday()"
       data-es="Hoy" data-en="Today">Hoy</button>
@@ -259,22 +288,14 @@ nav .symbol{font-size:23px}
 
   <div class="card row">
     <span data-es="Ocultar marcadores"
-          data-en="Hide scores">Ocultar marcadores</span>
+      data-en="Hide scores">Ocultar marcadores</span>
     <button class="btn secondary" id="spoilerBtn">OFF</button>
   </div>
-
   <div id="gameList"></div>
 
   <button class="btn secondary" onclick="loadGames()"
     data-es="Actualizar pantalla"
     data-en="Refresh screen">Actualizar pantalla</button>
-
-  <p class="muted small"
-     data-es="Se actualiza desde Supabase cada 10 segundos. Las fechas sin sincronizar pueden aparecer vacías."
-     data-en="Refreshes from Supabase every 10 seconds. Unsynced dates may be empty.">
-    Se actualiza desde Supabase cada 10 segundos.
-    Las fechas sin sincronizar pueden aparecer vacías.
-  </p>
 </section>
 
 <section id="leagues" class="page">
@@ -282,20 +303,15 @@ nav .symbol{font-size:23px}
   <h1 data-es="Competiciones" data-en="Leagues">
     Competiciones
   </h1>
-  <p class="muted"
-     data-es="Tres ligas. Una sola aplicación."
-     data-en="Three leagues. One app.">
-    Tres ligas. Una sola aplicación.
-  </p>
   <div id="leagueCards"></div>
 
   <h2 data-es="Clasificación parcial"
       data-en="Partial standings">Clasificación parcial</h2>
   <p class="muted small"
-     data-es="Calculada únicamente con los partidos finalizados guardados. No es la clasificación oficial."
-     data-en="Calculated only from saved finished games. Not official standings.">
-    Calculada únicamente con los partidos finalizados guardados.
-    No es la clasificación oficial.
+     data-es="Calculada con los partidos finalizados guardados. No es una clasificación oficial."
+     data-en="Calculated from saved finished games. Not official standings.">
+    Calculada con los partidos finalizados guardados.
+    No es una clasificación oficial.
   </p>
   <div class="chips" id="standingsFilters"></div>
   <div id="standingsTable"></div>
@@ -316,12 +332,10 @@ nav .symbol{font-size:23px}
     <h3 data-es="Jugadores" data-en="Players">Jugadores</h3>
     <div class="chips" id="playerChoices"></div>
   </div>
-
   <div class="card">
     <h3 data-es="Equipos" data-en="Teams">Equipos</h3>
     <div class="chips" id="teamChoices"></div>
   </div>
-
   <div class="card">
     <h3 data-es="Ligas" data-en="Leagues">Ligas</h3>
     <div class="chips" id="leagueChoices"></div>
@@ -335,21 +349,17 @@ nav .symbol{font-size:23px}
 
   <div class="card">
     <h3 data-es="Tu cuenta TRIPL3"
-        data-en="Your TRIPL3 account">
-      Tu cuenta TRIPL3
-    </h3>
+      data-en="Your TRIPL3 account">Tu cuenta TRIPL3</h3>
     <p id="authStatus" class="muted"></p>
 
     <div id="authForm">
       <label>Email</label>
-      <input id="email" type="email" autocomplete="email"
-             placeholder="tu@email.com">
-
+      <input id="email" type="email"
+        autocomplete="email" placeholder="tu@email.com">
       <label data-es="Contraseña"
-             data-en="Password">Contraseña</label>
-      <input id="password" type="password" minlength="6"
-             autocomplete="current-password">
-
+        data-en="Password">Contraseña</label>
+      <input id="password" type="password"
+        minlength="6" autocomplete="current-password">
       <div class="actions">
         <button class="btn" onclick="login()"
           data-es="Iniciar sesión"
@@ -369,8 +379,7 @@ nav .symbol{font-size:23px}
 
   <div class="card">
     <h3 data-es="Personalización"
-        data-en="Personalization">Personalización</h3>
-
+      data-en="Personalization">Personalización</h3>
     <label data-es="Idioma" data-en="Language">Idioma</label>
     <select id="language">
       <option value="es">Español</option>
@@ -378,13 +387,13 @@ nav .symbol{font-size:23px}
     </select>
 
     <label data-es="Hora de tu Morning Show"
-           data-en="Your Morning Show time">
+      data-en="Your Morning Show time">
       Hora de tu Morning Show
     </label>
     <input id="briefingTime" type="time" value="08:00">
 
     <label data-es="Zona horaria"
-           data-en="Time zone">Zona horaria</label>
+      data-en="Time zone">Zona horaria</label>
     <select id="timezone">
       <option value="Europe/Madrid">España peninsular</option>
       <option value="Atlantic/Canary">Canarias</option>
@@ -403,16 +412,15 @@ nav .symbol{font-size:23px}
 
   <div class="card">
     <h3 data-es="Notificaciones"
-        data-en="Notifications">Notificaciones</h3>
+      data-en="Notifications">Notificaciones</h3>
     <p class="muted"
-       data-es="Las notificaciones push estarán disponibles en una próxima versión."
-       data-en="Push notifications will be available in a future version.">
-      Las notificaciones push estarán disponibles
+      data-es="Las notificaciones push se incorporarán en una próxima versión."
+      data-en="Push notifications will be added in a future version.">
+      Las notificaciones push se incorporarán
       en una próxima versión.
     </p>
   </div>
 </section>
-
 </main>
 
 <nav>
@@ -441,17 +449,15 @@ nav .symbol{font-size:23px}
 <script>
 const URL_SUPABASE =
   "https://xqzbvjbmospjkdaupjhv.supabase.co";
-
 const KEY_SUPABASE =
   "sb_publishable_g4LtRSSO_AkMFHVnDa5ftQ_veppfOtX";
 
-const db = window.supabase.createClient(
-  URL_SUPABASE, KEY_SUPABASE
+const db=window.supabase.createClient(
+  URL_SUPABASE,KEY_SUPABASE
 );
+const $=id=>document.getElementById(id);
 
-const $ = id => document.getElementById(id);
-
-const catalog = {
+const catalog={
   leagues:["NBA","EuroLeague","ACB"],
   teams:[
     "Lakers","Celtics","Spurs","Warriors",
@@ -463,28 +469,51 @@ const catalog = {
   ]
 };
 
-const leagueNames = {
+const playerIds={
+  "Luka Dončić":"1629029",
+  "Victor Wembanyama":"1641705",
+  "Stephen Curry":"201939",
+  "LeBron James":"2544"
+};
+
+const playerTeams={
+  "Luka Dončić":"Lakers",
+  "Victor Wembanyama":"Spurs",
+  "Stephen Curry":"Warriors",
+  "LeBron James":"Lakers"
+};
+
+const teamAliases={
+  "Lakers":["lakers","los angeles lakers"],
+  "Celtics":["celtics","boston celtics"],
+  "Spurs":["spurs","san antonio spurs"],
+  "Warriors":["warriors","golden state warriors"],
+  "Real Madrid":["real madrid"],
+  "Barça":["barcelona","barca","barça","fc barcelona"],
+  "Valencia Basket":["valencia"],
+  "Olympiacos":["olympiacos"]
+};
+
+const leagueNames={
   nba:"NBA",euroleague:"EuroLeague",acb:"ACB"
 };
 
-const initial = {
-  language:"es",
-  time:"08:00",
-  timezone:"Europe/Madrid",
-  hideScores:false,
+const initial={
+  language:"es",time:"08:00",
+  timezone:"Europe/Madrid",hideScores:false,
   leagues:["NBA","EuroLeague","ACB"],
   teams:["Lakers","Real Madrid"],
   players:["Luka Dončić"]
 };
 
 let state;
-try {
-  state = {
+try{
+  state={
     ...initial,
-    ...JSON.parse(localStorage.getItem("tripl3_state") || "{}")
+    ...JSON.parse(localStorage.getItem("tripl3_state")||"{}")
   };
-} catch {
-  state = {...initial};
+}catch{
+  state={...initial};
 }
 
 let user=null;
@@ -492,10 +521,12 @@ let activeLeague="NBA";
 let standingsLeague="NBA";
 let syncing=false;
 let realGames=[];
+let feedGames=[];
 let gamesLoading=true;
 let gamesError="";
-let requestSequence=0;
 let selectedDay="";
+let requestSequence=0;
+let feedSequence=0;
 
 function t(es,en){
   return state.language==="es"?es:en;
@@ -510,6 +541,31 @@ function escapeHtml(value){
     "&":"&amp;","<":"&lt;",">":"&gt;",
     '"':"&quot;","'":"&#39;"
   }[c]));
+}
+
+function normalize(value){
+  return String(value||"")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9 ]/g,"")
+    .trim();
+}
+
+function teamMatches(name,favorite){
+  const target=normalize(name);
+  const aliases=teamAliases[favorite]||[favorite];
+  return aliases.some(alias=>{
+    const a=normalize(alias);
+    return target===a||target.includes(a);
+  });
+}
+
+function isFavoriteGame(g){
+  return state.teams.some(team=>
+    teamMatches(g.home_team,team)||
+    teamMatches(g.away_team,team)
+  );
 }
 
 function go(page){
@@ -556,31 +612,44 @@ function renderPlayers(){
   const selected=catalog.players.filter(
     p=>state.players.includes(p)
   );
-  $("homePlayers").innerHTML=selected.map((name,i)=>`
-    <div class="player">
-      <div class="player-art">${i+1}</div>
-      <div class="player-info">
-        <strong>${escapeHtml(name)}</strong>
-        <small>★ ${t("Favorito","Favorite")}</small>
+
+  $("homePlayers").innerHTML=selected.map(name=>{
+    const id=playerIds[name];
+    const photo=id
+      ?`https://cdn.nba.com/headshots/nba/latest/1040x760/${id}.png`
+      :"";
+
+    return `
+      <div class="player">
+        <div class="player-art">
+          ${photo?`<img src="${photo}"
+            alt="${escapeHtml(name)}"
+            loading="lazy"
+            onerror="this.style.display='none'">`:""}
+        </div>
+        <div class="player-info">
+          <strong>${escapeHtml(name)}</strong>
+          <small>${escapeHtml(playerTeams[name]||"")}</small>
+        </div>
       </div>
-    </div>
-  `).join("")||`
-    <div class="card">
-      ${t("Selecciona tus jugadores favoritos.",
-          "Select your favorite players.")}
+    `;
+  }).join("")||`
+    <div class="card muted">
+      ${t("Selecciona jugadores en Favoritos.",
+          "Select players in Favorites.")}
     </div>
   `;
 }
 
 function dateInZone(date){
-  try {
+  try{
     const parts=new Intl.DateTimeFormat("en-CA",{
       timeZone:state.timezone,
       year:"numeric",month:"2-digit",day:"2-digit"
     }).formatToParts(date);
     const get=type=>parts.find(p=>p.type===type)?.value;
     return `${get("year")}-${get("month")}-${get("day")}`;
-  } catch {
+  }catch{
     return date.toISOString().slice(0,10);
   }
 }
@@ -590,9 +659,9 @@ function todayDay(){
 }
 
 function changeDay(amount){
-  const date=new Date(selectedDay+"T12:00:00Z");
-  date.setUTCDate(date.getUTCDate()+amount);
-  selectedDay=date.toISOString().slice(0,10);
+  const d=new Date(selectedDay+"T12:00:00Z");
+  d.setUTCDate(d.getUTCDate()+amount);
+  selectedDay=d.toISOString().slice(0,10);
   loadGames();
 }
 
@@ -610,7 +679,7 @@ function goToday(){
 function formatGameDate(value){
   const d=new Date(value);
   if(Number.isNaN(d.getTime()))return "";
-  try {
+  try{
     return new Intl.DateTimeFormat(
       state.language==="es"?"es-ES":"en-GB",
       {
@@ -619,7 +688,7 @@ function formatGameDate(value){
         timeZone:state.timezone
       }
     ).format(d);
-  } catch {
+  }catch{
     return d.toLocaleString();
   }
 }
@@ -655,6 +724,8 @@ function gameCard(g){
   return `
     <div class="card">
       <div class="tag">
+        ${g.status==="live"
+          ?'<span class="live-dot"></span>':""}
         ${escapeHtml(league)} ·
         ${escapeHtml(statuses[g.status]||statuses.unknown)}
       </div>
@@ -680,7 +751,6 @@ function gameMessage(){
   }
   if(gamesError){
     return `<div class="notice">
-      ${t("Error al cargar: ","Loading error: ")}
       ${escapeHtml(gamesError)}
     </div>`;
   }
@@ -690,21 +760,203 @@ function gameMessage(){
   </div>`;
 }
 
+function sortedRecent(games){
+  return [...games].sort(
+    (a,b)=>new Date(b.game_date)-new Date(a.game_date)
+  );
+}
+
+function storyFromGame(g){
+  const home=escapeHtml(g.home_team);
+  const away=escapeHtml(g.away_team);
+  const league=escapeHtml(
+    leagueNames[g.league_id]||g.league_id
+  );
+  const date=escapeHtml(formatGameDate(g.game_date));
+
+  if(g.status==="live"){
+    const score=g.home_score!=null&&g.away_score!=null
+      ?`${g.home_score}-${g.away_score}`:"";
+
+    return {
+      label:`${league} · LIVE`,
+      title:t(
+        `${g.home_team} y ${g.away_team}, en directo`,
+        `${g.home_team} vs ${g.away_team}, live`
+      ),
+      description:t(
+        `Marcador actual: ${score||"pendiente"}.`,
+        `Current score: ${score||"pending"}.`
+      ),
+      date
+    };
+  }
+
+  if(g.status==="finished"&&
+     g.home_score!=null&&g.away_score!=null){
+    const diff=Math.abs(g.home_score-g.away_score);
+    const winner=g.home_score>g.away_score
+      ?g.home_team:g.away_team;
+
+    const headline=diff<=5
+      ?t(
+        `Final ajustado: ${g.home_team} vs ${g.away_team}`,
+        `Close finish: ${g.home_team} vs ${g.away_team}`
+      )
+      :t(
+        `${winner} se lleva la victoria`,
+        `${winner} takes the win`
+      );
+
+    return {
+      label:`${league} · ${t("FINAL","FINAL")}`,
+      title:headline,
+      description:
+        `${home} ${g.home_score} – ${g.away_score} ${away}`,
+      date
+    };
+  }
+
+  return {
+    label:league,
+    title:`${home} vs ${away}`,
+    description:t(
+      "Partido programado.",
+      "Scheduled game."
+    ),
+    date
+  };
+}
+
+function storyHtml(story){
+  return `
+    <article class="story">
+      <div class="tag">${escapeHtml(story.label)}</div>
+      <h3>${escapeHtml(story.title)}</h3>
+      <p>${escapeHtml(story.description)}</p>
+      <p class="small">${escapeHtml(story.date)}</p>
+    </article>
+  `;
+}
+
+function renderNowFeed(){
+  const live=feedGames.filter(g=>g.status==="live");
+  const finished=sortedRecent(
+    feedGames.filter(g=>g.status==="finished")
+  );
+
+  const selected=live.length
+    ?live.slice(0,6)
+    :finished.slice(0,6);
+
+  $("liveIndicator").textContent=live.length
+    ?`${live.length} LIVE`
+    :t("RESUMEN","RECAP");
+
+  if(!selected.length){
+    $("nowFeed").innerHTML=`
+      <div class="card muted">
+        ${t(
+          "Todavía no hay resultados recientes guardados.",
+          "No recent results have been saved yet."
+        )}
+      </div>`;
+    return;
+  }
+
+  $("nowFeed").innerHTML=`
+    <div class="card">
+      <span class="tag">
+        ${live.length
+          ?t("EN DIRECTO","LIVE NOW")
+          :t("LO ÚLTIMO","LATEST RESULTS")}
+      </span>
+      ${selected.map(g=>storyHtml(storyFromGame(g))).join("")}
+    </div>
+  `;
+}
+
+function renderPersonalFeed(){
+  const hasFavorites=
+    state.teams.length>0||state.players.length>0;
+
+  if(!hasFavorites){
+    $("personalFeed").innerHTML=`
+      <div class="card">
+        <h3>${t(
+          "Personaliza tu experiencia",
+          "Personalize your experience"
+        )}</h3>
+        <p class="muted">${t(
+          "Añade equipos o jugadores favoritos para verlos aquí primero.",
+          "Add favorite teams or players to see them here first."
+        )}</p>
+        <button class="btn" onclick="go('favorites')">
+          ${t("Elegir favoritos","Choose favorites")}
+        </button>
+      </div>`;
+    return;
+  }
+
+  const favoriteGames=sortedRecent(
+    feedGames.filter(isFavoriteGame)
+  );
+
+  const players=state.players.map(name=>{
+    const id=playerIds[name];
+    return `
+      <div class="teamline">
+        ${id?`<img
+          src="https://cdn.nba.com/headshots/nba/latest/1040x760/${id}.png"
+          alt="" loading="lazy">`:""}
+        <span>${escapeHtml(name)}</span>
+      </div>
+    `;
+  }).join("");
+
+  $("personalFeed").innerHTML=`
+    <div class="card">
+      <span class="tag">${t("TUS FAVORITOS","YOUR FAVORITES")}</span>
+      ${players?`
+        <h3 style="margin-top:15px">
+          ${t("Jugadores que sigues","Players you follow")}
+        </h3>
+        ${players}
+        <p class="muted small">${t(
+          "Las estadísticas individuales y noticias de estos jugadores se conectarán próximamente.",
+          "Individual stats and news for these players will be connected soon."
+        )}</p>
+      `:""}
+      <h3 style="margin-top:18px">
+        ${t("Tus equipos","Your teams")}
+      </h3>
+      ${favoriteGames.length
+        ?favoriteGames.slice(0,4).map(g=>
+          storyHtml(storyFromGame(g))
+        ).join("")
+        :`<p class="muted">${t(
+          "No hay partidos recientes de tus equipos en los datos disponibles.",
+          "No recent games for your teams in the available data."
+        )}</p>`}
+    </div>
+  `;
+}
+
+function renderHomeGames(){
+  const recent=sortedRecent(
+    feedGames.filter(g=>
+      g.status==="live"||g.status==="finished"
+    )
+  );
+
+  $("homeGames").innerHTML=recent.length
+    ?recent.slice(0,3).map(gameCard).join("")
+    :gameMessage();
+}
+
 function renderGames(){
   if(!selectedDay)selectedDay=todayDay();
   $("gameDate").value=selectedDay;
-
-  const today=todayDay();
-
-  const featured=realGames.filter(g=>
-    dateInZone(new Date(g.game_date))===today &&
-    state.leagues.includes(leagueNames[g.league_id])
-  );
-
-  $("homeGames").innerHTML=featured.length
-    ?featured.slice(0,3).map(gameCard).join("")
-    :gameMessage();
-
   $("gameFilters").innerHTML="";
 
   catalog.leagues.forEach(l=>{
@@ -719,7 +971,7 @@ function renderGames(){
   });
 
   const filtered=realGames.filter(g=>
-    leagueNames[g.league_id]===activeLeague &&
+    leagueNames[g.league_id]===activeLeague&&
     dateInZone(new Date(g.game_date))===selectedDay
   );
 
@@ -765,23 +1017,19 @@ function renderStandings(){
   });
 
   const teams=new Map();
-
-  const games=realGames.filter(g=>
-    leagueNames[g.league_id]===standingsLeague &&
-    g.status==="finished" &&
-    Number.isInteger(g.home_score) &&
+  const games=feedGames.filter(g=>
+    leagueNames[g.league_id]===standingsLeague&&
+    g.status==="finished"&&
+    Number.isInteger(g.home_score)&&
     Number.isInteger(g.away_score)
   );
 
   for(const g of games){
     if(g.home_score===g.away_score)continue;
-
-    const entries=[
+    for(const [name,scored,against] of [
       [g.home_team,g.home_score,g.away_score],
       [g.away_team,g.away_score,g.home_score]
-    ];
-
-    for(const [name,scored,against] of entries){
+    ]){
       if(!teams.has(name)){
         teams.set(name,{
           name,p:0,w:0,l:0,pf:0,pa:0
@@ -800,17 +1048,8 @@ function renderStandings(){
     (a,b)=>b.w-a.w||(b.pf-b.pa)-(a.pf-a.pa)
   );
 
-  if(!sorted.length){
-    $("standingsTable").innerHTML=`
-      <div class="card muted">
-        ${t("Todavía no hay suficientes partidos finalizados.",
-            "Not enough finished games yet.")}
-      </div>`;
-    return;
-  }
-
-  $("standingsTable").innerHTML=`
-    <div class="card stat-scroll">
+  $("standingsTable").innerHTML=sorted.length
+    ?`<div class="card stat-scroll">
       <table class="stat-table">
         <thead>
           <tr>
@@ -822,20 +1061,25 @@ function renderStandings(){
           ${sorted.map(r=>`
             <tr>
               <td>${escapeHtml(r.name)}</td>
-              <td>${r.p}</td>
-              <td>${r.w}</td>
-              <td>${r.l}</td>
-              <td>${r.pf-r.pa}</td>
+              <td>${r.p}</td><td>${r.w}</td>
+              <td>${r.l}</td><td>${r.pf-r.pa}</td>
             </tr>
           `).join("")}
         </tbody>
       </table>
+    </div>`
+    :`<div class="card muted">
+      ${t("No hay suficientes partidos finalizados.",
+          "Not enough finished games.")}
     </div>`;
 }
 
 function render(){
   translate();
   renderPlayers();
+  renderNowFeed();
+  renderPersonalFeed();
+  renderHomeGames();
   renderGames();
   renderLeagues();
   renderStandings();
@@ -851,18 +1095,10 @@ async function loadGames(){
   const center=new Date(selectedDay+"T12:00:00Z");
   const lower=new Date(center);
   const upper=new Date(center);
-
   lower.setUTCDate(lower.getUTCDate()-2);
   upper.setUTCDate(upper.getUTCDate()+2);
 
-  gamesError="";
-
-  if(!realGames.length){
-    gamesLoading=true;
-    renderGames();
-  }
-
-  try {
+  try{
     const {data,error}=await db
       .from("games")
       .select(
@@ -879,15 +1115,52 @@ async function loadGames(){
     if(sequence!==requestSequence)return;
 
     realGames=data||[];
-  } catch(error){
+    gamesError="";
+  }catch(error){
     if(sequence!==requestSequence)return;
     gamesError=error.message||String(error);
     console.error("TRIPL3 games:",error);
-  } finally {
+  }finally{
     if(sequence===requestSequence){
       gamesLoading=false;
       renderGames();
-      renderStandings();
+    }
+  }
+}
+
+async function loadFeed(){
+  const sequence=++feedSequence;
+  const since=new Date();
+  since.setUTCDate(since.getUTCDate()-7);
+
+  try{
+    const {data,error}=await db
+      .from("games")
+      .select(
+        "league_id,home_team,away_team,"+
+        "home_team_logo,away_team_logo,"+
+        "home_score,away_score,game_date,status"
+      )
+      .gte("game_date",since.toISOString())
+      .order("game_date",{ascending:false})
+      .limit(500);
+
+    if(error)throw error;
+    if(sequence!==feedSequence)return;
+
+    feedGames=data||[];
+    renderNowFeed();
+    renderPersonalFeed();
+    renderHomeGames();
+    renderStandings();
+  }catch(error){
+    console.error("TRIPL3 feed:",error);
+    if(sequence===feedSequence){
+      $("nowFeed").innerHTML=`
+        <div class="notice">
+          ${t("No se pudo cargar la actualidad.",
+              "Could not load the latest results.")}
+        </div>`;
     }
   }
 }
@@ -902,7 +1175,7 @@ $("langBtn").onclick=()=>{
 $("spoilerBtn").onclick=()=>{
   state.hideScores=!state.hideScores;
   localSave();
-  renderGames();
+  render();
 };
 
 $("language").onchange=e=>{
@@ -918,8 +1191,8 @@ $("briefingTime").onchange=e=>{
 
 $("timezone").onchange=e=>{
   state.timezone=e.target.value;
-  localSave();
   selectedDay=todayDay();
+  localSave();
   render();
   loadGames();
 };
@@ -971,7 +1244,6 @@ async function signup(){
 async function login(){
   const email=$("email").value.trim();
   const password=$("password").value;
-
   const {error}=await db.auth.signInWithPassword({
     email,password
   });
@@ -1013,21 +1285,15 @@ async function syncFavorites(){
     "Saving favorites..."
   );
 
-  try {
+  try{
     const {data:teams,error:te}=await db
-      .from("teams")
-      .select("id,name")
-      .in("name",
-        state.teams.length?state.teams:["__none__"]
-      );
+      .from("teams").select("id,name")
+      .in("name",state.teams.length?state.teams:["__none__"]);
     if(te)throw te;
 
     const {data:players,error:pe}=await db
-      .from("players")
-      .select("id,name")
-      .in("name",
-        state.players.length?state.players:["__none__"]
-      );
+      .from("players").select("id,name")
+      .in("name",state.players.length?state.players:["__none__"]);
     if(pe)throw pe;
 
     const records=[
@@ -1040,8 +1306,7 @@ async function syncFavorites(){
     ];
 
     const {error:de}=await db.from("favorites")
-      .delete()
-      .eq("user_id",user.id);
+      .delete().eq("user_id",user.id);
     if(de)throw de;
 
     if(records.length){
@@ -1054,16 +1319,15 @@ async function syncFavorites(){
       "Favoritos guardados.",
       "Favorites saved."
     );
-  } catch(error){
+  }catch(error){
     $("syncMessage").textContent=error.message;
-  } finally {
+  }finally{
     syncing=false;
   }
 }
 
 async function loadUserData(){
   if(!user)return;
-
   const currentUserId=user.id;
 
   const {data:profile,error:profileError}=await db
@@ -1076,7 +1340,6 @@ async function loadUserData(){
     authMessage(profileError.message);
     return;
   }
-
   if(!user||user.id!==currentUserId)return;
 
   if(profile){
@@ -1094,7 +1357,6 @@ async function loadUserData(){
     authMessage(favoritesError.message);
     return;
   }
-
   if(!user||user.id!==currentUserId)return;
 
   if(favorites){
@@ -1127,21 +1389,23 @@ db.auth.onAuthStateChange((event,session)=>{
 async function init(){
   selectedDay=todayDay();
   render();
-  loadGames();
+  await Promise.all([loadGames(),loadFeed()]);
 
   const {data,error}=await db.auth.getSession();
   if(error)authMessage(error.message);
 
   user=data?.session?.user||null;
   updateAuth();
-
   if(user)await loadUserData();
 }
 
 init();
 
 setInterval(()=>{
-  if(!document.hidden)loadGames();
+  if(!document.hidden){
+    loadGames();
+    loadFeed();
+  }
 },10000);
 </script>
 </body>
