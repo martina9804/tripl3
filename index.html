@@ -180,7 +180,7 @@ p { line-height:1.5; }
   align-items:center;
   gap:10px;
 }
-.score strong { font-size:19px; }
+.score strong { font-size:17px; }
 .score .points {
   color:var(--coral);
   white-space:nowrap;
@@ -237,6 +237,23 @@ input,select {
   color:var(--muted);
   font-size:12px;
   line-height:1.6;
+}
+.teamline {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:7px 0;
+}
+.teamline img {
+  width:27px;
+  height:27px;
+  object-fit:contain;
+}
+.teamline span { overflow-wrap:anywhere; }
+.game-meta {
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
 }
 nav {
   position:fixed;
@@ -339,19 +356,22 @@ nav .symbol { font-size:23px; }
     </p>
   </div>
 
-  <div class="notice" data-es="DEMO: todavía no hay resultados ni noticias reales. Los marcadores son ficticios."
-       data-en="DEMO: real results and news are not connected yet. Scores are fictional.">
-    DEMO: todavía no hay resultados ni noticias reales.
-    Los marcadores son ficticios.
+  <div class="notice"
+       data-es="Los resultados proceden de API-Sports y se actualizan cuando se ejecuta la sincronización. El Morning Show todavía está en desarrollo."
+       data-en="Results come from API-Sports and update when synchronization runs. The Morning Show is still in development.">
+    Los resultados proceden de API-Sports y se actualizan
+    cuando se ejecuta la sincronización.
+    El Morning Show todavía está en desarrollo.
   </div>
 </section>
 
 <section id="games" class="page">
   <div class="eyebrow">TRIPL3 / GAME CENTER</div>
   <h1 data-es="Partidos" data-en="Games">Partidos</h1>
-  <p class="muted" data-es="Resultados de demostración."
-     data-en="Demonstration scores.">
-    Resultados de demostración.
+  <p class="muted"
+     data-es="Resultados reales guardados en TRIPL3."
+     data-en="Real results saved in TRIPL3.">
+    Resultados reales guardados en TRIPL3.
   </p>
 
   <div class="chips" id="gameFilters"></div>
@@ -360,8 +380,22 @@ nav .symbol { font-size:23px; }
           data-en="Hide scores">Ocultar marcadores</span>
     <button class="btn secondary" id="spoilerBtn">OFF</button>
   </div>
+
   <div id="gameList"></div>
-  <div class="notice">DEMO — Fictional scores.</div>
+
+  <button class="btn secondary" id="refreshGamesBtn"
+          type="button" style="margin-top:10px"
+          onclick="loadGames()"
+          data-es="Actualizar pantalla"
+          data-en="Refresh screen">
+    Actualizar pantalla
+  </button>
+  <p class="muted small"
+     data-es="Actualizar pantalla lee Supabase; no ejecuta una nueva sincronización con API-Sports."
+     data-en="Refresh screen reads Supabase; it does not run a new API-Sports sync.">
+    Actualizar pantalla lee Supabase;
+    no ejecuta una nueva sincronización con API-Sports.
+  </p>
 </section>
 
 <section id="leagues" class="page">
@@ -541,12 +575,6 @@ const catalog = {
   players: [
     "Luka Dončić","Victor Wembanyama",
     "Stephen Curry","LeBron James"
-  ],
-  games: [
-    ["NBA","Lakers","Celtics",112,108],
-    ["NBA","Warriors","Spurs",106,111],
-    ["EuroLeague","Real Madrid","Olympiacos",87,82],
-    ["ACB","Valencia Basket","Unicaja",91,89]
   ]
 };
 
@@ -573,13 +601,25 @@ try {
 let user = null;
 let activeLeague = "NBA";
 let syncing = false;
+let realGames = [];
+let gamesLoading = true;
+let gamesError = "";
+
+const leagueNames = {
+  nba:"NBA",
+  euroleague:"EuroLeague",
+  acb:"ACB"
+};
 
 function t(es,en) {
   return state.language === "es" ? es : en;
 }
 
 function localSave() {
-  localStorage.setItem("tripl3_state",JSON.stringify(state));
+  localStorage.setItem(
+    "tripl3_state",
+    JSON.stringify(state)
+  );
 }
 
 function go(page) {
@@ -610,11 +650,15 @@ function makeChoices(container,items,key) {
     btn.className="chip"+(
       state[key].includes(item)?" selected":""
     );
-    btn.textContent=(state[key].includes(item)?"✓ ":"+ ")+item;
+    btn.textContent=(
+      state[key].includes(item)?"✓ ":"+ "
+    )+item;
+
     btn.onclick=()=>{
       state[key]=state[key].includes(item)
         ?state[key].filter(x=>x!==item)
         :[...state[key],item];
+
       localSave();
       render();
       syncFavorites();
@@ -623,15 +667,29 @@ function makeChoices(container,items,key) {
   });
 }
 
+function escapeHtml(value) {
+  return String(value??"").replace(
+    /[&<>"']/g,
+    c=>({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#39;"
+    }[c])
+  );
+}
+
 function renderPlayers() {
   const selected=catalog.players.filter(
     p=>state.players.includes(p)
   );
+
   $("homePlayers").innerHTML=selected.map((name,i)=>`
     <div class="player">
       <div class="player-art">${i+1}</div>
       <div class="player-info">
-        <strong>${name}</strong>
+        <strong>${escapeHtml(name)}</strong>
         <small>★ ${t("Favorito","Favorite")}</small>
       </div>
     </div>
@@ -643,41 +701,136 @@ function renderPlayers() {
   `;
 }
 
+function formatGameDate(value) {
+  if(!value) return "";
+  const d=new Date(value);
+  if(Number.isNaN(d.getTime())) return "";
+
+  try {
+    return new Intl.DateTimeFormat(
+      state.language==="es"?"es-ES":"en-GB",
+      {
+        day:"numeric",
+        month:"short",
+        hour:"2-digit",
+        minute:"2-digit",
+        timeZone:state.timezone
+      }
+    ).format(d);
+  } catch {
+    return d.toLocaleString();
+  }
+}
+
 function gameCard(g) {
-  const score=state.hideScores?"•• – ••":`${g[3]} – ${g[4]}`;
+  const league=leagueNames[g.league_id]||g.league_id||"";
+
+  const hasScore=
+    g.home_score!=null && g.away_score!=null;
+
+  const score=state.hideScores
+    ?"•• – ••"
+    :hasScore
+      ?`${g.home_score} – ${g.away_score}`
+      :t("Pendiente","TBD");
+
+  const statuses={
+    scheduled:t("Programado","Scheduled"),
+    live:t("En directo","Live"),
+    finished:t("Finalizado","Final"),
+    postponed:t("Aplazado","Postponed"),
+    cancelled:t("Cancelado","Cancelled"),
+    unknown:t("Estado pendiente","Status pending")
+  };
+
+  const team=(name,logo)=>`
+    <div class="teamline">
+      ${/^https:\/\//i.test(logo||"")
+        ?`<img src="${escapeHtml(logo)}"
+               alt="" loading="lazy"
+               referrerpolicy="no-referrer">`
+        :""}
+      <span>${escapeHtml(name)}</span>
+    </div>
+  `;
+
   return `
     <div class="card">
-      <div class="tag">${g[0]} · DEMO</div>
+      <div class="tag">
+        ${escapeHtml(league)} ·
+        ${escapeHtml(statuses[g.status]||statuses.unknown)}
+      </div>
       <div class="score" style="margin-top:12px">
-        <strong>${g[1]}<br>${g[2]}</strong>
+        <div>
+          ${team(g.home_team,g.home_team_logo)}
+          ${team(g.away_team,g.away_team_logo)}
+        </div>
         <strong class="points">${score}</strong>
+      </div>
+      <div class="game-meta">
+        ${escapeHtml(formatGameDate(g.game_date))}
       </div>
     </div>
   `;
 }
 
+function gameMessage() {
+  if(gamesLoading) {
+    return `<div class="card muted">
+      ${t("Cargando partidos...","Loading games...")}
+    </div>`;
+  }
+
+  if(gamesError) {
+    return `<div class="notice">
+      ${t("No se pudieron cargar los partidos: ",
+          "Could not load games: ")}
+      ${escapeHtml(gamesError)}
+    </div>`;
+  }
+
+  return `<div class="card muted">
+    ${t("No hay partidos guardados para esta competición.",
+        "No saved games for this league.")}
+  </div>`;
+}
+
 function renderGames() {
-  $("homeGames").innerHTML=catalog.games
-    .filter(g=>state.leagues.includes(g[0]))
-    .slice(0,3).map(gameCard).join("");
+  const featured=realGames.filter(
+    g=>state.leagues.includes(leagueNames[g.league_id])
+  );
+
+  $("homeGames").innerHTML=featured.length
+    ?featured.slice(0,3).map(gameCard).join("")
+    :gameMessage();
 
   $("gameFilters").innerHTML="";
+
   catalog.leagues.forEach(l=>{
     const btn=document.createElement("button");
-    btn.className="chip"+(activeLeague===l?" selected":"");
+    btn.className="chip"+(
+      activeLeague===l?" selected":""
+    );
     btn.textContent=l;
+
     btn.onclick=()=>{
       activeLeague=l;
       renderGames();
     };
+
     $("gameFilters").appendChild(btn);
   });
 
-  $("gameList").innerHTML=catalog.games
-    .filter(g=>g[0]===activeLeague)
-    .map(gameCard).join("");
+  const filtered=realGames.filter(
+    g=>leagueNames[g.league_id]===activeLeague
+  );
 
-  $("spoilerBtn").textContent=state.hideScores?"ON":"OFF";
+  $("gameList").innerHTML=filtered.length
+    ?filtered.map(gameCard).join("")
+    :gameMessage();
+
+  $("spoilerBtn").textContent=
+    state.hideScores?"ON":"OFF";
 }
 
 function renderLeagues() {
@@ -703,6 +856,33 @@ function render() {
   makeChoices("playerChoices",catalog.players,"players");
   makeChoices("teamChoices",catalog.teams,"teams");
   makeChoices("leagueChoices",catalog.leagues,"leagues");
+}
+
+async function loadGames() {
+  gamesLoading=true;
+  gamesError="";
+  renderGames();
+
+  try {
+    const {data,error}=await db
+      .from("games")
+      .select(
+        "league_id,home_team,away_team,"+
+        "home_team_logo,away_team_logo,"+
+        "home_score,away_score,game_date,status"
+      )
+      .order("game_date",{ascending:false})
+      .limit(100);
+
+    if(error) throw error;
+    realGames=data||[];
+  } catch(error) {
+    gamesError=error.message||String(error);
+    console.error("TRIPL3 games:",error);
+  } finally {
+    gamesLoading=false;
+    renderGames();
+  }
 }
 
 $("langBtn").onclick=()=>{
@@ -732,6 +912,7 @@ $("briefingTime").onchange=e=>{
 $("timezone").onchange=e=>{
   state.timezone=e.target.value;
   localSave();
+  renderGames();
 };
 
 function authMessage(msg) {
@@ -750,6 +931,7 @@ function updateAuth() {
 async function signup() {
   const email=$("email").value.trim();
   const password=$("password").value;
+
   if(!email || password.length<6) {
     authMessage(t(
       "Introduce email y contraseña de al menos 6 caracteres.",
@@ -757,6 +939,7 @@ async function signup() {
     ));
     return;
   }
+
   const {data,error}=await db.auth.signUp({
     email,password,
     options:{
@@ -764,10 +947,12 @@ async function signup() {
         "https://martina9804.github.io/tripl3/"
     }
   });
+
   if(error) {
     authMessage(error.message);
     return;
   }
+
   authMessage(data.session
     ?t("Cuenta creada.","Account created.")
     :t("Comprueba tu correo para confirmar la cuenta.",
@@ -780,6 +965,7 @@ async function login() {
   const {error}=await db.auth.signInWithPassword({
     email,password
   });
+
   authMessage(error
     ?error.message
     :t("Sesión iniciada.","Signed in."));
@@ -802,40 +988,59 @@ async function savePreferences() {
     updated_at:new Date().toISOString()
   },{onConflict:"id"});
 
-  if(error) authMessage(error.message);
-  else authMessage(t("Preferencias guardadas.",
-                     "Preferences saved."));
+  if(error) {
+    authMessage(error.message);
+  } else {
+    authMessage(t(
+      "Preferencias guardadas.",
+      "Preferences saved."
+    ));
+  }
 }
 
 async function syncFavorites() {
   if(!user || syncing) return;
   syncing=true;
+
   $("syncMessage").textContent=t(
-    "Guardando favoritos...","Saving favorites..."
+    "Guardando favoritos...",
+    "Saving favorites..."
   );
 
   try {
     const {data:teams,error:te}=await db
-      .from("teams").select("id,name")
-      .in("name",state.teams.length?state.teams:["__none__"]);
+      .from("teams")
+      .select("id,name")
+      .in(
+        "name",
+        state.teams.length?state.teams:["__none__"]
+      );
     if(te) throw te;
 
     const {data:players,error:pe}=await db
-      .from("players").select("id,name")
-      .in("name",state.players.length?state.players:["__none__"]);
+      .from("players")
+      .select("id,name")
+      .in(
+        "name",
+        state.players.length?state.players:["__none__"]
+      );
     if(pe) throw pe;
 
     const records=[
       ...(teams||[]).map(x=>({
-        user_id:user.id,team_id:x.id
+        user_id:user.id,
+        team_id:x.id
       })),
       ...(players||[]).map(x=>({
-        user_id:user.id,player_id:x.id
+        user_id:user.id,
+        player_id:x.id
       }))
     ];
 
     const {error:de}=await db.from("favorites")
-      .delete().eq("user_id",user.id);
+      .delete()
+      .eq("user_id",user.id);
+
     if(de) throw de;
 
     if(records.length) {
@@ -845,7 +1050,8 @@ async function syncFavorites() {
     }
 
     $("syncMessage").textContent=t(
-      "Favoritos guardados.","Favorites saved."
+      "Favoritos guardados.",
+      "Favorites saved."
     );
   } catch(error) {
     $("syncMessage").textContent=error.message;
@@ -855,12 +1061,13 @@ async function syncFavorites() {
 }
 
 async function loadUserData() {
-  if(!user)return;
+  if(!user) return;
 
   const {data:profile,error:profileError}=await db
     .from("profiles")
     .select("language,timezone,briefing_time")
-    .eq("id",user.id).maybeSingle();
+    .eq("id",user.id)
+    .maybeSingle();
 
   if(profileError) {
     authMessage(profileError.message);
@@ -875,7 +1082,9 @@ async function loadUserData() {
 
   const {data:favorites,error:favoritesError}=await db
     .from("favorites")
-    .select("team_id,player_id,teams(name),players(name)")
+    .select(
+      "team_id,player_id,teams(name),players(name)"
+    )
     .eq("user_id",user.id);
 
   if(favoritesError) {
@@ -911,12 +1120,17 @@ db.auth.onAuthStateChange((event,session)=>{
 
 async function init() {
   render();
+  loadGames();
+
   const {data,error}=await db.auth.getSession();
   if(error) authMessage(error.message);
+
   user=data?.session?.user||null;
   updateAuth();
+
   if(user) await loadUserData();
 }
+
 init();
 </script>
 
