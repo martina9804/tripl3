@@ -1,13 +1,924 @@
-<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0B1020"><title>TRIPL3 — Basketball, your way</title><link rel="icon" href="assets/tripl3-mark.svg"><link rel="manifest" href="manifest.webmanifest"><style>
-:root{--bg:#0B1020;--card:#171f30;--card2:#202a3b;--coral:#ff5a36;--white:#f5f3ee;--muted:#aab4c3}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--white);font:15px system-ui,-apple-system,Segoe UI,sans-serif}button{font:inherit;cursor:pointer}button:focus-visible{outline:2px solid white;outline-offset:2px}.app{max-width:480px;margin:auto;min-height:100vh;padding:18px 18px 105px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:23px}.brand{font-size:28px;font-weight:1000;font-style:italic;letter-spacing:-1.6px}.brand b{color:var(--coral)}.topright{display:flex;gap:9px;align-items:center}.smallbtn{border:1px solid #465066;background:#1a2333;color:white;border-radius:12px;padding:9px 12px}.iconbtn{border:0;background:#1b2435;color:white;width:38px;height:38px;border-radius:12px}.eyebrow{font-size:11px;letter-spacing:1.7px;color:var(--coral);font-weight:800;text-transform:uppercase}.heading{font-size:28px;line-height:1.12;font-weight:850;margin:7px 0}.sub{color:var(--muted);font-size:13px;line-height:1.5}.hero{margin-top:19px;position:relative;min-height:290px;border-radius:22px;overflow:hidden;background:linear-gradient(160deg,#44314d,#111b2a)}.hero img{width:100%;height:290px;object-fit:cover;display:block}.hero:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 17%,rgba(6,9,17,.24) 39%,#080d18 100%)}.heroContent{position:absolute;bottom:0;left:0;right:0;padding:20px;z-index:1}.pill{display:inline-flex;background:var(--coral);color:#101522;font-weight:900;font-size:10px;padding:6px 9px;border-radius:7px;letter-spacing:.4px}.heroTitle{font-size:24px;line-height:1.1;font-weight:850;margin:12px 0 6px}.heroText{font-size:13px;color:#d5d9e1}.section{margin-top:26px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section h2{font-size:19px;margin:0;letter-spacing:-.3px}.link{background:none;border:0;color:var(--coral);font-size:12px;font-weight:750}.scroll{display:flex;overflow-x:auto;gap:11px;scrollbar-width:none;padding-bottom:3px}.scroll::-webkit-scrollbar{display:none}.player{min-width:145px;width:145px;background:var(--card);border-radius:16px;overflow:hidden;position:relative}.playerpic{height:135px;background:radial-gradient(circle at 50% 30%,#46516b,#172035 75%);display:flex;align-items:end;justify-content:center}.playerpic img{height:130px;max-width:100%;object-fit:contain}.playerpic .fallback{font-size:54px;opacity:.5}.playerbody{padding:11px}.playername{font-weight:800;font-size:14px}.playerdetail{font-size:11px;color:var(--muted);margin-top:4px}.favstar{position:absolute;right:9px;top:8px;border:0;border-radius:50%;background:#111827c9;color:#ffba60;width:30px;height:30px;font-size:19px}.leaguechips{display:flex;gap:8px;margin:15px 0}.chip{border:1px solid #364155;border-radius:30px;background:#1a2333;color:#c9d0dc;padding:8px 15px;font-size:12px}.chip.active{background:var(--coral);border-color:var(--coral);color:#101522;font-weight:800}.match{display:flex;align-items:center;gap:12px;padding:15px;background:var(--card);border-radius:15px;margin:9px 0}.team{flex:1;text-align:center;font-weight:700;font-size:12px}.team img{display:block;width:40px;height:40px;object-fit:contain;margin:0 auto 6px}.score{font-weight:900;font-size:21px;white-space:nowrap}.resultmeta{color:var(--muted);font-size:10px;text-align:center;margin-top:4px}.story{display:flex;gap:13px;align-items:center;background:var(--card);padding:11px;border-radius:15px;margin-bottom:10px}.storyimg{width:86px;height:74px;border-radius:10px;object-fit:cover;background:#2d3447}.story h3{font-size:14px;line-height:1.25;margin:0 0 5px}.story p{font-size:11px;color:var(--muted);margin:0}.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,480px);background:#0c1423ed;backdrop-filter:blur(15px);border-top:1px solid #293345;display:flex;justify-content:space-around;padding:11px 4px calc(12px + env(safe-area-inset-bottom));z-index:5}.nav button{background:none;border:0;color:#aab3c2;display:flex;flex-direction:column;gap:4px;align-items:center;font-size:10px;min-width:58px}.nav button .glyph{font-size:22px}.nav button.active{color:var(--coral)}.page{display:none}.page.active{display:block}.panel{background:var(--card);padding:16px;border-radius:16px;margin:13px 0}.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.muted{color:var(--muted)}.toggle{border:1px solid #475268;background:#263246;color:white;padding:8px 11px;border-radius:10px}.toggle.selected{background:var(--coral);color:#111827;border-color:var(--coral);font-weight:800}.options{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}select{background:#263246;color:white;border:1px solid #49536a;padding:12px;border-radius:10px;width:100%;margin-top:9px}.btn{background:var(--coral);border:0;border-radius:12px;color:#101522;padding:13px 16px;font-weight:850;width:100%;margin-top:15px}.notice{border:1px dashed #6e5c50;border-radius:12px;color:#d7c1b8;font-size:12px;padding:13px;margin:16px 0}.leaguecard{padding:17px;background:var(--card);border-radius:16px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}.leaguecard strong{font-size:18px}.notif{background:linear-gradient(130deg,#2e2530,#1a2333);padding:17px;border:1px solid #7a493c;border-radius:16px}.empty{padding:16px;color:var(--muted);font-size:13px}.badge{color:var(--coral);font-size:11px;font-weight:800}.photo-credit{font-size:10px;color:#8894a5;margin-top:8px} @media(min-width:750px){body{background:radial-gradient(circle at 50% 10%,#202b42,#080c16 60%)}.app{border-left:1px solid #243047;border-right:1px solid #243047}}
-.brand{display:flex;align-items:center;gap:8px}.brand-mark{width:30px;height:30px}.hero-brand{width:54px;height:54px;display:block;margin-bottom:10px;filter:drop-shadow(0 4px 8px #0009)}.quickactions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}.quickactions button{background:#202a3b;color:#f5f3ee;border:1px solid #374156;border-radius:13px;padding:13px 4px;font-size:12px;font-weight:700}.quickactions button:first-letter{color:#ff5a36}.hero{background:radial-gradient(circle at 55% 15%,#ff5a3666,#0b1020 68%)}.hero img{object-fit:contain;object-position:center top;opacity:.85}.hero:after{background:linear-gradient(180deg,transparent 15%,#0b102044 36%,#080d18 100%)}.playerpic img{width:100%;height:100%;object-fit:cover}.photo-credit{display:none} </style></head><body><div class="app"><header class="top"><div class="brand"><img src="assets/tripl3-mark.svg" alt="" class="brand-mark">TRIPL<b>3</b></div><div class="topright"><button class="smallbtn" id="lang" aria-label="Switch language">EN</button><button class="iconbtn" id="bell" aria-label="Notification preview">♧</button></div></header>
-<section class="page active" id="home"><div class="eyebrow" data-es="TU BALONCESTO. TU DÍA." data-en="YOUR BASKETBALL. YOUR DAY.">TU BALONCESTO. TU DÍA.</div><div class="heading" data-es="Buenos días 👋" data-en="Good morning 👋">Buenos días 👋</div><div class="sub" data-es="Lo que importa de tus favoritos. Y todo lo demás." data-en="Your favorites first. Then everything else.">Lo que importa de tus favoritos. Y todo lo demás.</div><div class="hero"><img src="assets/player-luka.svg" alt="Fotografía promocional de jugador" onerror="this.style.display='none'"><div class="heroContent"><img class="hero-brand" src="assets/tripl3-mark.svg" alt="TRIPL3"><span class="pill" data-es="★ TU RESUMEN" data-en="★ YOUR BRIEFING">★ TU RESUMEN</span><div class="heroTitle" data-es="Todo tu baloncesto. Sin perder tiempo." data-en="All your basketball. No wasted time.">Todo tu baloncesto. Sin perder tiempo.</div><div class="heroText" data-es="NBA · Euroliga · ACB · Favoritos primero" data-en="NBA · EuroLeague · ACB · Favorites first">NBA · Euroliga · ACB · Favoritos primero</div></div></div><div class="quickactions"><button data-goto="games">▦ <span data-es="Resultados" data-en="Scores">Resultados</span></button><button data-goto="favorites">☆ <span data-es="Favoritos" data-en="Favorites">Favoritos</span></button><button data-goto="leagues">◈ <span data-es="Ligas" data-en="Leagues">Ligas</span></button></div><div class="section"><div class="sectionhead"><h2 data-es="Tus jugadores" data-en="Your players">Tus jugadores</h2><button class="link" data-goto="favorites" data-es="Editar →" data-en="Edit →">Editar →</button></div><div class="scroll" id="homePlayers"></div></div><div class="section"><div class="sectionhead"><h2 data-es="Partidos de ejemplo" data-en="Sample games">Partidos de ejemplo</h2><button class="link" data-goto="games" data-es="Ver todos →" data-en="See all →">Ver todos →</button></div><div id="homeMatches"></div></div><div class="section"><div class="sectionhead"><h2 data-es="En el resto del basket" data-en="Around basketball">En el resto del basket</h2></div><div id="stories"></div></div><div class="notice" data-es="DEMO: las noticias y los marcadores son ilustrativos. Las fotografías externas pueden no cargar. Antes de publicar habrá que obtener licencias y conectar datos reales." data-en="DEMO: headlines and scores are illustrative. External photos may fail to load. Licensed imagery and verified data are required before launch.">DEMO: las noticias y los marcadores son ilustrativos. Las fotografías externas pueden no cargar. Antes de publicar habrá que obtener licencias y conectar datos reales.</div></section>
-<section class="page" id="games"><div class="eyebrow">TRIPL3 / LIVE CENTER</div><div class="heading" data-es="Partidos" data-en="Games">Partidos</div><div class="sub" data-es="Marcadores de demostración por competición" data-en="Sample scores by competition">Marcadores de demostración por competición</div><div class="row" style="margin-top:14px"><span class="sub" data-es="Evita spoilers si ves partidos después" data-en="Avoid spoilers when watching later">Evita spoilers si ves partidos después</span><button class="smallbtn" id="spoilersBtn" aria-pressed="false">◉</button></div><div class="leaguechips" id="leaguechips"></div><div id="allMatches"></div><div class="notice" data-es="Resultados ficticios para probar el diseño, no corresponden a una jornada real." data-en="Fictional scores for layout testing; not real game results.">Resultados ficticios para probar el diseño, no corresponden a una jornada real.</div></section>
-<section class="page" id="leagues"><div class="eyebrow">TRIPL3 / LEAGUES</div><div class="heading" data-es="Tus ligas" data-en="Your leagues">Tus ligas</div><div class="sub" data-es="Tres competiciones. Una sola app." data-en="Three leagues. One app.">Tres competiciones. Una sola app.</div><div id="leagueList"></div></section>
-<section class="page" id="favorites"><div class="eyebrow">TRIPL3 / PERSONALIZED</div><div class="heading" data-es="Tus favoritos" data-en="Your favorites">Tus favoritos</div><div class="sub" data-es="Elige a quién quieres seguir. Tu briefing los pondrá primero." data-en="Choose who to follow. Your briefing will put them first.">Elige a quién quieres seguir. Tu briefing los pondrá primero.</div><div class="panel"><strong data-es="Jugadores" data-en="Players">Jugadores</strong><div class="options" id="playerOptions"></div></div><div class="panel"><strong data-es="Equipos" data-en="Teams">Equipos</strong><div class="options" id="teamOptions"></div></div><div class="panel"><strong data-es="Competiciones" data-en="Leagues">Competiciones</strong><div class="options" id="leagueOptions"></div></div></section>
-<section class="page" id="profile"><div class="eyebrow">TRIPL3 / SETTINGS</div><div class="heading" data-es="Tu perfil" data-en="Your profile">Tu perfil</div><div class="panel"><div class="row"><strong data-es="Ocultar marcadores" data-en="Hide scores">Ocultar marcadores</strong><button class="smallbtn" id="spoilersBtnProfile">OFF</button></div></div><div class="panel"><strong data-es="Idioma" data-en="Language">Idioma</strong><select id="languageSelect"><option value="es">Español</option><option value="en">English</option></select></div><div class="panel"><strong data-es="Hora del resumen" data-en="Briefing time">Hora del resumen</strong><select id="timeSelect"><option>06:00</option><option>07:00</option><option>08:00</option><option>09:00</option><option>10:00</option><option>12:00</option><option>18:00</option><option>21:00</option></select></div><div class="panel"><strong data-es="Zona horaria" data-en="Time zone">Zona horaria</strong><select id="zoneSelect"><option value="Europe/Madrid">Europe/Madrid</option><option value="Europe/Vienna">Europe/Vienna</option><option value="Atlantic/Canary">Atlantic/Canary</option><option value="America/New_York">America/New_York</option></select></div><div class="notif"><strong data-es="Vista previa de notificación" data-en="Notification preview">Vista previa de notificación</strong><p id="notificationText" class="sub"></p><button class="btn" id="notificationBtn" data-es="Ver ejemplo" data-en="View example">Ver ejemplo</button></div><div class="notice" data-es="La hora se guarda en este dispositivo. Las notificaciones push reales se añadirán cuando exista un servidor y permisos de notificación." data-en="Your time is saved on this device. Real push notifications require a backend and notification permissions.">La hora se guarda en este dispositivo. Las notificaciones push reales se añadirán cuando exista un servidor y permisos de notificación.</div></section></div>
-<nav class="nav" id="nav"><button data-page="home" class="active"><span class="glyph">⌂</span><span data-es="Inicio" data-en="Home">Inicio</span></button><button data-page="games"><span class="glyph">▦</span><span data-es="Partidos" data-en="Games">Partidos</span></button><button data-page="leagues"><span class="glyph">◈</span><span data-es="Ligas" data-en="Leagues">Ligas</span></button><button data-page="favorites"><span class="glyph">☆</span><span data-es="Favoritos" data-en="Favorites">Favoritos</span></button><button data-page="profile"><span class="glyph">♙</span><span data-es="Perfil" data-en="Profile">Perfil</span></button></nav>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0B1020">
+<title>TRIPL3 — Your Basketball. Your Way.</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg:#0B1020;
+  --card:#182235;
+  --card2:#222E42;
+  --coral:#FF5A36;
+  --white:#F5F3EE;
+  --muted:#A7B1C2;
+  --border:#344052;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--white);
+  font-family:Arial,Helvetica,sans-serif;
+}
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+header {
+  position:sticky;
+  top:0;
+  z-index:10;
+  background:#0B1020F5;
+  border-bottom:1px solid var(--border);
+  padding:15px 18px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.brand {
+  font-size:27px;
+  font-weight:900;
+  letter-spacing:-1.5px;
+}
+.brand span { color:var(--coral); }
+.header-actions { display:flex;gap:10px; }
+.iconbtn {
+  border:1px solid var(--border);
+  background:var(--card);
+  color:white;
+  border-radius:12px;
+  padding:9px 12px;
+}
+main {
+  max-width:900px;
+  margin:auto;
+  padding:18px 16px 105px;
+}
+.page { display:none; }
+.page.active { display:block; }
+.eyebrow {
+  color:var(--coral);
+  font-size:11px;
+  font-weight:bold;
+  letter-spacing:2px;
+  margin-bottom:10px;
+}
+h1 {
+  font-size:32px;
+  letter-spacing:-1px;
+  margin:6px 0;
+}
+h2 { font-size:21px;margin:25px 0 12px; }
+h3 { margin:5px 0; }
+p { line-height:1.5; }
+.muted { color:var(--muted); }
+.small { font-size:12px; }
+.hero {
+  border-radius:24px;
+  background:linear-gradient(135deg,#30334B,#7B3840,#FF5A36);
+  min-height:250px;
+  padding:26px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:end;
+}
+.hero:before {
+  content:"3";
+  position:absolute;
+  right:-15px;
+  top:-65px;
+  font-size:300px;
+  font-weight:900;
+  opacity:.13;
+}
+.hero h1 {
+  font-size:36px;
+  max-width:450px;
+  position:relative;
+}
+.hero p { position:relative; }
+.pill {
+  background:#FFFFFF25;
+  border:1px solid #FFFFFF50;
+  padding:7px 12px;
+  border-radius:50px;
+  font-size:11px;
+  width:max-content;
+  position:relative;
+}
+.card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:17px;
+  margin:12px 0;
+}
+.row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.btn {
+  background:var(--coral);
+  color:white;
+  border:0;
+  border-radius:12px;
+  padding:13px 17px;
+  font-weight:bold;
+}
+.btn.secondary {
+  background:var(--card2);
+  border:1px solid var(--border);
+}
+.btn:disabled { opacity:.5; }
+.quick {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:9px;
+  margin:15px 0;
+}
+.quick button {
+  padding:15px 5px;
+  background:var(--card);
+  color:white;
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+.quick button:hover { border-color:var(--coral); }
+.grid {
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.player {
+  background:var(--card);
+  border-radius:17px;
+  overflow:hidden;
+  border:1px solid var(--border);
+}
+.player-art {
+  height:120px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(140deg,#3B415F,#994B50);
+  font-size:75px;
+  font-weight:900;
+  color:#FFFFFF25;
+}
+.player-info { padding:13px; }
+.player-info strong { display:block; }
+.player-info small { color:var(--muted); }
+.score {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+}
+.score strong { font-size:19px; }
+.score .points {
+  color:var(--coral);
+  white-space:nowrap;
+}
+.tag {
+  font-size:11px;
+  color:var(--coral);
+  font-weight:bold;
+  letter-spacing:1px;
+}
+.chips {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin:13px 0;
+}
+.chip {
+  border:1px solid var(--border);
+  background:var(--card);
+  color:white;
+  border-radius:30px;
+  padding:10px 14px;
+}
+.chip.selected {
+  background:var(--coral);
+  border-color:var(--coral);
+}
+label {
+  display:block;
+  margin:13px 0 6px;
+  font-weight:bold;
+  font-size:13px;
+}
+input,select {
+  width:100%;
+  padding:13px;
+  background:var(--card2);
+  color:white;
+  border:1px solid var(--border);
+  border-radius:11px;
+}
+.actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+.notice {
+  background:#293144;
+  border-left:3px solid var(--coral);
+  border-radius:8px;
+  padding:13px;
+  margin:18px 0;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+nav {
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#11192A;
+  border-top:1px solid var(--border);
+  display:flex;
+  justify-content:space-around;
+  padding:11px 4px max(13px,env(safe-area-inset-bottom));
+  z-index:20;
+}
+nav button {
+  background:none;
+  border:0;
+  color:var(--muted);
+  font-size:11px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+}
+nav button.active { color:var(--coral); }
+nav .symbol { font-size:23px; }
+@media(min-width:700px) {
+  .grid { grid-template-columns:repeat(4,1fr); }
+  .hero { min-height:330px; }
+  .hero h1 { font-size:48px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">TRIPL<span>3</span></div>
+  <div class="header-actions">
+    <button class="iconbtn" id="langBtn">EN</button>
+    <button class="iconbtn" onclick="go('profile')">⚙</button>
+  </div>
+</header>
+
+<main>
+
+<section id="home" class="page active">
+  <div class="eyebrow">TRIPL3 / DAILY BRIEFING</div>
+  <h1 data-es="Buenos días." data-en="Good morning.">
+    Buenos días.
+  </h1>
+  <p class="muted"
+     data-es="Tu baloncesto, sin perder tiempo."
+     data-en="Your basketball. No wasted time.">
+    Tu baloncesto, sin perder tiempo.
+  </p>
+
+  <div class="hero">
+    <span class="pill">NBA · EUROLEAGUE · ACB</span>
+    <h1 data-es="Todo tu basket. En un solo lugar."
+        data-en="All your basketball. One place.">
+      Todo tu basket. En un solo lugar.
+    </h1>
+    <p data-es="Tus favoritos primero. El resto después."
+       data-en="Your favorites first. Everything else next.">
+      Tus favoritos primero. El resto después.
+    </p>
+  </div>
+
+  <div class="quick">
+    <button onclick="go('games')" data-es="▦ Partidos"
+            data-en="▦ Games">▦ Partidos</button>
+    <button onclick="go('favorites')" data-es="☆ Favoritos"
+            data-en="☆ Favorites">☆ Favoritos</button>
+    <button onclick="go('leagues')" data-es="◈ Ligas"
+            data-en="◈ Leagues">◈ Ligas</button>
+  </div>
+
+  <h2 data-es="Tus jugadores" data-en="Your players">
+    Tus jugadores
+  </h2>
+  <div class="grid" id="homePlayers"></div>
+
+  <h2 data-es="Partidos destacados"
+      data-en="Featured games">Partidos destacados</h2>
+  <div id="homeGames"></div>
+
+  <h2 data-es="Tu Morning Show"
+      data-en="Your Morning Show">Tu Morning Show</h2>
+  <div class="card">
+    <span class="tag">TRIPL3 ORIGINAL</span>
+    <h3 data-es="Tu resumen personalizado"
+        data-en="Your personalized briefing">
+      Tu resumen personalizado
+    </h3>
+    <p class="muted"
+       data-es="Aquí aparecerán las noticias y estadísticas verificadas de tus favoritos, seguidas de lo más importante de las tres ligas."
+       data-en="Verified news and stats about your favorites will appear here, followed by the top stories across all three leagues.">
+      Aquí aparecerán las noticias y estadísticas verificadas
+      de tus favoritos, seguidas de lo más importante
+      de las tres ligas.
+    </p>
+  </div>
+
+  <div class="notice" data-es="DEMO: todavía no hay resultados ni noticias reales. Los marcadores son ficticios."
+       data-en="DEMO: real results and news are not connected yet. Scores are fictional.">
+    DEMO: todavía no hay resultados ni noticias reales.
+    Los marcadores son ficticios.
+  </div>
+</section>
+
+<section id="games" class="page">
+  <div class="eyebrow">TRIPL3 / GAME CENTER</div>
+  <h1 data-es="Partidos" data-en="Games">Partidos</h1>
+  <p class="muted" data-es="Resultados de demostración."
+     data-en="Demonstration scores.">
+    Resultados de demostración.
+  </p>
+
+  <div class="chips" id="gameFilters"></div>
+  <div class="card row">
+    <span data-es="Ocultar marcadores"
+          data-en="Hide scores">Ocultar marcadores</span>
+    <button class="btn secondary" id="spoilerBtn">OFF</button>
+  </div>
+  <div id="gameList"></div>
+  <div class="notice">DEMO — Fictional scores.</div>
+</section>
+
+<section id="leagues" class="page">
+  <div class="eyebrow">TRIPL3 / LEAGUES</div>
+  <h1 data-es="Competiciones" data-en="Leagues">
+    Competiciones
+  </h1>
+  <p class="muted"
+     data-es="Tres ligas. Una sola aplicación."
+     data-en="Three leagues. One app.">
+    Tres ligas. Una sola aplicación.
+  </p>
+  <div id="leagueCards"></div>
+</section>
+
+<section id="favorites" class="page">
+  <div class="eyebrow">TRIPL3 / PERSONALIZED</div>
+  <h1 data-es="Tus favoritos" data-en="Your favorites">
+    Tus favoritos
+  </h1>
+  <p class="muted"
+     data-es="Elige tus equipos y jugadores."
+     data-en="Choose your teams and players.">
+    Elige tus equipos y jugadores.
+  </p>
+
+  <div class="card">
+    <h3 data-es="Jugadores" data-en="Players">Jugadores</h3>
+    <div class="chips" id="playerChoices"></div>
+  </div>
+
+  <div class="card">
+    <h3 data-es="Equipos" data-en="Teams">Equipos</h3>
+    <div class="chips" id="teamChoices"></div>
+  </div>
+
+  <div class="card">
+    <h3 data-es="Ligas" data-en="Leagues">Ligas</h3>
+    <div class="chips" id="leagueChoices"></div>
+  </div>
+
+  <p id="syncMessage" class="muted small"></p>
+</section>
+
+<section id="profile" class="page">
+  <div class="eyebrow">TRIPL3 / ACCOUNT</div>
+  <h1 data-es="Tu perfil" data-en="Your profile">
+    Tu perfil
+  </h1>
+
+  <div class="card">
+    <h3 data-es="Tu cuenta TRIPL3"
+        data-en="Your TRIPL3 account">
+      Tu cuenta TRIPL3
+    </h3>
+    <p id="authStatus" class="muted"></p>
+
+    <div id="authForm">
+      <label>Email</label>
+      <input id="email" type="email" autocomplete="email"
+             placeholder="tu@email.com">
+
+      <label data-es="Contraseña"
+             data-en="Password">Contraseña</label>
+      <input id="password" type="password" minlength="6"
+             autocomplete="current-password">
+
+      <div class="actions">
+        <button class="btn" onclick="login()"
+                data-es="Iniciar sesión"
+                data-en="Sign in">Iniciar sesión</button>
+        <button class="btn secondary" onclick="signup()"
+                data-es="Crear cuenta"
+                data-en="Create account">Crear cuenta</button>
+      </div>
+    </div>
+
+    <button class="btn secondary" id="logoutBtn"
+            onclick="logout()" style="display:none">
+      Cerrar sesión
+    </button>
+    <p id="authMessage" class="muted small" role="status"></p>
+  </div>
+
+  <div class="card">
+    <h3 data-es="Personalización"
+        data-en="Personalization">Personalización</h3>
+
+    <label data-es="Idioma" data-en="Language">Idioma</label>
+    <select id="language">
+      <option value="es">Español</option>
+      <option value="en">English</option>
+    </select>
+
+    <label data-es="Hora de tu Morning Show"
+           data-en="Your Morning Show time">
+      Hora de tu Morning Show
+    </label>
+    <input id="briefingTime" type="time" value="08:00">
+
+    <label data-es="Zona horaria"
+           data-en="Time zone">Zona horaria</label>
+    <select id="timezone">
+      <option value="Europe/Madrid">España peninsular</option>
+      <option value="Atlantic/Canary">Canarias</option>
+      <option value="Europe/Vienna">Viena</option>
+      <option value="Europe/London">Londres</option>
+      <option value="America/New_York">Nueva York</option>
+    </select>
+
+    <button class="btn" style="margin-top:15px"
+            onclick="savePreferences()"
+            data-es="Guardar preferencias"
+            data-en="Save preferences">
+      Guardar preferencias
+    </button>
+  </div>
+
+  <div class="card">
+    <h3 data-es="Notificaciones"
+        data-en="Notifications">Notificaciones</h3>
+    <p class="muted"
+       data-es="El sistema de notificaciones push se incorporará en una próxima versión."
+       data-en="Push notifications will be added in a future version.">
+      El sistema de notificaciones push se incorporará
+      en una próxima versión.
+    </p>
+  </div>
+</section>
+
+</main>
+
+<nav>
+  <button class="active" data-page="home" onclick="go('home')">
+    <span class="symbol">⌂</span>
+    <span data-es="Inicio" data-en="Home">Inicio</span>
+  </button>
+  <button data-page="games" onclick="go('games')">
+    <span class="symbol">▦</span>
+    <span data-es="Partidos" data-en="Games">Partidos</span>
+  </button>
+  <button data-page="leagues" onclick="go('leagues')">
+    <span class="symbol">◈</span>
+    <span data-es="Ligas" data-en="Leagues">Ligas</span>
+  </button>
+  <button data-page="favorites" onclick="go('favorites')">
+    <span class="symbol">☆</span>
+    <span data-es="Favoritos" data-en="Favorites">Favoritos</span>
+  </button>
+  <button data-page="profile" onclick="go('profile')">
+    <span class="symbol">♙</span>
+    <span data-es="Perfil" data-en="Profile">Perfil</span>
+  </button>
+</nav>
+
 <script>
-const data={players:[{id:'luka',name:'Luka Dončić',team:'Lakers',img:'assets/player-luka.svg'},{id:'wemby',name:'Victor Wembanyama',team:'Spurs',img:'assets/player-wemby.svg'},{id:'curry',name:'Stephen Curry',team:'Warriors',img:'assets/player-curry.svg'},{id:'lebron',name:'LeBron James',team:'Lakers',img:'assets/player-lebron.svg'}],teams:['Lakers','Real Madrid','Barça','Celtics','Valencia Basket','Olympiacos'],leagues:['NBA','EuroLeague','ACB'],matches:[{league:'NBA',a:'Lakers',b:'Celtics',x:112,y:108,logos:['lal','bos']},{league:'NBA',a:'Warriors',b:'Spurs',x:106,y:111,logos:['gs','sa']},{league:'EuroLeague',a:'Real Madrid',b:'Olympiacos',x:87,y:82},{league:'EuroLeague',a:'Barça',b:'Fenerbahçe',x:79,y:85},{league:'ACB',a:'Valencia Basket',b:'Unicaja',x:91,y:89},{league:'ACB',a:'Baskonia',b:'Joventut',x:86,y:80}]};
-const defaults={hideScores:false,lang:'es',time:'08:00',zone:'Europe/Madrid',players:['luka','wemby'],teams:['Lakers','Real Madrid'],leagues:['NBA','EuroLeague','ACB']};let state;try{state={...defaults,...JSON.parse(localStorage.getItem('tripl3')||'{}')}}catch(e){state={...defaults}}let currentLeague='NBA';function save(){localStorage.setItem('tripl3',JSON.stringify(state))}function tr(es,en){return state.lang==='es'?es:en}function switchPage(p){document.querySelectorAll('.page').forEach(e=>e.classList.toggle('active',e.id===p));document.querySelectorAll('.nav button').forEach(e=>e.classList.toggle('active',e.dataset.page===p));scrollTo(0,0)}function imgError(img){img.style.display='none';img.parentNode.insertAdjacentHTML('beforeend','<span class="fallback">◉</span>')}function renderPlayers(){let chosen=data.players.filter(p=>state.players.includes(p.id));document.getElementById('homePlayers').innerHTML=(chosen.length?chosen:data.players.slice(0,2)).map(p=>`<div class="player"><div class="playerpic"><img src="${p.img}" alt="${p.name}" onerror="imgError(this)"></div><button class="favstar" data-player="${p.id}">${state.players.includes(p.id)?'★':'☆'}</button><div class="playerbody"><div class="playername">${p.name}</div><div class="playerdetail">${p.team}</div></div></div>`).join('')}function logo(code){return code?`<img src="assets/team.svg" alt="" onerror="this.style.display='none'">`:'<div style="font-size:27px;margin-bottom:6px">◉</div>'}function matchCard(m){return `<div class="match"><div class="team">${logo(m.logos?.[0])}${m.a}</div><div><div class="score">${state.hideScores?'••• – •••':m.x+' – '+m.y}</div><div class="resultmeta">DEMO · ${m.league}</div></div><div class="team">${logo(m.logos?.[1])}${m.b}</div></div>`}function renderMatches(){document.getElementById('homeMatches').innerHTML=data.matches.filter(m=>state.leagues.includes(m.league)).slice(0,3).map(matchCard).join('')||'<div class="empty">No leagues selected</div>';document.getElementById('leaguechips').innerHTML=data.leagues.map(l=>`<button class="chip ${currentLeague===l?'active':''}" data-league="${l}">${l==='EuroLeague'?tr('Euroliga','EuroLeague'):l}</button>`).join('');document.getElementById('allMatches').innerHTML=data.matches.filter(m=>m.league===currentLeague).map(matchCard).join('')}function renderStories(){let arr=[[tr('Tres competiciones, una sola pasión','Three leagues, one passion'),tr('Tu resumen combina NBA, Euroliga y ACB.','Your briefing brings NBA, EuroLeague and ACB together.')],[tr('Sigue a tus jugadores favoritos','Follow your favorite players'),tr('Sus noticias aparecerán siempre primero.','Their updates always come first.')],[tr('A tu hora, cada día','Your time, every day'),tr('Configura cuándo quieres recibir el resumen.','Choose when to receive your briefing.')]];document.getElementById('stories').innerHTML=arr.map((s,i)=>`<div class="story"><div class="storyimg" style="display:grid;place-items:center;font-size:35px;background:${['#463144','#303a52','#43302b'][i]}">${['◉','★','◷'][i]}</div><div><h3>${s[0]}</h3><p>${s[1]}</p></div></div>`).join('')}function optionButtons(id,items,key){document.getElementById(id).innerHTML=items.map(item=>{let value=typeof item==='string'?item:item.id;let label=typeof item==='string'?item:item.name;return `<button class="toggle ${state[key].includes(value)?'selected':''}" data-opt="${key}" data-value="${value}">${state[key].includes(value)?'✓ ': '+ '}${label}</button>`}).join('')}function renderOptions(){optionButtons('playerOptions',data.players,'players');optionButtons('teamOptions',data.teams,'teams');optionButtons('leagueOptions',data.leagues,'leagues');document.getElementById('leagueList').innerHTML=data.leagues.map(l=>`<div class="leaguecard"><div><strong>${l==='EuroLeague'?tr('Euroliga','EuroLeague'):l}</strong><div class="sub">${tr('Resultados · Noticias · Calendario','Scores · News · Schedule')}</div></div><span style="color:var(--coral);font-size:26px">◉</span></div>`).join('')}function renderLanguage(){document.documentElement.lang=state.lang;document.querySelectorAll('[data-es][data-en]').forEach(e=>e.textContent=e.dataset[state.lang]);document.getElementById('lang').textContent=state.lang==='es'?'EN':'ES';document.getElementById('languageSelect').value=state.lang;document.getElementById('timeSelect').value=state.time;document.getElementById('zoneSelect').value=state.zone;document.getElementById('notificationText').textContent=tr(`TRIPL3 · ${state.time}: Tus favoritos y lo mejor de NBA, Euroliga y ACB. Tu briefing está listo.`,`TRIPL3 · ${state.time}: Your favorites and the best of NBA, EuroLeague and ACB. Your briefing is ready.`)}function render(){renderLanguage();renderPlayers();renderMatches();renderStories();renderOptions();document.getElementById('spoilersBtn').textContent=state.hideScores?'◌':'◉';document.getElementById('spoilersBtn').setAttribute('aria-pressed',String(state.hideScores));document.getElementById('spoilersBtnProfile').textContent=state.hideScores?'ON':'OFF'}document.addEventListener('click',e=>{let p=e.target.closest('[data-page]');if(p){switchPage(p.dataset.page);return}let g=e.target.closest('[data-goto]');if(g){switchPage(g.dataset.goto);return}let l=e.target.closest('[data-league]');if(l){currentLeague=l.dataset.league;renderMatches();return}let f=e.target.closest('[data-player]');if(f){let id=f.dataset.player;state.players=state.players.includes(id)?state.players.filter(x=>x!==id):[...state.players,id];save();render();return}let o=e.target.closest('[data-opt]');if(o){let k=o.dataset.opt,v=o.dataset.value;state[k]=state[k].includes(v)?state[k].filter(x=>x!==v):[...state[k],v];save();render();return}});document.getElementById('lang').onclick=()=>{state.lang=state.lang==='es'?'en':'es';save();render()};document.getElementById('languageSelect').onchange=e=>{state.lang=e.target.value;save();render()};document.getElementById('timeSelect').onchange=e=>{state.time=e.target.value;save();render()};document.getElementById('zoneSelect').onchange=e=>{state.zone=e.target.value;save();render()};document.getElementById('notificationBtn').onclick=()=>alert(document.getElementById('notificationText').textContent);document.getElementById('bell').onclick=()=>switchPage('profile');for(const id of ['spoilersBtn','spoilersBtnProfile'])document.getElementById(id).onclick=()=>{state.hideScores=!state.hideScores;save();render()};render();
-</script></body></html>
+const URL_SUPABASE =
+  "https://xqzbvjbmospjkdaupjhv.supabase.co";
+
+const KEY_SUPABASE =
+  "sb_publishable_g4LtRSSO_AkMFHVnDa5ftQ_veppfOtX";
+
+const db = window.supabase.createClient(
+  URL_SUPABASE,
+  KEY_SUPABASE
+);
+
+const $ = id => document.getElementById(id);
+
+const catalog = {
+  leagues: ["NBA","EuroLeague","ACB"],
+  teams: [
+    "Lakers","Celtics","Spurs","Warriors",
+    "Real Madrid","Barça","Valencia Basket",
+    "Olympiacos"
+  ],
+  players: [
+    "Luka Dončić","Victor Wembanyama",
+    "Stephen Curry","LeBron James"
+  ],
+  games: [
+    ["NBA","Lakers","Celtics",112,108],
+    ["NBA","Warriors","Spurs",106,111],
+    ["EuroLeague","Real Madrid","Olympiacos",87,82],
+    ["ACB","Valencia Basket","Unicaja",91,89]
+  ]
+};
+
+const initial = {
+  language:"es",
+  time:"08:00",
+  timezone:"Europe/Madrid",
+  hideScores:false,
+  leagues:["NBA","EuroLeague","ACB"],
+  teams:["Lakers","Real Madrid"],
+  players:["Luka Dončić"]
+};
+
+let state;
+try {
+  state = {
+    ...initial,
+    ...JSON.parse(localStorage.getItem("tripl3_state") || "{}")
+  };
+} catch {
+  state = {...initial};
+}
+
+let user = null;
+let activeLeague = "NBA";
+let syncing = false;
+
+function t(es,en) {
+  return state.language === "es" ? es : en;
+}
+
+function localSave() {
+  localStorage.setItem("tripl3_state",JSON.stringify(state));
+}
+
+function go(page) {
+  document.querySelectorAll(".page").forEach(el=>{
+    el.classList.toggle("active",el.id===page);
+  });
+  document.querySelectorAll("nav button").forEach(el=>{
+    el.classList.toggle("active",el.dataset.page===page);
+  });
+  window.scrollTo(0,0);
+}
+
+function translate() {
+  document.documentElement.lang=state.language;
+  document.querySelectorAll("[data-es][data-en]").forEach(el=>{
+    el.textContent=el.dataset[state.language];
+  });
+  $("langBtn").textContent=state.language==="es"?"EN":"ES";
+  $("language").value=state.language;
+  $("briefingTime").value=state.time;
+  $("timezone").value=state.timezone;
+}
+
+function makeChoices(container,items,key) {
+  $(container).innerHTML="";
+  items.forEach(item=>{
+    const btn=document.createElement("button");
+    btn.className="chip"+(
+      state[key].includes(item)?" selected":""
+    );
+    btn.textContent=(state[key].includes(item)?"✓ ":"+ ")+item;
+    btn.onclick=()=>{
+      state[key]=state[key].includes(item)
+        ?state[key].filter(x=>x!==item)
+        :[...state[key],item];
+      localSave();
+      render();
+      syncFavorites();
+    };
+    $(container).appendChild(btn);
+  });
+}
+
+function renderPlayers() {
+  const selected=catalog.players.filter(
+    p=>state.players.includes(p)
+  );
+  $("homePlayers").innerHTML=selected.map((name,i)=>`
+    <div class="player">
+      <div class="player-art">${i+1}</div>
+      <div class="player-info">
+        <strong>${name}</strong>
+        <small>★ ${t("Favorito","Favorite")}</small>
+      </div>
+    </div>
+  `).join("") || `
+    <div class="card">
+      ${t("Selecciona tus jugadores favoritos.",
+          "Select your favorite players.")}
+    </div>
+  `;
+}
+
+function gameCard(g) {
+  const score=state.hideScores?"•• – ••":`${g[3]} – ${g[4]}`;
+  return `
+    <div class="card">
+      <div class="tag">${g[0]} · DEMO</div>
+      <div class="score" style="margin-top:12px">
+        <strong>${g[1]}<br>${g[2]}</strong>
+        <strong class="points">${score}</strong>
+      </div>
+    </div>
+  `;
+}
+
+function renderGames() {
+  $("homeGames").innerHTML=catalog.games
+    .filter(g=>state.leagues.includes(g[0]))
+    .slice(0,3).map(gameCard).join("");
+
+  $("gameFilters").innerHTML="";
+  catalog.leagues.forEach(l=>{
+    const btn=document.createElement("button");
+    btn.className="chip"+(activeLeague===l?" selected":"");
+    btn.textContent=l;
+    btn.onclick=()=>{
+      activeLeague=l;
+      renderGames();
+    };
+    $("gameFilters").appendChild(btn);
+  });
+
+  $("gameList").innerHTML=catalog.games
+    .filter(g=>g[0]===activeLeague)
+    .map(gameCard).join("");
+
+  $("spoilerBtn").textContent=state.hideScores?"ON":"OFF";
+}
+
+function renderLeagues() {
+  $("leagueCards").innerHTML=catalog.leagues.map(l=>`
+    <div class="card row">
+      <div>
+        <h3>${l}</h3>
+        <p class="muted small">
+          ${t("Partidos · Jugadores · Noticias",
+              "Games · Players · News")}
+        </p>
+      </div>
+      <span style="color:var(--coral);font-size:25px">◉</span>
+    </div>
+  `).join("");
+}
+
+function render() {
+  translate();
+  renderPlayers();
+  renderGames();
+  renderLeagues();
+  makeChoices("playerChoices",catalog.players,"players");
+  makeChoices("teamChoices",catalog.teams,"teams");
+  makeChoices("leagueChoices",catalog.leagues,"leagues");
+}
+
+$("langBtn").onclick=()=>{
+  state.language=state.language==="es"?"en":"es";
+  localSave();
+  render();
+  savePreferences();
+};
+
+$("spoilerBtn").onclick=()=>{
+  state.hideScores=!state.hideScores;
+  localSave();
+  renderGames();
+};
+
+$("language").onchange=e=>{
+  state.language=e.target.value;
+  localSave();
+  render();
+};
+
+$("briefingTime").onchange=e=>{
+  state.time=e.target.value;
+  localSave();
+};
+
+$("timezone").onchange=e=>{
+  state.timezone=e.target.value;
+  localSave();
+};
+
+function authMessage(msg) {
+  $("authMessage").textContent=msg;
+}
+
+function updateAuth() {
+  $("authForm").style.display=user?"none":"block";
+  $("logoutBtn").style.display=user?"block":"none";
+  $("authStatus").textContent=user
+    ?t("Conectada: ","Signed in: ")+user.email
+    :t("Inicia sesión para sincronizar tus favoritos.",
+       "Sign in to sync your favorites.");
+}
+
+async function signup() {
+  const email=$("email").value.trim();
+  const password=$("password").value;
+  if(!email || password.length<6) {
+    authMessage(t(
+      "Introduce email y contraseña de al menos 6 caracteres.",
+      "Enter an email and a password of at least 6 characters."
+    ));
+    return;
+  }
+  const {data,error}=await db.auth.signUp({
+    email,password,
+    options:{
+      emailRedirectTo:
+        "https://martina9804.github.io/tripl3/"
+    }
+  });
+  if(error) {
+    authMessage(error.message);
+    return;
+  }
+  authMessage(data.session
+    ?t("Cuenta creada.","Account created.")
+    :t("Comprueba tu correo para confirmar la cuenta.",
+       "Check your email to confirm your account."));
+}
+
+async function login() {
+  const email=$("email").value.trim();
+  const password=$("password").value;
+  const {error}=await db.auth.signInWithPassword({
+    email,password
+  });
+  authMessage(error
+    ?error.message
+    :t("Sesión iniciada.","Signed in."));
+}
+
+async function logout() {
+  const {error}=await db.auth.signOut();
+  if(error) authMessage(error.message);
+}
+
+async function savePreferences() {
+  localSave();
+  if(!user) return;
+
+  const {error}=await db.from("profiles").upsert({
+    id:user.id,
+    language:state.language,
+    timezone:state.timezone,
+    briefing_time:state.time+":00",
+    updated_at:new Date().toISOString()
+  },{onConflict:"id"});
+
+  if(error) authMessage(error.message);
+  else authMessage(t("Preferencias guardadas.",
+                     "Preferences saved."));
+}
+
+async function syncFavorites() {
+  if(!user || syncing) return;
+  syncing=true;
+  $("syncMessage").textContent=t(
+    "Guardando favoritos...","Saving favorites..."
+  );
+
+  try {
+    const {data:teams,error:te}=await db
+      .from("teams").select("id,name")
+      .in("name",state.teams.length?state.teams:["__none__"]);
+    if(te) throw te;
+
+    const {data:players,error:pe}=await db
+      .from("players").select("id,name")
+      .in("name",state.players.length?state.players:["__none__"]);
+    if(pe) throw pe;
+
+    const records=[
+      ...(teams||[]).map(x=>({
+        user_id:user.id,team_id:x.id
+      })),
+      ...(players||[]).map(x=>({
+        user_id:user.id,player_id:x.id
+      }))
+    ];
+
+    const {error:de}=await db.from("favorites")
+      .delete().eq("user_id",user.id);
+    if(de) throw de;
+
+    if(records.length) {
+      const {error:ie}=await db.from("favorites")
+        .insert(records);
+      if(ie) throw ie;
+    }
+
+    $("syncMessage").textContent=t(
+      "Favoritos guardados.","Favorites saved."
+    );
+  } catch(error) {
+    $("syncMessage").textContent=error.message;
+  } finally {
+    syncing=false;
+  }
+}
+
+async function loadUserData() {
+  if(!user)return;
+
+  const {data:profile,error:profileError}=await db
+    .from("profiles")
+    .select("language,timezone,briefing_time")
+    .eq("id",user.id).maybeSingle();
+
+  if(profileError) {
+    authMessage(profileError.message);
+    return;
+  }
+
+  if(profile) {
+    state.language=profile.language||"es";
+    state.timezone=profile.timezone||"Europe/Madrid";
+    state.time=(profile.briefing_time||"08:00").slice(0,5);
+  }
+
+  const {data:favorites,error:favoritesError}=await db
+    .from("favorites")
+    .select("team_id,player_id,teams(name),players(name)")
+    .eq("user_id",user.id);
+
+  if(favoritesError) {
+    authMessage(favoritesError.message);
+    return;
+  }
+
+  if(favorites) {
+    state.teams=favorites
+      .filter(f=>f.teams)
+      .map(f=>f.teams.name)
+      .filter(n=>catalog.teams.includes(n));
+
+    state.players=favorites
+      .filter(f=>f.players)
+      .map(f=>f.players.name)
+      .filter(n=>catalog.players.includes(n));
+  }
+
+  localSave();
+  render();
+}
+
+db.auth.onAuthStateChange((event,session)=>{
+  const previous=user?.id;
+  user=session?.user||null;
+  updateAuth();
+
+  if(user && user.id!==previous) {
+    setTimeout(loadUserData,0);
+  }
+});
+
+async function init() {
+  render();
+  const {data,error}=await db.auth.getSession();
+  if(error) authMessage(error.message);
+  user=data?.session?.user||null;
+  updateAuth();
+  if(user) await loadUserData();
+}
+init();
+</script>
+
+</body>
+</html>
