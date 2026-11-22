@@ -142,5 +142,235 @@ async function syncFavorites(){if(!user)return;if(favoritesBusy){favoritesQueued
 db.auth.onAuthStateChange((event,session)=>{const previous=user?.id;user=session?.user||null;updateAuth();if(user&&user.id!==previous)setTimeout(loadUserData,0)});
 async function init(){selectedDay=currentDay();await loadPlayerImages();render();await refreshAll();const {data,error}=await db.auth.getSession();if(error)$('authMessage').textContent=error.message;user=data?.session?.user||null;updateAuth();if(user)await loadUserData()}
 init();setInterval(async()=>{if(!document.hidden){await Promise.all([loadPlayerImages(),refreshAll()]);render()}},30000);
+
+/* TRIPL3 IQ — PLAYER PULSE */
+
+let pulseLeague = "nba";
+let pulseRows = [];
+let pulseLoading = false;
+let pulseError = "";
+let pulseRequest = 0;
+
+const pulseCSS = document.createElement("style");
+
+pulseCSS.textContent = `
+.pulse-list {
+  display: grid;
+  gap: 10px;
+}
+
+.pulse-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 14px;
+  background: linear-gradient(110deg,#18253A,#101929);
+  border: 1px solid #29364A;
+  border-radius: 16px;
+  color: #F7F9FC;
+}
+
+.pulse-card:hover {
+  border-color: #FF6545;
+}
+
+.pulse-rank {
+  width: 20px;
+  font-weight: 900;
+  color: #FF6545;
+}
+
+.pulse-avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #29364A;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  font-weight: 900;
+}
+
+.pulse-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pulse-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pulse-info strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pulse-info small {
+  color: #9AAAC1;
+  font-size: 11px;
+}
+
+.pulse-change {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.pulse-change.up {
+  color: #51D9A1;
+}
+
+.pulse-change.down {
+  color: #FF8B75;
+}
+`;
+
+document.head.appendChild(pulseCSS);
+
+const pulseArea = document.createElement("section");
+pulseArea.id = "pulseArea";
+pulseArea.style.marginTop = "28px";
+
+document.getElementById("statsPage").appendChild(pulseArea);
+
+function renderPulse() {
+  const labels = {
+    nba: "NBA",
+    euroleague: "EuroLeague",
+    acb: "ACB"
+  };
+
+  let content = "";
+
+  if (pulseLoading) {
+    content = `<div class="empty">Calculando tendencias...</div>`;
+  } else if (pulseError) {
+    content = `<div class="empty">${esc(pulseError)}</div>`;
+  } else if (!pulseRows.length) {
+    content = `
+      <div class="empty">
+        Todavía no hay suficientes partidos.
+        Necesitamos 6 partidos por jugador.
+      </div>
+    `;
+  } else {
+    content = pulseRows.slice(0, 12).map((p, i) => {
+      const image = playerImageById(
+        p.provider_player_id,
+        p.league_id
+      );
+
+      const change = p.points_change_pct == null
+        ? "—"
+        : `${Number(p.points_change_pct) > 0 ? "+" : ""}${p.points_change_pct}%`;
+
+      return `
+        <button class="pulse-card"
+          data-pulse-id="${esc(p.provider_player_id)}"
+          data-pulse-name="${esc(p.player_name)}">
+
+          <span class="pulse-rank">${i + 1}</span>
+
+          <span class="pulse-avatar">
+            ${image
+              ? `<img src="${esc(image)}" alt=""
+                  onerror="this.style.display='none'">`
+              : esc(p.player_name.charAt(0))}
+          </span>
+
+          <span class="pulse-info">
+            <strong>${esc(p.player_name)}</strong>
+            <small>
+              ${esc(p.recent_ppg)} PTS ·
+              ${esc(p.recent_rpg)} REB ·
+              ${esc(p.recent_apg)} AST
+            </small>
+          </span>
+
+          <span class="pulse-change ${
+            Number(p.points_change_pct) >= 0 ? "up" : "down"
+          }">${esc(change)}</span>
+        </button>
+      `;
+    }).join("");
+  }
+
+  pulseArea.innerHTML = `
+    <div class="section-head">
+      <h2>TRIPL3 <span style="color:#FF6545">IQ</span></h2>
+    </div>
+
+    <p class="muted small">
+      PLAYER PULSE · Últimos 3 partidos frente a los 3 anteriores.
+    </p>
+
+    <div class="filters">
+      ${Object.entries(labels).map(([id, name]) => `
+        <button class="filter ${pulseLeague === id ? "active" : ""}"
+          data-pulse-league="${id}">
+          ${name}
+        </button>
+      `).join("")}
+    </div>
+
+    <div class="pulse-list">${content}</div>
+  `;
+
+  pulseArea.querySelectorAll("[data-pulse-league]")
+    .forEach(button => {
+      button.onclick = () => loadPulse(button.dataset.pulseLeague);
+    });
+
+  pulseArea.querySelectorAll("[data-pulse-id]")
+    .forEach(button => {
+      button.onclick = () => openPlayer(
+        button.dataset.pulseName,
+        Number(button.dataset.pulseId),
+        pulseLeague
+      );
+    });
+}
+
+async function loadPulse(league = pulseLeague) {
+  pulseLeague = league;
+  pulseLoading = true;
+  pulseError = "";
+  renderPulse();
+
+  const request = ++pulseRequest;
+
+  try {
+    const { data, error } = await db.rpc(
+      "tripl3_player_pulse",
+      { target_league: league }
+    );
+
+    if (error) throw error;
+    if (request !== pulseRequest) return;
+
+    pulseRows = data || [];
+  } catch (error) {
+    if (request !== pulseRequest) return;
+
+    pulseRows = [];
+    pulseError = error.message || String(error);
+  } finally {
+    if (request === pulseRequest) {
+      pulseLoading = false;
+      renderPulse();
+    }
+  }
+}
+
+loadPulse();
+
+
 </script>
+  
 </body></html>
