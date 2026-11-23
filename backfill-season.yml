@@ -1,0 +1,22 @@
+name: TRIPL3 historical backfill
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '25 4 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: tripl3-backfill
+  cancel-in-progress: false
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      TRIPL3_SYNC_TOKEN: ${{ secrets.TRIPL3_SYNC_TOKEN }}
+      BACKFILL_REQUEST_BUDGET: '400'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Import historical basketball stats
+        run: python3 backfill_runner.py
