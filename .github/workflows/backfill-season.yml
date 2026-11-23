@@ -2,21 +2,36 @@ name: TRIPL3 historical backfill
 on:
   workflow_dispatch:
   schedule:
-    - cron: '25 4 * * *'
+    - cron: '15 5 * * *'
 permissions:
-  contents: read
+  contents: write
 concurrency:
   group: tripl3-backfill
   cancel-in-progress: false
 jobs:
   backfill:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      TRIPL3_SYNC_TOKEN: ${{ secrets.TRIPL3_SYNC_TOKEN }}
-      BACKFILL_REQUEST_BUDGET: '400'
     steps:
       - uses: actions/checkout@v4
-      - name: Import historical basketball stats
-        run: python3 backfill_runner.py
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Backfill games and player statistics
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          TRIPL3_SYNC_TOKEN: ${{ secrets.TRIPL3_SYNC_TOKEN }}
+          BACKFILL_REQUEST_BUDGET: '400'
+        run: python backfill_runner.py
+      - name: Save checkpoint
+        run: |
+          if [ -f backfill_progress.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add backfill_progress.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Update TRIPL3 backfill checkpoint"
+              git push
+            fi
+          fi
