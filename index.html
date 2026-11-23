@@ -4,7 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080D18"><meta name="description" content="TRIPL3 — Basketball scores, player profiles and statistics.">
 <title>TRIPL3 — Your Basketball World</title>
-<!-- TRIPL3 BUILD: NAMES-FIX-20261123-V2 -->
+<!-- TRIPL3 BUILD: EURO-PHOTOS-SUPABASE-20261123 -->
 <link rel="preconnect" href="https://cdn.nba.com"><link rel="preconnect" href="https://images.unsplash.com">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 const uiI18nObserver=new MutationObserver(()=>translateLoose());
@@ -272,7 +272,34 @@ function playerTeamBadge(name,id,league){
  return `<span class="player-team-badge" title="${esc(known?.team||tr('Equipo','Team'))}">${imageTag(logo,tr('Escudo del equipo','Team logo'))}</span>`;
 }
 function portrait(name,id,league,cls){return `<div class="${cls} player-portrait-with-badge">${fallback(name)}${playerPhotoMarkup(name,id,league)}${playerTeamBadge(name,id,league)}</div>`}
-async function loadPlayerImages(){try{const {data,error}=await db.from('player_images').select('provider_player_id,league_id,image_url').eq('verified',true).limit(1000);if(error)throw error;const map={};for(const p of data||[])if(p.provider_player_id!=null&&/^https:\/\//i.test(p.image_url||''))map[`${p.league_id}:${p.provider_player_id}`]=p.image_url;playerImages=map}catch(e){console.error('Player images:',e)}}
+// TRIPL3: load verified API-Sports portraits for ACB and EuroLeague, preserving NBA fallbacks.
+// Images are looked up by league + provider player ID; no name-only substitutions.
+let playerImageStatus={loaded:0,acb:0,euroleague:0,error:null};
+async function loadPlayerImages(){
+ try{
+  const {data,error}=await db.from('player_images')
+   .select('provider,provider_player_id,league_id,image_url')
+   .eq('provider','api-sports').eq('verified',true).in('league_id',['acb','euroleague','nba'])
+   .limit(1000);
+  if(error)throw error;
+  const map={};let acb=0,euroleague=0;
+  for(const p of data||[]){
+   const url=String(p.image_url||'').trim();
+   if(p.provider_player_id==null||!/^https:\/\//i.test(url))continue;
+   map[`${p.league_id}:${p.provider_player_id}`]=url;
+   if(p.league_id==='acb')acb++;
+   if(p.league_id==='euroleague')euroleague++;
+  }
+  playerImages=map;
+  playerImageStatus={loaded:Object.keys(map).length,acb,euroleague,error:null};
+  if(!acb&&!euroleague)console.warn('TRIPL3: no verified European portraits visible. Check verified flags and Supabase RLS SELECT policy.');
+ }catch(e){
+  playerImageStatus={...playerImageStatus,error:String(e.message||e)};
+  console.error('TRIPL3 player_images query:',e);
+ }
+}
+// Browser console: tripl3PhotoStatus() shows how many portraits are accessible to the site.
+window.tripl3PhotoStatus=()=>({...playerImageStatus});
 function matchTeam(name,fav){return(teamAliases[fav]||[fav]).some(a=>norm(name).includes(norm(a)))}
 function favoriteGame(g){return state.favoriteTeams.some(t=>matchTeam(g.home_team,t)||matchTeam(g.away_team,t))}
 function favoritePlayer(name){return state.favoritePlayers.some(p=>norm(p)===norm(name))}
