@@ -81,6 +81,13 @@ body{background:radial-gradient(ellipse 72% 38% at 88% -12%,#203350 0%,transpare
 .game-card,.player-card{transition:transform .2s,border-color .2s}
 .bottomnav{backdrop-filter:blur(20px)}
 @media(max-width:620px){.iq-method{gap:7px}.iq-method-item{padding:11px 9px}.iq-method-title{font-size:12px}.iq-method-text{font-size:10px}.hero{min-height:330px}.story-art{width:78px;height:78px}.league-tile{height:100px}}
+
+/* TRIPL3: consistent club crests across scores and standings */
+.standing-team{display:inline-flex;align-items:center;gap:9px;text-align:left;min-width:135px;font-weight:750}
+.standing-team img{width:30px;height:30px;object-fit:contain;flex-shrink:0}
+.standing-team-fallback{width:30px;height:30px;border-radius:9px;background:#283950;display:grid;place-items:center;font-size:10px;color:#BFCBDD;flex-shrink:0}
+.gc-preview-table .standing-team{min-width:115px}.gc-preview-table .standing-team img,.gc-preview-table .standing-team-fallback{width:25px;height:25px}
+.game-team img{filter:drop-shadow(0 3px 8px #0005)}
 </style>
 <style>
 /* TRIPL3 Game Center: compact, content-first */
@@ -147,6 +154,16 @@ function gameStats(g){return stats.filter(s=>String(s.provider_game_id)===String
 function playerScore(s){return val(s.points)+val(s.rebounds)*1.2+val(s.assists)*1.5+(val(s.points)>=30?9:0)+([val(s.points),val(s.rebounds),val(s.assists)].filter(n=>n>=10).length>=2?8:0)}
 function leaders(g){return gameStats(g).filter(s=>s.player_name).sort((a,b)=>playerScore(b)-playerScore(a))}
 function gameRank(g){return(g.status==='live'?45:0)+(favoriteGame(g)?20:0)+(g.home_score!=null&&g.away_score!=null&&Math.abs(g.home_score-g.away_score)<=5?12:0)+(leaders(g)[0]?playerScore(leaders(g)[0]):0)}
+function teamLogoByName(name,league){
+ const candidates=[...standingsGames,...gcSchedule,...allGames,...dayGames];
+ const key=norm(name);
+ for(const g of candidates){if(league&&leagues[g.league_id]!==league&&g.league_id!==league)continue;
+  if(norm(g.home_team)===key&&/^https:\/\//i.test(g.home_team_logo||''))return g.home_team_logo;
+  if(norm(g.away_team)===key&&/^https:\/\//i.test(g.away_team_logo||''))return g.away_team_logo;
+ }
+ return '';
+}
+function standingTeam(name,league){const logo=teamLogoByName(name,league);return `<span class="standing-team">${logo?imageTag(logo,name):`<span class="standing-team-fallback">${esc(initials(name))}</span>`}<span>${esc(name)}</span></span>`}
 function teamMarkup(name,logo){return `<div class="game-team">${imageTag(logo,'')}<span>${esc(name)}</span></div>`}
 function gameCard(g,mini=false){return `<article class="card ${mini?'mini-game':'game-card'}" data-game-id="${esc(g.provider_game_id)}" role="button" tabindex="0"><div class="game-top"><span>${esc(leagues[g.league_id]||g.league_id)}</span><span>${g.status==='live'?'<span class="dot"></span> ':''}${gameState(g)}</span></div><div class="game-main">${teamMarkup(g.home_team,g.home_team_logo)}<div class="game-score">${gameScore(g)}</div>${teamMarkup(g.away_team,g.away_team_logo)}</div><div class="game-bottom">${esc(dateLabel(g.game_date))}</div></article>`}
 function translate(){document.documentElement.lang=state.lang;document.querySelectorAll('[data-es][data-en]').forEach(e=>e.textContent=e.dataset[state.lang]);$('langBtn').textContent=state.lang==='es'?'EN':'ES';$('languageSelect').value=state.lang;$('timezoneSelect').value=state.timezone}
@@ -212,7 +229,7 @@ function renderStandings(){
  for(const [name,scored,against] of [[g.home_team,h,a],[g.away_team,a,h]]){if(!map.has(name))map.set(name,{name,p:0,w:0,l:0,pf:0,pa:0,d:0});const r=map.get(name);r.p++;r.w+=+(scored>against);r.l+=+(scored<against);r.pf+=scored;r.pa+=against;r.d+=scored-against}}
  const rows=[...map.values()].sort((a,b)=>b.w-a.w||b.d-a.d||b.pf-a.pf);
  $('standingsSummary').innerHTML=`<span>${rows.length} ${tr('equipos','teams')}</span><span>${games} ${tr('partidos finalizados','finished games')}</span>`;
- $('standings').innerHTML=rows.length?`<table class="league-table"><thead><tr><th>#</th><th>${tr('Equipo','Team')}</th><th>PJ</th><th>V</th><th>D</th><th>PF</th><th>PC</th><th>+/-</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td class="position">${i+1}</td><td class="team-cell">${esc(r.name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.l}</td><td>${r.pf}</td><td>${r.pa}</td><td>${r.d>0?'+':''}${r.d}</td></tr>`).join('')}</tbody></table>`:`<div class="empty">${esc(standingsError||(standingsLoading?tr('Cargando clasificación...','Loading standings...'):tr('Sin datos para esta liga','No standings available')))}</div>`;
+ $('standings').innerHTML=rows.length?`<table class="league-table"><thead><tr><th>#</th><th>${tr('Equipo','Team')}</th><th>PJ</th><th>V</th><th>D</th><th>PF</th><th>PC</th><th>+/-</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td class="position">${i+1}</td><td class="team-cell">${standingTeam(r.name,selectedLeague)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.l}</td><td>${r.pf}</td><td>${r.pa}</td><td>${r.d>0?'+':''}${r.d}</td></tr>`).join('')}</tbody></table>`:`<div class="empty">${esc(standingsError||(standingsLoading?tr('Cargando clasificación...','Loading standings...'):tr('Sin datos para esta liga','No standings available')))}</div>`;
 }
 
 let gameMode='today',gameDateVisible=false,gcSchedule=[],gcScheduleLoaded=false,gcScheduleLoading=false,gcScheduleError='',gcScheduleFetchedAt=0;
@@ -246,7 +263,7 @@ function renderGameStandingsPreview(){
  const map=new Map();for(const g of standingsGames){if(leagues[g.league_id]!==selectedLeague)continue;const h=num(g.home_score),a=num(g.away_score);if(h==null||a==null||h===a)continue;
   for(const [name,scored,against] of [[g.home_team,h,a],[g.away_team,a,h]]){if(!map.has(name))map.set(name,{name,p:0,w:0,l:0,d:0,pf:0});const r=map.get(name);r.p++;r.w+=+(scored>against);r.l+=+(scored<against);r.d+=scored-against;r.pf+=scored;}}
  const rows=[...map.values()].sort((a,b)=>b.w-a.w||b.d-a.d||b.pf-a.pf).slice(0,5);
- mount.innerHTML=rows.length?`<table class="gc-preview-table"><thead><tr><th>#</th><th>${tr('Equipo','Team')}</th><th>PJ</th><th>V</th><th>D</th><th>+/-</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td class="gc-pos">${i+1}</td><td>${esc(r.name)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.l}</td><td>${r.d>0?'+':''}${r.d}</td></tr>`).join('')}</tbody></table>`:`<div class="empty gc-empty">${esc(standingsError||(standingsLoading||!standingsLoaded?tr('Cargando clasificación...','Loading standings...'):tr('Sin clasificación disponible para esta liga.','No standings available for this league.')))}</div>`;
+ mount.innerHTML=rows.length?`<table class="gc-preview-table"><thead><tr><th>#</th><th>${tr('Equipo','Team')}</th><th>PJ</th><th>V</th><th>D</th><th>+/-</th></tr></thead><tbody>${rows.map((r,i)=>`<tr><td class="gc-pos">${i+1}</td><td>${standingTeam(r.name,selectedLeague)}</td><td>${r.p}</td><td>${r.w}</td><td>${r.l}</td><td>${r.d>0?'+':''}${r.d}</td></tr>`).join('')}</tbody></table>`:`<div class="empty gc-empty">${esc(standingsError||(standingsLoading||!standingsLoaded?tr('Cargando clasificación...','Loading standings...'):tr('Sin clasificación disponible para esta liga.','No standings available for this league.')))}</div>`;
 }
 function renderGames(){
  $('gameDate').value=selectedDay;
