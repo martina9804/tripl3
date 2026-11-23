@@ -94,6 +94,12 @@ body{background:radial-gradient(ellipse 72% 38% at 88% -12%,#203350 0%,transpare
 #games .title{margin-bottom:17px}#games .filters{margin-bottom:5px}#games .gc-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0 12px}#games .gc-modes,#games .gc-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap}#games .gc-modes .filter{padding:9px 13px}#games .gc-actions .secondary{padding:9px 11px;font-size:12px}#games .gc-heading{margin:21px 0 12px}#games .gc-text-button{border:0;background:transparent;color:var(--orange);font-size:12px;font-weight:800;padding:7px 0}#games .gc-date-wrap .datebar{margin:4px 0 12px}#games .gc-game-group{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:10px}#games .gc-game-group .game-card{margin:0}#games .gc-empty{padding:21px 16px}#games .gc-preview-table{min-width:360px}#games .gc-preview-table th,#games .gc-preview-table td{padding:11px 8px}#games .gc-preview-table td:first-child{font-weight:750}#games .gc-preview-table .gc-pos{color:var(--orange);font-weight:900;width:25px}#games .gc-preview-table td:nth-child(2),#games .gc-preview-table th:nth-child(2){text-align:left}#games .gc-preview-table td:not(:nth-child(2)),#games .gc-preview-table th:not(:nth-child(2)){text-align:right}#games .gc-section-caption{color:var(--muted);font-size:11px;margin:10px 0}#games .gc-loading{color:var(--muted);font-size:12px}
 @media(max-width:600px){#games .gc-toolbar{align-items:flex-start}#games .gc-modes{width:100%}#games .gc-actions{width:100%;justify-content:flex-end}#games .gc-heading h2{font-size:18px}}
 </style>
+<style>
+/* TRIPL3 IQ / visual analytics */
+.iq-visual-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:15px 0 12px}.iq-visual-head h3{font-size:15px;margin:0}.iq-visual-head small{color:var(--muted);font-size:11px}
+.iq-chart-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:12px 0 19px}.iq-chart-tile{border:1px solid #34465b;border-radius:14px;background:#111e30;padding:14px;min-width:0}.iq-chart-tile strong{display:block;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.iq-chart-tile small{color:var(--muted);font-size:10px}.iq-chart-tile svg{width:100%;height:78px;display:block;margin-top:8px}.iq-chart-tile .iq-chart-value{font-size:20px;font-weight:900;color:#ff795d;margin-top:7px}.iq-chart-legend{display:flex;gap:13px;align-items:center;color:var(--muted);font-size:11px;margin:8px 0 14px}.iq-chart-legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px}.pulse-card{flex-wrap:wrap}.iq-pulse-bars{width:100%;display:grid;grid-template-columns:68px 1fr 43px;gap:5px 8px;align-items:center;margin:10px 0 0 42px;text-align:left}.iq-pulse-bars small{color:var(--muted);font-size:10px}.iq-bar-track{height:7px;border-radius:8px;background:#29384a;overflow:hidden}.iq-bar-fill{height:100%;border-radius:8px;background:#8093ab}.iq-bar-fill.recent{background:#ff6545}.iq-pulse-bars b{font-size:10px;text-align:right;color:var(--muted)}
+@media(max-width:650px){.iq-chart-grid{grid-template-columns:1fr}.iq-chart-tile{display:grid;grid-template-columns:1fr 1fr;align-items:center}.iq-chart-tile svg{grid-column:2;grid-row:1 / span 3;height:72px}.iq-pulse-bars{margin-left:0}}
+</style>
 </head>
 <body>
 <header class="topbar"><div class="logo">TRIPL<span>3</span></div><div class="topright"><button class="icon-btn" id="langBtn" aria-label="Change language">EN</button><button class="icon-btn" onclick="go('profile')" aria-label="Settings">⚙</button></div></header>
@@ -369,6 +375,17 @@ pulseCSS.textContent=`
 document.head.appendChild(pulseCSS);
 const pulseArea=document.createElement('section');pulseArea.id='pulseArea';pulseArea.style.marginTop='30px';$('iqPulseMount').appendChild(pulseArea);
 function pulseValue(v){const n=Number(v);return Number.isFinite(n)?n.toFixed(1):'—'}
+function iqCompareBars(p){
+ const a=Math.max(0,Number(p.previous_ppg)||0),b=Math.max(0,Number(p.recent_ppg)||0),max=Math.max(a,b,1);
+ return `<div class="iq-pulse-bars"><small>${tr('Anteriores','Previous')} 3</small><div class="iq-bar-track"><div class="iq-bar-fill" style="width:${Math.min(100,a/max*100).toFixed(1)}%"></div></div><b>${pulseValue(a)}</b><small>${tr('Últimos','Latest')} 3</small><div class="iq-bar-track"><div class="iq-bar-fill recent" style="width:${Math.min(100,b/max*100).toFixed(1)}%"></div></div><b>${pulseValue(b)}</b></div>`;
+}
+function iqTrendTile(p){
+ const prev=Math.max(0,Number(p.previous_ppg)||0),recent=Math.max(0,Number(p.recent_ppg)||0),max=Math.max(prev,recent,1),w=220,h=78;
+ const y=v=>h-12-(v/max)*(h-27);
+ const path=`M 25 ${y(prev).toFixed(1)} L 190 ${y(recent).toFixed(1)}`;
+ const delta=Number(p.points_delta)||0;
+ return `<div class="iq-chart-tile"><strong>${esc(p.player_name)}</strong><small>${esc(leagues[p.league_id]||p.league_id)} · ${tr('Puntos por partido','Points per game')}</small><div class="iq-chart-value">${delta>0?'+':''}${pulseValue(delta)} <small>PPG</small></div><svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${tr('Comparación de medias anteriores y recientes','Previous versus recent averages')}"><line x1="25" y1="65" x2="195" y2="65" stroke="#34465b" stroke-dasharray="3 4"/><path d="${path}" fill="none" stroke="#ff6545" stroke-width="3.5" stroke-linecap="round"/><circle cx="25" cy="${y(prev)}" r="5" fill="#8093ab"/><circle cx="190" cy="${y(recent)}" r="5" fill="#ff6545"/><text x="25" y="76" text-anchor="middle" font-size="9" fill="#9faec2">-3</text><text x="190" y="76" text-anchor="middle" font-size="9" fill="#9faec2">+3</text></svg></div>`;
+}
 function renderPulse(){
  const leaguesPulse={nba:'NBA',acb:'ACB',euroleague:'EuroLeague'};
  const modes=[['Rising',tr('En alza','Rising')],['Falling',tr('En bajada','Falling')],['Stable',tr('Estables','Stable')]];
@@ -388,13 +405,15 @@ function renderPulse(){
   return `<button class="pulse-card" data-pulse-id="${esc(p.provider_player_id)}" data-pulse-name="${esc(p.player_name)}" data-pulse-league="${esc(p.league_id)}">
     <span class="pulse-rank">${i+1}</span><span class="pulse-avatar">${esc(initials(p.player_name))}${image?`<img src="${esc(image)}" alt="" onerror="this.style.display='none'">`:''}</span>
     <span class="pulse-info"><strong>${esc(p.player_name)}</strong><small>${pulseValue(p.recent_ppg)} PTS · ${pulseValue(p.recent_rpg)} REB · ${pulseValue(p.recent_apg)} AST</small><small>${tr('Antes','Before')}: ${pulseValue(p.previous_ppg)} PTS</small></span>
-    <span class="pulse-change ${cls}">${sign}${pulseValue(delta)}</span></button>`;
+    <span class="pulse-change ${cls}">${sign}${pulseValue(delta)}</span>${iqCompareBars(p)}</button>`;
  }).join('')}</div>`;
+ const rising=pulseRows.filter(p=>Number(p.recent_ppg)>=10&&Number(p.points_delta)>0).sort((a,b)=>Number(b.points_delta)-Number(a.points_delta)).slice(0,3);
+ const chartSection=!pulseLoading&&!pulseError&&rising.length?`<div class="iq-visual-head"><h3>${tr('Radar de tendencias','Trend radar')}</h3><small>${tr('Top 3 mejoras de la liga','Top 3 improvements in the league')}</small></div><div class="iq-chart-grid">${rising.map(iqTrendTile).join('')}</div><div class="iq-chart-legend"><span><i style="background:#8093ab"></i>${tr('Media anterior (3 partidos)','Previous average (3 games)')}</span><span><i style="background:#ff6545"></i>${tr('Media reciente (3 partidos)','Recent average (3 games)')}</span></div>`:'';
  pulseArea.innerHTML=`<div class="section-head"><h2>TRIPL3 <span style="color:var(--orange)">IQ</span> · Player Pulse</h2></div>
  <p class="status-note">${tr('Comparación de los últimos 3 partidos con los 3 anteriores. Cambio en puntos por partido; no es una predicción.','Last 3 games compared with the previous 3. Change in points per game; not a prediction.')}</p>
  <div class="filters">${Object.entries(leaguesPulse).map(([id,name])=>`<button class="filter ${pulseLeague===id?'active':''}" data-pulse-league="${id}">${name}</button>`).join('')}</div>
  <div class="pulse-controls">${modes.map(([id,name])=>`<button class="filter ${pulseMode===id?'active':''}" data-pulse-mode="${id}">${name}</button>`).join('')}</div>
- ${content}<p class="pulse-meta">${tr('Fuente: estadísticas almacenadas en TRIPL3 · mínimo 6 partidos por jugador.','Source: TRIPL3 stored stats · minimum 6 games per player.')}</p>`;
+ ${chartSection}${content}<p class="pulse-meta">${tr('Fuente: estadísticas almacenadas en TRIPL3 · mínimo 6 partidos por jugador.','Source: TRIPL3 stored stats · minimum 6 games per player.')}</p>`;
  pulseArea.querySelectorAll('[data-pulse-league]').forEach(el=>el.onclick=()=>loadPulse(el.dataset.pulseLeague));
  pulseArea.querySelectorAll('[data-pulse-mode]').forEach(el=>el.onclick=()=>{pulseMode=el.dataset.pulseMode;renderPulse()});
  pulseArea.querySelectorAll('[data-pulse-id]').forEach(el=>el.onclick=()=>openPlayer(el.dataset.pulseName,el.dataset.pulseId,el.dataset.pulseLeague));
