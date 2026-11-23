@@ -4,6 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#080D18"><meta name="description" content="TRIPL3 — Basketball scores, player profiles and statistics.">
 <title>TRIPL3 — Your Basketball World</title>
+<!-- TRIPL3 BUILD: NAMES-FIX-20261123-V2 -->
 <link rel="preconnect" href="https://cdn.nba.com"><link rel="preconnect" href="https://images.unsplash.com">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
 const uiI18nObserver=new MutationObserver(()=>translateLoose());
@@ -186,10 +187,19 @@ function canonicalNBAPlayer(name){const n=norm(name);return nbaPlayerDirectory.f
 function displayPlayerName(name){
  const n=String(name||'').trim().replace(/\s+/g,' ');if(!n)return '';
  const canonical=canonicalNBAPlayer(n);if(canonical)return canonical[0];
- const known=playerCatalog.find(p=>norm(p.name)===norm(n));if(known)return known.name;
  if(n.includes(',')){const parts=n.split(',').map(x=>x.trim()).filter(Boolean);if(parts.length===2)return parts[1]+' '+parts[0]}
- // Only reverse feed names when there is strong evidence; never blindly flip all names.
- const parts=n.split(' ');if(parts.length===2){const reverse=parts[1]+' '+parts[0];const k=playerCatalog.find(p=>norm(p.name)===norm(reverse));if(k)return k.name;}
+ const known=playerCatalog.find(p=>norm(p.name)===norm(n));if(known)return known.name;
+ const parts=n.split(' ');
+ // API-Sports returns the surname first in its player_name field.
+ // Resolve names against the known first-name-first catalog whenever possible.
+ for(let split=1;split<parts.length;split++){
+   const reversed=[...parts.slice(split),...parts.slice(0,split)].join(' ');
+   const match=playerCatalog.find(p=>norm(p.name)===norm(reversed));
+   if(match)return match.name;
+ }
+ // Feed fallback for surname-first names not yet in our player directory.
+ // Limit to NBA/EuroLeague/ACB source strings that have exactly two tokens.
+ if(parts.length===2 && /^[A-ZÀ-Ý]/.test(parts[0]) && /^[A-ZÀ-Ý]/.test(parts[1]))return parts[1]+' '+parts[0];
  return n;
 }
 function playerPhoto(name,id,league){
