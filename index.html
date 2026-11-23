@@ -19,7 +19,7 @@
 <main class="shell">
 <section class="page active" id="home"><div class="eyebrow">YOUR DAILY BASKETBALL</div><div class="section-head"><h2>TRIPL3 NOW <span class="dot"></span></h2><span class="muted small" id="feedTime"></span></div><div id="heroArea"></div><div class="section-head"><h2 data-es="Explora las ligas" data-en="Explore leagues">Explora las ligas</h2></div><div class="league-grid"><div class="league-tile" onclick="openLeague('NBA')" role="button" tabindex="0" data-open-league="NBA"><img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=700&q=85" alt="Basketball court" loading="lazy"><small>THE LEAGUE</small><strong>NBA</strong></div><div class="league-tile" onclick="openLeague('EuroLeague')" role="button" tabindex="0" data-open-league="EuroLeague"><img src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=700&q=85" alt="Arena" loading="lazy"><small>EUROPE</small><strong>EuroLeague</strong></div><div class="league-tile" onclick="openLeague('ACB')" role="button" tabindex="0" data-open-league="ACB"><img src="https://images.unsplash.com/photo-1519861531473-9200262188bf?w=700&q=85" alt="Basketball" loading="lazy"><small>SPAIN</small><strong>ACB</strong></div></div><div class="section-head"><h2 data-es="Lo más destacado" data-en="Top stories">Lo más destacado</h2></div><div id="stories"></div><div class="section-head"><h2 data-es="Marcadores" data-en="Scores">Marcadores</h2><button class="secondary" onclick="go('games')" data-es="Ver todos" data-en="See all">Ver todos</button></div><div class="game-strip" id="scoreStrip"></div><div class="section-head"><h2 data-es="Tus jugadores" data-en="Your players">Tus jugadores</h2><button class="secondary" onclick="go('favorites')" data-es="Editar" data-en="Edit">Editar</button></div><div class="player-grid" id="homePlayers"></div></section>
 <section class="page" id="games"><div class="eyebrow">GAME CENTER</div><h1 class="title" data-es="Partidos" data-en="Games">Partidos</h1><div class="datebar"><button class="secondary" onclick="changeDay(-1)" aria-label="Previous day">‹</button><input type="date" id="gameDate" onchange="changeDate(this.value)"><button class="secondary" onclick="changeDay(1)" aria-label="Next day">›</button><button class="secondary" onclick="today()" data-es="Hoy" data-en="Today">Hoy</button></div><div class="filters" id="leagueFilters"></div><div class="actions"><button class="secondary" id="spoilerButton" onclick="toggleSpoilers()"></button><button class="secondary" onclick="refreshAll()" aria-label="Refresh">↻</button></div><div id="gameList"></div><div class="section-head"><h2 data-es="Clasificación parcial" data-en="Partial standings">Clasificación parcial</h2></div><p class="status-note" data-es="Calculada únicamente con partidos almacenados. No es la clasificación oficial." data-en="Calculated from stored games only. Not official standings.">Calculada únicamente con partidos almacenados. No es la clasificación oficial.</p><div class="card table-scroll" id="standings"></div></section>
-<section class="page" id="statsPage"><div class="eyebrow">TRIPL3 ANALYTICS</div><h1 class="title" data-es="Estadísticas" data-en="Statistics">Estadísticas</h1><p class="status-note" data-es="Rankings calculados a partir de los partidos disponibles en TRIPL3 durante los últimos 7 días. No representan la temporada completa." data-en="Rankings from games available in TRIPL3 over the last 7 days. Not full-season statistics.">Rankings calculados a partir de los partidos disponibles en TRIPL3 durante los últimos 7 días. No representan la temporada completa.</p><div class="filters" id="statsLeagueFilters"></div><div class="leaderboard-filters" id="metricFilters"></div><div class="card" id="leaderboard"></div></section>
+<section class="page" id="statsPage"><div class="eyebrow">TRIPL3 ANALYTICS</div><h1 class="title" data-es="Estadísticas" data-en="Statistics">Estadísticas</h1><p class="status-note" data-es="Rankings de la temporada 2026/27. Mínimo de 5 partidos jugados." data-en="2026/27 season rankings. Minimum 5 games played.">Rankings de la temporada 2026/27. Mínimo de 5 partidos jugados.</p><div class="filters" id="statsLeagueFilters"></div><div class="leaderboard-filters" id="metricFilters"></div><div class="card" id="leaderboard"></div></section>
 <section class="page" id="favorites"><div class="eyebrow">PERSONALIZED</div><h1 class="title" data-es="Mis favoritos" data-en="My favorites">Mis favoritos</h1><div class="section-head"><h2 data-es="Jugadores favoritos" data-en="Favorite players">Jugadores favoritos</h2></div><div class="player-grid" id="favoritePlayers"></div><div class="section-head"><h2 data-es="Buscar jugadores" data-en="Find players">Buscar jugadores</h2></div><div class="search-row"><input id="playerSearch" type="search" placeholder="Nombre del jugador" oninput="renderPlayerSearch()"></div><div class="fav-options" id="playerOptions"></div><p class="status-note" data-es="Puedes añadir jugadores que tengan estadísticas registradas en TRIPL3." data-en="You can add players with recorded stats in TRIPL3.">Puedes añadir jugadores que tengan estadísticas registradas en TRIPL3.</p><div class="section-head"><h2 data-es="Equipos" data-en="Teams">Equipos</h2></div><div class="fav-options" id="teamOptions"></div><div class="section-head"><h2 data-es="Ligas" data-en="Leagues">Ligas</h2></div><div class="fav-options" id="leagueOptions"></div><p class="status-note" id="favoriteMessage"></p></section>
 <section class="page" id="profile"><div class="eyebrow">MY TRIPL3</div><h1 class="title" data-es="Perfil" data-en="Profile">Perfil</h1><div class="profile-banner"><img src="https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1200&q=85" alt="Basketball court"><strong>YOUR GAME.<br>YOUR WORLD.</strong></div><div class="card"><h3 data-es="Mi cuenta" data-en="My account">Mi cuenta</h3><p class="status-note" id="authStatus"></p><div id="authForm"><div class="field"><label>Email</label><input id="email" type="email" autocomplete="email"></div><div class="field"><label data-es="Contraseña" data-en="Password">Contraseña</label><input id="password" type="password" autocomplete="current-password"></div><div class="actions"><button class="primary" onclick="login()" data-es="Entrar" data-en="Sign in">Entrar</button><button class="secondary" onclick="signup()" data-es="Registrarme" data-en="Sign up">Registrarme</button></div></div><button class="secondary hidden" id="logoutButton" onclick="logout()" data-es="Cerrar sesión" data-en="Sign out">Cerrar sesión</button><p class="status-note" id="authMessage"></p></div><div class="card" style="margin-top:13px"><h3 data-es="Preferencias" data-en="Preferences">Preferencias</h3><div class="field"><label data-es="Idioma" data-en="Language">Idioma</label><select id="languageSelect" onchange="setLanguage(this.value)"><option value="es">Español</option><option value="en">English</option></select></div><div class="field"><label data-es="Zona horaria" data-en="Time zone">Zona horaria</label><select id="timezoneSelect" onchange="setTimezone(this.value)"><option value="Europe/Madrid">Madrid</option><option value="Europe/Vienna">Viena</option><option value="Europe/London">London</option><option value="America/New_York">New York</option><option value="America/Los_Angeles">Los Angeles</option></select></div><button class="primary" onclick="savePreferences()" data-es="Guardar" data-en="Save">Guardar</button></div></section>
 </main>
@@ -74,7 +74,7 @@ function gameRank(g){return(g.status==='live'?45:0)+(favoriteGame(g)?20:0)+(g.ho
 function teamMarkup(name,logo){return `<div class="game-team">${imageTag(logo,'')}<span>${esc(name)}</span></div>`}
 function gameCard(g,mini=false){return `<article class="card ${mini?'mini-game':'game-card'}" data-game-id="${esc(g.provider_game_id)}" role="button" tabindex="0"><div class="game-top"><span>${esc(leagues[g.league_id]||g.league_id)}</span><span>${g.status==='live'?'<span class="dot"></span> ':''}${gameState(g)}</span></div><div class="game-main">${teamMarkup(g.home_team,g.home_team_logo)}<div class="game-score">${gameScore(g)}</div>${teamMarkup(g.away_team,g.away_team_logo)}</div><div class="game-bottom">${esc(dateLabel(g.game_date))}</div></article>`}
 function translate(){document.documentElement.lang=state.lang;document.querySelectorAll('[data-es][data-en]').forEach(e=>e.textContent=e.dataset[state.lang]);$('langBtn').textContent=state.lang==='es'?'EN':'ES';$('languageSelect').value=state.lang;$('timezoneSelect').value=state.timezone}
-function go(id){closeGame();closePlayer();document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0);if(id==='statsPage')renderLeaderboard();if(id==='favorites')renderPlayerSearch()}
+function go(id){closeGame();closePlayer();document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.bottomnav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));window.scrollTo(0,0);if(id==='statsPage'){renderLeaderboard();loadSeasonLeaders()}if(id==='favorites')renderPlayerSearch()}
 function openLeague(league){selectedLeague=league;go('games');renderGames()}
 function setLanguage(v){state.lang=v;persist();render();savePreferences()}
 function setTimezone(v){state.timezone=v;selectedDay=currentDay();persist();render();loadDay();savePreferences()}
@@ -143,6 +143,54 @@ db.auth.onAuthStateChange((event,session)=>{const previous=user?.id;user=session
 async function init(){selectedDay=currentDay();await loadPlayerImages();render();await refreshAll();const {data,error}=await db.auth.getSession();if(error)$('authMessage').textContent=error.message;user=data?.session?.user||null;updateAuth();if(user)await loadUserData()}
 init();setInterval(async()=>{if(!document.hidden){await Promise.all([loadPlayerImages(),refreshAll()]);render()}},30000);
 
+
+/* TRIPL3 SEASON LEADERS — full season, sourced from Supabase view */
+let seasonRows=[],seasonLoading=false,seasonError='',seasonFetchedAt=0,seasonRequest=0;
+const seasonMetricFields={points:'ppg',rebounds:'rpg',assists:'apg',threes:'threes_pg',fg:'fg_pct',threepct:'three_pct',ft:'ft_pct'};
+const seasonStyle=document.createElement('style');
+seasonStyle.textContent=`.season-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}.season-leader{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line);cursor:pointer}.season-leader:last-child{border-bottom:0}.season-leader:hover{background:#ffffff08}.season-leader .box-avatar{width:45px;height:45px}.season-sub{font-size:11px;color:var(--muted)}.season-value{font-size:22px;font-weight:900;color:var(--text)}.season-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}.season-refresh{border:1px solid var(--line);border-radius:10px;background:var(--surface2);color:var(--text);padding:7px 12px}`;
+document.head.appendChild(seasonStyle);
+async function loadSeasonLeaders(force=false){
+ if(seasonLoading)return;
+ if(!force&&seasonRows.length&&Date.now()-seasonFetchedAt<5*60*1000)return;
+ const seq=++seasonRequest;seasonLoading=true;seasonError='';renderLeaderboard();
+ try{
+  const rows=[];const size=1000;
+  for(let start=0;start<10000;start+=size){
+   const {data,error}=await db.from('tripl3_season_leaders')
+    .select('league_id,season,provider_player_id,player_name,provider_team_id,games_played,total_points,total_rebounds,total_assists,total_threes,ppg,rpg,apg,threes_pg,fg_pct,three_pct,ft_pct')
+    .in('league_id',['nba','acb','euroleague']).range(start,start+size-1);
+   if(error)throw error;
+   rows.push(...(data||[]));
+   if(!data||data.length<size)break;
+  }
+  if(seq!==seasonRequest)return;
+  seasonRows=rows;seasonFetchedAt=Date.now();
+ }catch(e){if(seq!==seasonRequest)return;seasonError=e.message||String(e)}
+ finally{if(seq===seasonRequest){seasonLoading=false;renderLeaderboard()}}
+}
+function renderLeaderboard(){
+ const leagueId=Object.keys(leagues).find(k=>leagues[k]===statsLeague)||'nba';
+ $('statsLeagueFilters').innerHTML=leagueList.map(l=>`<button class="filter ${statsLeague===l?'active':''}" data-stats-league="${l}">${l}</button>`).join('');
+ const metrics=[['points','PPG'],['rebounds','RPG'],['assists','APG'],['threes','3PM'],['fg','FG%'],['threepct','3P%'],['ft','FT%']];
+ $('metricFilters').innerHTML=metrics.map(([k,label])=>`<button class="filter ${selectedMetric===k?'active':''}" data-metric="${k}">${label}</button>`).join('');
+ const key=seasonMetricFields[selectedMetric]||'ppg';
+ const seasons=[...new Set(seasonRows.filter(r=>r.league_id===leagueId).map(r=>r.season))].sort().reverse();
+ const latest=seasons[0];
+ let people=seasonRows.filter(p=>p.league_id===leagueId&&p.season===latest&&Number(p.games_played)>=5&&p[key]!=null);
+ // Minimum attempts for meaningful shooting percentages are not yet available in the view.
+ people.sort((a,b)=>Number(b[key])-Number(a[key])||Number(b.games_played)-Number(a.games_played));
+ people=people.slice(0,50);
+ const unit=['fg','threepct','ft'].includes(selectedMetric)?'%':'';
+ let content=seasonLoading&&!seasonRows.length?`<div class="empty">${tr('Cargando rankings de temporada...','Loading season rankings...')}</div>`:
+ seasonError&&!seasonRows.length?`<div class="empty">${esc(seasonError)}</div>`:
+ people.length?people.map((p,i)=>`<div class="season-leader" data-player-name="${esc(p.player_name)}" data-player-id="${esc(p.provider_player_id)}" data-player-league="${esc(p.league_id)}" role="button" tabindex="0"><span class="leader-rank">${i+1}</span><div class="box-avatar">${esc(initials(p.player_name))}${imageTag(playerPhoto(p.player_name,p.provider_player_id,p.league_id),'')}</div><div class="leader-name"><strong>${esc(p.player_name)}</strong><div class="season-sub">${p.games_played} ${tr('partidos','games')} · ${Number(p.ppg).toFixed(1)} PTS · ${Number(p.rpg).toFixed(1)} REB · ${Number(p.apg).toFixed(1)} AST</div></div><span class="season-value">${Number(p[key]).toFixed(1)}${unit}</span></div>`).join(''):`<div class="empty">${tr('Sin jugadores con al menos 5 partidos en esta competición.','No players with at least 5 games in this league.')}</div>`;
+ $('leaderboard').innerHTML=`<div class="season-header"><div><strong>TRIPL3 IQ · Season Leaders</strong><div class="season-sub">${esc(latest||'2026/27')} · ${tr('Mínimo 5 partidos','Minimum 5 games')}</div></div><button class="season-refresh" id="seasonRefresh" type="button">↻ ${tr('Actualizar','Refresh')}</button></div>${content}<p class="badge-note">${tr('Promedios basados en los partidos registrados. Los porcentajes de tiro no tienen aún mínimo de intentos.','Averages from recorded games. Shooting percentages do not yet have a minimum attempts threshold.')}</p>`;
+ $('seasonRefresh').onclick=()=>loadSeasonLeaders(true);
+ $('statsLeagueFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{statsLeague=b.dataset.statsLeague;renderLeaderboard()});
+ $('metricFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedMetric=b.dataset.metric;renderLeaderboard()});
+}
+
 /* TRIPL3 IQ — PLAYER PULSE (Supabase view) */
 let pulseLeague='nba',pulseMode='Rising',pulseRows=[],pulseLoading=false,pulseError='',pulseRequest=0;
 const pulseCSS=document.createElement('style');
@@ -202,6 +250,7 @@ async function loadPulse(league=pulseLeague){
  finally{if(seq===pulseRequest){pulseLoading=false;renderPulse()}}
 }
 loadPulse();
+loadSeasonLeaders();
 
 </script>
   
