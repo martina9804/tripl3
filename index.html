@@ -110,6 +110,13 @@ body{background:radial-gradient(ellipse 72% 38% at 88% -12%,#203350 0%,transpare
 .profile-portrait .player-team-badge{width:45px;height:45px;right:2px;bottom:3px}
 .box-avatar .player-team-badge,.pulse-avatar .player-team-badge{width:17px;height:17px;right:-3px;bottom:-3px;border-width:2px}
 </style>
+<style>
+/* Team logo is a separate overlay, not cropped by the circular headshot. */
+.season-leader .box-avatar,.leader-row .box-avatar{overflow:visible!important;isolation:isolate}
+.season-leader .box-avatar>img,.leader-row .box-avatar>img{border-radius:50%;object-fit:cover;overflow:hidden}
+.season-leader .box-avatar>.player-team-badge,.leader-row .box-avatar>.player-team-badge{position:absolute!important;right:-6px!important;bottom:-4px!important;width:20px!important;height:20px!important;border:2px solid #142036!important;z-index:9!important;overflow:hidden!important;box-shadow:0 1px 6px #0009}
+.season-leader .box-avatar>.player-team-badge img,.leader-row .box-avatar>.player-team-badge img{position:static!important;width:85%!important;height:85%!important;border-radius:0!important;object-fit:contain!important}
+</style>
 </head>
 <body>
 <header class="topbar"><div class="logo">TRIPL<span>3</span></div><div class="topright"><button class="icon-btn" id="langBtn" aria-label="Change language">EN</button><button class="icon-btn" onclick="go('profile')" aria-label="Settings">⚙</button></div></header>
@@ -154,15 +161,47 @@ function fmt(v,d=1){return Number.isFinite(v)?v.toFixed(d):'—'}
 function initials(v){return String(v||'').split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join('').toUpperCase()||'3'}
 function fallback(name){return `<span class="player-placeholder">${esc(initials(name))}</span>`}
 function imageTag(url,alt='',extra=''){return /^https:\/\//i.test(url||'')?`<img src="${esc(url)}" alt="${esc(alt)}" loading="lazy" ${extra} onerror="this.style.display='none'">`:''}
-function playerPhoto(name,id,league){const verified=playerImages[`${league}:${id}`];if(verified)return verified;const p=playerCatalog.find(x=>norm(x.name)===norm(name));return league==='nba'&&p?`https://cdn.nba.com/headshots/nba/latest/1040x760/${p.nba}.png`:''}
+// Canonical NBA names and official NBA headshot IDs (not API-Sports player IDs).
+const nbaPlayerDirectory=[
+ ['Luka Dončić','1629029','Lakers',['Doncic Luka','Dončić Luka']],
+ ['Shai Gilgeous-Alexander','1628983','Thunder',['Gilgeous-Alexander Shai']],
+ ['Victor Wembanyama','1641705','Spurs',['Wembanyama Victor']],
+ ['Anthony Edwards','1630162','Timberwolves',['Edwards Anthony']],
+ ['Giannis Antetokounmpo','203507','Bucks',['Antetokounmpo Giannis']],
+ ['Stephen Curry','201939','Warriors',['Curry Stephen']],
+ ['LeBron James','2544','Lakers',['James LeBron']],
+ ['Nikola Jokić','203999','Nuggets',['Jokic Nikola','Jokić Nikola']],
+ ['Jalen Brunson','1628973','Knicks',['Brunson Jalen']],
+ ['Kevin Durant','201142','Rockets',['Durant Kevin']],
+ ['Devin Booker','1626164','Suns',['Booker Devin']],
+ ['Donovan Mitchell','1628378','Cavaliers',['Mitchell Donovan']],
+ ['Tyrese Maxey','1630178','76ers',['Maxey Tyrese']],
+ ['Cade Cunningham','1630595','Pistons',['Cunningham Cade']],
+ ['Jaylen Brown','1627759','Celtics',['Brown Jaylen']],
+ ['Jayson Tatum','1628369','Celtics',['Tatum Jayson']],
+ ['Karl-Anthony Towns','1626157','Knicks',['Towns Karl-Anthony']],
+ ['Alperen Şengün','1630578','Rockets',['Sengun Alperen','Şengün Alperen']]
+];
+function canonicalNBAPlayer(name){const n=norm(name);return nbaPlayerDirectory.find(p=>[p[0],...p[3]].some(v=>norm(v)===n));}
 function displayPlayerName(name){
- const n=String(name||'').trim();
+ const n=String(name||'').trim().replace(/\s+/g,' ');if(!n)return '';
+ const canonical=canonicalNBAPlayer(n);if(canonical)return canonical[0];
+ const known=playerCatalog.find(p=>norm(p.name)===norm(n));if(known)return known.name;
  if(n.includes(',')){const parts=n.split(',').map(x=>x.trim()).filter(Boolean);if(parts.length===2)return parts[1]+' '+parts[0]}
- // The API may store initials before surnames; do not guess an unrecorded given name.
+ // Only reverse feed names when there is strong evidence; never blindly flip all names.
+ const parts=n.split(' ');if(parts.length===2){const reverse=parts[1]+' '+parts[0];const k=playerCatalog.find(p=>norm(p.name)===norm(reverse));if(k)return k.name;}
  return n;
 }
+function playerPhoto(name,id,league){
+ const verified=playerImages[`${league}:${id}`];if(verified)return verified;
+ if(league!=='nba')return '';
+ const canonical=canonicalNBAPlayer(name);
+ if(canonical)return `https://cdn.nba.com/headshots/nba/latest/1040x760/${canonical[1]}.png`;
+ const p=playerCatalog.find(x=>norm(x.name)===norm(name));
+ return p?.nba?`https://cdn.nba.com/headshots/nba/latest/1040x760/${p.nba}.png`:'';
+}
 function playerTeamBadge(name,id,league){
- const known=playerCatalog.find(x=>norm(x.name)===norm(name));
+ const known=playerCatalog.find(x=>norm(x.name)===norm(name)) || (()=>{const p=league==='nba'?canonicalNBAPlayer(name):null;return p?{team:p[2]}:null})();
  const matches=[...allGames,...dayGames,...(typeof standingsGames!=='undefined'?standingsGames:[])];
  const stat=stats.find(x=>String(x.provider_player_id)===String(id)&&id!=null);
  let logo='';
@@ -260,7 +299,7 @@ function sum(rows,key){return rows.reduce((a,s)=>a+val(s[key]),0)}
 function metricCards(rows){return `<div class="metric-grid">${[['points','PTS'],['rebounds','REB'],['assists','AST']].map(([k,label])=>`<div class="metric"><strong>${sum(rows,k)}</strong><small>${label}</small></div>`).join('')}</div>`}
 function compareBar(label,a,b){const total=a+b;const left=total?100*a/total:50;return `<div class="compare-row"><div class="compare-top"><strong>${a}</strong><span class="muted">${label}</span><strong>${b}</strong></div><div class="compare-track"><div style="width:${left}%"></div><div style="flex:1"></div></div></div>`}
 function comparison(g,rows){const home=rows.filter(s=>String(s.provider_team_id)===String(g.home_team_id)&&g.home_team_id!=null),away=rows.filter(s=>String(s.provider_team_id)===String(g.away_team_id)&&g.away_team_id!=null);if(!home.length||!away.length)return `<div class="empty">${tr('No hay datos suficientes para comparar los dos equipos.','Not enough data to compare both teams.')}</div>`;return `<div class="card"><div class="game-top"><span>${esc(g.home_team)}</span><span>${esc(g.away_team)}</span></div>${[['points','Puntos','Points'],['rebounds','Rebotes','Rebounds'],['assists','Asistencias','Assists'],['threepoints_made','Triples','Three-pointers']].map(([k,es,en])=>compareBar(tr(es,en),sum(home,k),sum(away,k))).join('')}<p class="badge-note">${tr('Totales de los jugadores registrados; pueden estar incompletos.','Totals from recorded players; may be incomplete.')}</p></div>`}
-function starsMarkup(game,rows){return `<div class="stars">${[...rows].sort((a,b)=>playerScore(b)-playerScore(a)).slice(0,3).map(s=>`<div class="card star-card click-row" data-player-id="${esc(s.provider_player_id)}" data-player-name="${esc(s.player_name)}" data-player-league="${esc(game.league_id)}" role="button" tabindex="0">${portrait(s.player_name,s.provider_player_id,game.league_id,'star-photo')}<div class="star-info"><strong>${esc(s.player_name)}</strong><small>${statline(s)}</small></div></div>`).join('')}</div>`}
+function starsMarkup(game,rows){return `<div class="stars">${[...rows].sort((a,b)=>playerScore(b)-playerScore(a)).slice(0,3).map(s=>`<div class="card star-card click-row" data-player-id="${esc(s.provider_player_id)}" data-player-name="${esc(s.player_name)}" data-player-league="${esc(game.league_id)}" role="button" tabindex="0">${portrait(s.player_name,s.provider_player_id,game.league_id,'star-photo')}<div class="star-info"><strong>${esc(displayPlayerName(s.player_name))}</strong><small>${statline(s)}</small></div></div>`).join('')}</div>`}
 function playerStatsTable(rows,league){const allowed=['points','rebounds','assists','minutes','threepoints_made'];const sorted=[...rows].sort((a,b)=>{const av=num(a[sortColumn]),bv=num(b[sortColumn]);if(av==null)return 1;if(bv==null)return -1;return sortAscending?av-bv:bv-av});const headings=[['minutes','MIN'],['points','PTS'],['rebounds','REB'],['assists','AST'],['threepoints_made','3PM']];return `<div class="card table-scroll"><table class="stats-table"><thead><tr><th>${tr('Jugador','Player')}</th>${headings.map(([k,label])=>`<th data-sort="${k}" title="${tr('Ordenar','Sort')}">${label}${sortColumn===k?(sortAscending?' ↑':' ↓'):''}</th>`).join('')}</tr></thead><tbody>${sorted.map(s=>`<tr class="click-row ${favoritePlayer(s.player_name)?'highlight':''}" data-player-id="${esc(s.provider_player_id)}" data-player-name="${esc(s.player_name)}" data-player-league="${esc(league)}" tabindex="0"><td><div class="box-player"><div class="box-avatar">${esc(initials(s.player_name))}${imageTag(playerPhoto(s.player_name,s.provider_player_id,league),'')}</div><span>${esc(displayPlayerName(s.player_name))}</span></div></td>${headings.map(([k])=>`<td>${esc(s[k]??'—')}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`}
 function setSort(k){if(sortColumn===k)sortAscending=!sortAscending;else{sortColumn=k;sortAscending=false}renderGameDetail()}
 function setDetailTab(tab){detailTab=tab;renderGameDetail()}
@@ -353,7 +392,7 @@ function changeDay(delta){const d=new Date(selectedDay+'T12:00:00Z');d.setUTCDat
 function today(){selectedDay=currentDay();gameMode='today';loadDay();renderGames()}
 function toggleSpoilers(){state.hideScores=!state.hideScores;persist();renderGames();renderBriefing();if(activeGame)renderGameDetail()}
 function statsPlayers(){const ids=new Map();for(const s of stats){const g=allGames.find(x=>String(x.provider_game_id)===String(s.provider_game_id));if(!g||leagues[g.league_id]!==statsLeague||!s.provider_player_id)continue;const key=String(s.provider_player_id);if(!ids.has(key))ids.set(key,{id:key,name:s.player_name,league:g.league_id,rows:[]});ids.get(key).rows.push(s)}return [...ids.values()].map(p=>({...p,average:historyStats(p.rows)}))}
-function renderLeaderboard(){$('statsLeagueFilters').innerHTML=leagueList.map(l=>`<button class="filter ${statsLeague===l?'active':''}" data-stats-league="${l}">${l}</button>`).join('');const metrics=[['points','PTS'],['rebounds','REB'],['assists','AST'],['threes','3PM']];$('metricFilters').innerHTML=metrics.map(([k,label])=>`<button class="filter ${selectedMetric===k?'active':''}" data-metric="${k}">${label}</button>`).join('');const people=statsPlayers().sort((a,b)=>(b.average[selectedMetric]??-1)-(a.average[selectedMetric]??-1)).slice(0,25);$('leaderboard').innerHTML=people.length?people.map((p,i)=>`<div class="leader-row" data-player-name="${esc(p.name)}" data-player-id="${esc(p.id)}" data-player-league="${esc(p.league)}" role="button" tabindex="0"><span class="leader-rank">${i+1}</span><div class="box-avatar">${esc(initials(p.name))}${imageTag(playerPhoto(p.name,p.id,p.league),'')}</div><div class="leader-name"><strong>${esc(p.name)}</strong><small>${p.average.games} ${tr('partidos','games')}</small></div><span class="leader-value">${fmt(p.average[selectedMetric])}</span></div>`).join(''):`<div class="empty">${tr('No hay estadísticas de esta liga en los partidos recientes.','No recent game statistics for this league.')}</div>`;$('statsLeagueFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{statsLeague=b.dataset.statsLeague;renderLeaderboard()});$('metricFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedMetric=b.dataset.metric;renderLeaderboard()})}
+function renderLeaderboard(){$('statsLeagueFilters').innerHTML=leagueList.map(l=>`<button class="filter ${statsLeague===l?'active':''}" data-stats-league="${l}">${l}</button>`).join('');const metrics=[['points','PTS'],['rebounds','REB'],['assists','AST'],['threes','3PM']];$('metricFilters').innerHTML=metrics.map(([k,label])=>`<button class="filter ${selectedMetric===k?'active':''}" data-metric="${k}">${label}</button>`).join('');const people=statsPlayers().sort((a,b)=>(b.average[selectedMetric]??-1)-(a.average[selectedMetric]??-1)).slice(0,25);$('leaderboard').innerHTML=people.length?people.map((p,i)=>`<div class="leader-row" data-player-name="${esc(p.name)}" data-player-id="${esc(p.id)}" data-player-league="${esc(p.league)}" role="button" tabindex="0"><span class="leader-rank">${i+1}</span><div class="box-avatar">${esc(initials(p.name))}${imageTag(playerPhoto(p.name,p.id,p.league),'')}</div><div class="leader-name"><strong>${esc(displayPlayerName(p.name))}</strong><small>${p.average.games} ${tr('partidos','games')}</small></div><span class="leader-value">${fmt(p.average[selectedMetric])}</span></div>`).join(''):`<div class="empty">${tr('No hay estadísticas de esta liga en los partidos recientes.','No recent game statistics for this league.')}</div>`;$('statsLeagueFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{statsLeague=b.dataset.statsLeague;renderLeaderboard()});$('metricFilters').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedMetric=b.dataset.metric;renderLeaderboard()})}
 function availablePlayers(){const map=new Map();for(const p of playerCatalog)map.set(norm(p.name),p.name);for(const s of stats)if(s.player_name)map.set(norm(s.player_name),s.player_name);return [...map.values()].sort((a,b)=>a.localeCompare(b))}
 function toggleFavoritePlayer(name){state.favoritePlayers=favoritePlayer(name)?state.favoritePlayers.filter(x=>norm(x)!==norm(name)):[...state.favoritePlayers,name];persist();renderPlayers();renderFavorites();renderBriefing();if(activePlayer)renderPlayerDetail();syncFavorites()}
 function renderPlayerSearch(){const q=norm($('playerSearch').value);const list=availablePlayers().filter(n=>!q||norm(n).includes(q)).slice(0,40);$('playerOptions').innerHTML=list.map(n=>`<button class="chip ${favoritePlayer(n)?'on':''}" data-fav-player="${esc(n)}">${favoritePlayer(n)?'✓':'+'} ${esc(n)}</button>`).join('')||`<p class="muted small">${tr('No se encontraron jugadores en los datos recientes.','No players found in recent data.')}</p>`;$('playerOptions').querySelectorAll('button').forEach(b=>b.onclick=()=>toggleFavoritePlayer(b.dataset.favPlayer))}
